@@ -43,7 +43,7 @@ convertLine(string line) {
        append to builder.
 
        if(line[i] == '-') {
-           linebuilder += or_clousre(line[i-1], line[i+1]);
+           linebuilder += range_clousre(line[i-1], line[i+1]);
            i++;
            builder = "";
        } else if (
@@ -80,7 +80,7 @@ convertLine(string line) {
 
 3.
 
-or_clousre(char1, char2) {
+range_clousre(char1, char2) {
    if (char2 > char1) {
        if(is_int(char1) && is_int(char2)) {
            string = "(";
