@@ -70,7 +70,7 @@ string RegularExpression::evaluate(string line) {
 
         if(line[i] == '-') {
             string range_expr = this->range_closure(line[i-1], line[i+1]);
-            line_builder.append(&range_expr);
+            line_builder.append(range_expr);
             i++;
             builder = "";
         } else if (
@@ -85,16 +85,16 @@ string RegularExpression::evaluate(string line) {
         ){
             string key = builder.substr(0, builder.length()-2);
             if(this->regular_definetions.count(key)) {
-                string value_of_key = map.at(key);
+                string value_of_key = this->regular_definetions.at(key);
                 string value;
 
                 if(line[i] == '\\') {
                     value = "(" + value_of_key + ")" + line[i] + line[i+1];
-                    line_builder.append(&value);
+                    line_builder.append(value);
                     i++;
                 } else {
                     value = "(" + value_of_key + ")" + line[i];
-                    line_builder.append(&value);
+                    line_builder.append(value);
                 }
 
             } else {
@@ -108,11 +108,37 @@ string RegularExpression::evaluate(string line) {
 
 }
 
-string RegularExpression::range_closure(char char1, char char2) {
-    return std::basic_string<char, char_traits<char>, allocator<char>>();
+bool is_int(char chart) {
+    return (chart >= '0' && chart <= '9') ? true : false;
 }
 
+bool is_alpha(char chart) {
+    return ((chart >= 'a' && chart <= 'z') || (chart >= 'A' && chart <= 'Z')) ? true : false;
+}
 
+string RegularExpression::range_closure(char char1, char char2) {
+    string expr = "";
+    if(char1 < char2) {
+        string s = "(";
+        expr.append(s);
+        expr.append(&char1);
+        s = '|';
+        expr.append(s);
+        if(is_int(char1) && is_int(char2) || is_alpha(char1) && is_alpha(char2)) {
+            for (int i = char1 + 1; i <= char2 - 1; ++i) {
+                s = (char)i;
+                expr.append(s);
+                s = '|';
+                expr.append(s);
+            }
+            s = char2;
+            expr.append(s);
+            s = ')';
+            expr.append(s);
+        }
+    }
+    return expr;
+}
 
 
 
