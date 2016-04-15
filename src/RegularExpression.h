@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <set>
 #include <map>
 
