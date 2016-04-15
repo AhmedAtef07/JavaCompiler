@@ -43,6 +43,19 @@ void RegularExpression::convertLine(string line) {
                 }
             }
             break;
+        } else if(line[i] == '[') {
+            string puncs = line.substr(i+1, line.length()-1);
+            string bldr = "";
+
+            for (unsigned int j = 0; j < puncs.length(); ++j) {
+                if (puncs[j] == ' ') {
+                    this->punctuations.insert(bldr);
+                    bldr = "";
+                } else {
+                    bldr.append(&puncs[j]);
+                }
+            }
+            break;
         }
     }
 }
