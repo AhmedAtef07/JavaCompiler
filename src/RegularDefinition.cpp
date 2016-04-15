@@ -29,15 +29,12 @@ Nfa* RegularDefinition::GetNfa() {
 }
 
 string RegularDefinition::ToString() {
-//    string m1 = "dsfsadf";
-//    string m2 = (this->type) == RegularDefinition::kNfa ? "NFA" : "Operation";
-//    string m3 = ": ";
-//    string m4 = "";
-    cout << GetOperation() << endl;
+    std::string *pstr = new std::string;
+    *pstr = (this->type) == RegularDefinition::kNfa ? "NFA" : "Operation";
+    *pstr += ": ";
     if(this->type == RegularDefinition::kNfa) {
-        return GetNfa()->start_state->outgoing_transitions[0]->value;
+        return *pstr + GetNfa()->start_state->outgoing_transitions[0]->value;
     } else {
-        return GetOperation();
+        return *pstr + GetOperation();
     }
-    // return m1 + m2 + m3 + m4;
 }

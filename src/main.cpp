@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "Nfa.h"
 #include "RegularDefinition.h"
 
@@ -47,25 +48,23 @@ void test_regular_definition_array() {
     string test = "(a*(k|l|(mn|k))*l)+";
     vector<RegularDefinition*> regular_definition_vector;
     for(int i = 0; i < test.size(); ++i) {
-        string current_char = string(1, test[i]);
-        cout << current_char << endl;
+        std::string *pstr = new std::string;
+        *pstr = test[i];
 
         if(RegularDefinition::IsOperation(test[i])) {
             regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kOperation,
-                                                                      &current_char));
+                                                                      pstr));
         } else {
-            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kNfa,
-                                                                      new Nfa(current_char)));
+            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kNfa, new Nfa(*pstr)));
         }
     }
 
 
     for(RegularDefinition* rd: regular_definition_vector) {
         cout << rd->ToString() << endl;
-        cout << "HERERERERER" << endl;
-        break;
     }
 }
+
 
 /*
  * 1. Eliminate all parentheses.
@@ -74,8 +73,8 @@ void test_regular_definition_array() {
 int main() {
 
 //    test_nfa();
-    test_regular_definition();
-//    test_regular_definition_array();
+//    test_regular_definition();
+    test_regular_definition_array();
     return 0;
 }
 
