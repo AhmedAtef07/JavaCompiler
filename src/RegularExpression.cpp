@@ -4,6 +4,7 @@
 
 #include "RegularExpression.h"
 
+#include <iostream>
 RegularExpression::RegularExpression(const string lexical_file_name) {
     fstream lexical_file(lexical_file_name);
 
@@ -12,6 +13,14 @@ RegularExpression::RegularExpression(const string lexical_file_name) {
     while(getline(lexical_file, line)) {
         this->convertLine(line);
     }
+
+    for (set<string>::iterator i = this->keywords.begin(); i != this->keywords.end(); i++) {
+        string element = *i;
+
+        cout << element << endl;
+    }
+
+
 }
 
 void RegularExpression::convertLine(string line) {
@@ -69,8 +78,7 @@ string RegularExpression::evaluate(string line) {
         line_builder.append(&line[i]);
 
         if(line[i] == '-') {
-            string range_expr = this->range_closure(line[i-1], line[i+1]);
-            line_builder.append(range_expr);
+            line_builder.append(this->range_closure(line[i-1], line[i+1]));
             i++;
             builder = "";
         } else if (
