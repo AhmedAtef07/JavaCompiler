@@ -4,4 +4,4 @@
 
 #include "Transition.h"
 
-Transition::Transition(State *next_state, const string &value) : next_state(next_state), value(value) { }
+Transition::Transition(State *next_state, string value) : next_state(next_state), value(value) { }

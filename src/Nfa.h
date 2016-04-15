@@ -19,8 +19,12 @@ public:
 
     Nfa();
     Nfa(string value);
+    Nfa(State *start_state, State *terminal_state);
 
     static Nfa* Concatenate(Nfa* nfa1, Nfa* nfa2);
+    static Nfa* Star(Nfa *nfa);
+    static Nfa* Plus(Nfa *nfa);
+    static Nfa* Parallel(Nfa* nfa1, Nfa* nfa2);
 };
 
 
