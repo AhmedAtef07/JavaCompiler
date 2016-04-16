@@ -32,9 +32,9 @@ void RegularExpression::convertLine(string line) {
         if(line[i] == '=' || line[i] == ':') {
             string key = builder.substr(0, builder.length() - 1);
             string rest_of_line = line.substr(i + 1, line.length());
-            cout << "i will evaluate" << setw(20) << key << ":(" << rest_of_line << ")" << endl;
+            // cout << "i will evaluate" << setw(20) << key << ":(" << rest_of_line << ")" << endl;
             string value = this->evaluate(rest_of_line);
-            cout << "evaluating" << key << ":" << rest_of_line << "\tvalue:" << value << endl;
+            // cout << "evaluating" << key << ":" << rest_of_line << "\tvalue:" << value << endl;
             if(line[i] == '=')
                 this->regular_definetions[key] = value;
             else
@@ -84,48 +84,30 @@ string RegularExpression::evaluate(string line) {
 
         builder += line[i];
 
-        cout << "builder:" << builder << "\tlinebuilder:" << line_builder << "\tlastread:" << line[i] << endl;
+        // cout << "builder:" << builder << "\tlinebuilder:" << line_builder << "\tlastread:" << line[i] << endl;
 
 
         if(line[i] == '-' && line[i-1] != '\\') {
             string range_exp = this->range_closure(line[i-1], line[i+1]);
 
-            cout << "range exp:" << line[i-1] << "-" << line[i+1] << ":" << range_exp << endl;
+            // cout << "range exp:" << line[i-1] << "-" << line[i+1] << ":" << range_exp << endl;
             line_builder.append(range_exp);
             i++;
             builder = "";
             continue;
-        } else if (
-               line[i] == '+'
-            || line[i] == '*'
-            || line[i] == '('
-            || line[i] == ')'
-            || line[i] == '|'
-            || line[i] == '\\'
-            || line[i] == '.'
-            || i       == line.length()-1
-        ){
-            string key = builder.substr(0, builder.length()-1 );
-            cout << "checking for key:" << key << ":" << this->regular_definetions.count(key) << endl;
-            if(this->regular_definetions.count(key)) {
-                string value_of_key = this->regular_definetions.at(key);
-                string value;
-                cout << "found key:" << key << ":" << value_of_key << endl;
+        } else if ( is_seperator(line, i) || i+1 == line.length()){
+            unsigned long builder_length;
 
-                if(line[i] == '\\') {
-                    value = "(" + value_of_key + ")" + line[i] + line[i+1];
-                    line_builder.append(value);
-                    i++;
-                } else {
-                    value = "(" + value_of_key + ")" + line[i];
-                    line_builder.append(value);
-                }
-
+            if(i + 1 == line.length() && !is_seperator(line, i)) {
+                builder_length = builder.length();
             } else {
-                // Do nothing
-                line_builder.append(builder);
-                cout << "add seperator:" << builder << endl;
+                builder_length = builder.length() - 1;
             }
+
+
+            string key = builder.substr(0, builder_length);
+            // cout << "checking for key:" << key << ":" << this->regular_definetions.count(key) << endl;
+            this->build_from_key(line, line_builder, builder, i, key);
 
             builder = "";
         }
@@ -134,6 +116,68 @@ string RegularExpression::evaluate(string line) {
 
     return line_builder;
 
+}
+
+bool RegularExpression::is_seperator(const string &line, unsigned int i) const {
+    return line[i] == '+'
+           || line[i] == '*'
+           || line[i] == '('
+           || line[i] == ')'
+           || line[i] == '|'
+           || line[i] == '\\'
+           || line[i] == '.';
+}
+
+void RegularExpression::build_from_key(const string &line, string &line_builder, string &builder, unsigned int i,
+                                       const string &key) const {
+    if(regular_definetions.count(key)) {
+                string value_of_key = regular_definetions.at(key);
+                // cout << "found key:" << key << ":" << value_of_key << endl;
+
+                add_to_line_builder(line, line_builder, i, value_of_key);
+
+    } else {
+                // Do nothing
+                string new_key = key;
+                string old_builder = builder;
+                string to_add_to_builder = "";
+                do {
+                    if(new_key.length() < 2) break;
+                    to_add_to_builder += builder[0];
+                    builder = builder.substr(1, builder.length()-1);
+                    new_key = new_key.substr(1, new_key.length()-1);
+
+                    // cout << "Trying again with new key:" << new_key << endl;
+
+                    if (regular_definetions.count(new_key)) {
+                        // cout << "found new key, new builder:" << to_add_to_builder << endl;
+                        string value_of_key = regular_definetions.at(new_key);
+                        line_builder.append(to_add_to_builder);
+                        add_to_line_builder(line, line_builder, i, value_of_key);
+                        return;
+                    }
+                }while(new_key.length());
+
+                builder = old_builder;
+
+
+                line_builder.append(builder);
+                // cout << "add new builder:" << builder << endl;
+            }
+}
+
+void RegularExpression::add_to_line_builder(const string &line, string &line_builder, unsigned int i,
+                                            const string &value_of_key) const {
+            string value;
+            if(line[i] == '\\') {
+                    value = "(" + value_of_key + ")" + line[i] + line[i+1];
+                    line_builder.append(value);
+                    i++;
+                } else {
+                    value = "(" + value_of_key + ")";
+                    if (i+1 != line.length() || is_seperator(line, i)) value += line[i];
+                    line_builder.append(value);
+                }
 }
 
 bool is_int(char chart) {

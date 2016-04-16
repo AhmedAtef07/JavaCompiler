@@ -31,6 +31,11 @@ private:
     string evaluate(string line);
     string range_closure(char char1, char char2);
 
+    void build_from_key(const string &line, string &line_builder, string &builder, unsigned int i, const string &key) const;
+
+    bool is_seperator(const string &line, unsigned int i) const;
+
+    void add_to_line_builder(const string &line, string &line_builder, unsigned int i, const string &value_of_key) const;
 };
 
 
