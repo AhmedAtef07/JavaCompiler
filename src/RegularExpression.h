@@ -23,7 +23,7 @@ public:
     map<string, string> regular_definetions;
     map<string, string> regular_expressions;
 
-    RegularExpression(const string lexical_file_name);
+    RegularExpression(string lexical_file_name);
 
 private:
 

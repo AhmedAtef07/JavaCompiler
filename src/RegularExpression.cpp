@@ -5,50 +5,54 @@
 #include "RegularExpression.h"
 
 #include <iostream>
-RegularExpression::RegularExpression(const string lexical_file_name) {
-    fstream lexical_file(lexical_file_name);
+#include <iomanip>
 
+
+RegularExpression::RegularExpression(string lexical_file_name) {
+    ifstream lexical_file;
+    lexical_file.open(lexical_file_name);
     string line;
 
     while(getline(lexical_file, line)) {
+        // cout << "proccessing line: " << line << endl;
         this->convertLine(line);
     }
-
-    for (set<string>::iterator i = this->keywords.begin(); i != this->keywords.end(); i++) {
-        string element = *i;
-
-        cout << element << endl;
-    }
-
 
 }
 
 void RegularExpression::convertLine(string line) {
     string builder = "";
     for(unsigned int i = 0 ; i < line.length() ; ++i) {
-        builder.append(&line[i]);
-        if(line[i] == '=' || line[i] == ':') {
+        if (line[i] == ' ') continue;
 
-            string key = builder.substr(0, builder.length() - 2);
-            string rest_of_line = line.substr(i + 1, line.length() - 1);
+        builder += line[i];
+
+//        cout << "builder:" << builder << endl;
+
+        if(line[i] == '=' || line[i] == ':') {
+            string key = builder.substr(0, builder.length() - 1);
+            string rest_of_line = line.substr(i + 1, line.length());
+            cout << "i will evaluate" << setw(20) << key << ":(" << rest_of_line << ")" << endl;
             string value = this->evaluate(rest_of_line);
+            cout << "evaluating" << key << ":" << rest_of_line << "\tvalue:" << value << endl;
             if(line[i] == '=')
                 this->regular_definetions[key] = value;
             else
                 this->regular_expressions[key] = value;
 
             builder = "";
+            break;
 
         }else if(line[i] == '{') {
             string keywords = line.substr(i+1, line.length()-1);
             string bldr = "";
 
             for (unsigned int j = 0; j < keywords.length(); ++j) {
-                if (keywords[j] == ' ') {
+                if (keywords[j] == ' ' || keywords[j] == '}') {
                     this->keywords.insert(bldr);
                     bldr = "";
                 } else {
-                    bldr.append(&keywords[j]);
+                    bldr += keywords[j];
                 }
             }
             break;
@@ -57,11 +61,11 @@ void RegularExpression::convertLine(string line) {
             string bldr = "";
 
             for (unsigned int j = 0; j < puncs.length(); ++j) {
-                if (puncs[j] == ' ') {
+                if (puncs[j] == ' ' || puncs[j] == ']') {
                     this->punctuations.insert(bldr);
                     bldr = "";
                 } else {
-                    bldr.append(&puncs[j]);
+                    bldr += puncs[j];
                 }
             }
             break;
@@ -71,30 +75,42 @@ void RegularExpression::convertLine(string line) {
 
 string RegularExpression::evaluate(string line) {
     string line_builder, builder;
-    line_builder = builder = "";
+    line_builder = "";
+    builder = "";
 
     for (unsigned int i = 0; i < line.length(); ++i) {
 
-        line_builder.append(&line[i]);
+        if (line[i] == ' ') continue;
 
-        if(line[i] == '-') {
-            line_builder.append(this->range_closure(line[i-1], line[i+1]));
+        builder += line[i];
+
+        cout << "builder:" << builder << "\tlinebuilder:" << line_builder << "\tlastread:" << line[i] << endl;
+
+
+        if(line[i] == '-' && line[i-1] != '\\') {
+            string range_exp = this->range_closure(line[i-1], line[i+1]);
+
+            cout << "range exp:" << line[i-1] << "-" << line[i+1] << ":" << range_exp << endl;
+            line_builder.append(range_exp);
             i++;
             builder = "";
+            continue;
         } else if (
-               line[i] == '-'
-            || line[i] == '+'
+               line[i] == '+'
             || line[i] == '*'
             || line[i] == '('
             || line[i] == ')'
             || line[i] == '|'
             || line[i] == '\\'
-            || line[i] == '\n'
+            || line[i] == '.'
+            || i       == line.length()-1
         ){
-            string key = builder.substr(0, builder.length()-2);
+            string key = builder.substr(0, builder.length()-1 );
+            cout << "checking for key:" << key << ":" << this->regular_definetions.count(key) << endl;
             if(this->regular_definetions.count(key)) {
                 string value_of_key = this->regular_definetions.at(key);
                 string value;
+                cout << "found key:" << key << ":" << value_of_key << endl;
 
                 if(line[i] == '\\') {
                     value = "(" + value_of_key + ")" + line[i] + line[i+1];
@@ -107,7 +123,11 @@ string RegularExpression::evaluate(string line) {
 
             } else {
                 // Do nothing
+                line_builder.append(builder);
+                cout << "add seperator:" << builder << endl;
             }
+
+            builder = "";
         }
 
     }
@@ -117,11 +137,11 @@ string RegularExpression::evaluate(string line) {
 }
 
 bool is_int(char chart) {
-    return (chart >= '0' && chart <= '9') ? true : false;
+    return chart >= '0' && chart <= '9';
 }
 
 bool is_alpha(char chart) {
-    return ((chart >= 'a' && chart <= 'z') || (chart >= 'A' && chart <= 'Z')) ? true : false;
+    return (chart >= 'a' && chart <= 'z') || (chart >= 'A' && chart <= 'Z');
 }
 
 string RegularExpression::range_closure(char char1, char char2) {
@@ -129,7 +149,7 @@ string RegularExpression::range_closure(char char1, char char2) {
     if(char1 < char2) {
         string s = "(";
         expr.append(s);
-        expr.append(&char1);
+        expr += char1;
         s = '|';
         expr.append(s);
         if(is_int(char1) && is_int(char2) || is_alpha(char1) && is_alpha(char2)) {
@@ -147,6 +167,8 @@ string RegularExpression::range_closure(char char1, char char2) {
     }
     return expr;
 }
+
+
 
 
 
