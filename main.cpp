@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <unistd.h>
 #include "Nfa.h"
 #include "RegularExpression.h"
 #include "RegularDefinition.h"
@@ -9,7 +10,7 @@ using namespace std;
 
 void test_nfa() {
     string test = "(a*(k|l|(mn|k))*l)+";
-//    test = "([a-zA-z]*(k|l|(mn|k))*l)+";
+//    lexical_test = "([a-zA-z]*(k|l|(mn|k))*l)+";
     cout << test << endl;
     cout << endl << endl;
 
@@ -69,7 +70,8 @@ void test_regular_definition_array() {
 
 
 void test_lex_to_re() {
-    RegularExpression * re = new RegularExpression("/home/ahmed/ClionProjects/JavaCompiler/src/lexical_input.txt");
+    // Reference to bin directory
+    RegularExpression * re = new RegularExpression("../lexical/lexical_input.txt");
 
 
     /*for (set<string>::iterator i = re->keywords.begin(); i != re->keywords.end(); i++) {
@@ -101,7 +103,7 @@ void test_lex_to_re() {
 
     cout << endl;
     cout << setw(35) << "Assert Definetions of letter:" << setw(35) << (re->regular_definetions.at("letter") == "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)|(A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)" ? "TRUE" : "FALSE") << endl;
-    cout << setw(35) << "Assert Definetions of digit:" << setw(35) << (re->regular_definetions.at("digit") == "(0|1|2|3|4|5|6|7|8|9)"  ? "TRUE" : "FALSE") << endl;
+    cout << setw(35) << "Assert Definetions of digits:" << setw(35) << (re->regular_definetions.at("digit") == "(0|1|2|3|4|5|6|7|8|9)"  ? "TRUE" : "FALSE") << endl;
     cout << setw(35) << "Assert Definetions of digits:" << setw(35) << (re->regular_definetions.at("digits") == "((0|1|2|3|4|5|6|7|8|9))+" ? "TRUE" : "FALSE") << endl;
     cout << setw(35) << "Assert Definetions of equals:" << setw(35) << (re->regular_definetions.at("equals") == "\\=\\=" ? "TRUE" : "FALSE") << endl;
     cout << setw(35) << "Assert Definetions of notequals:" << setw(35) << (re->regular_definetions.at("notequals") == "!\\=" ? "TRUE" : "FALSE") << endl;
@@ -144,9 +146,12 @@ int main() {
 
 //    test_nfa();
 //    test_regular_definition();
-    test_regular_definition_array();
+//    test_regular_definition_array();
 
-    test_lex_to_re();
+    /*char buf[1024]; // hack, but fine for this
+    printf("%s\n", getcwd(buf, 1024));*/
+//     test_lex_to_re();
+    cout << "THIS IS THE MAIN" << endl;
     return 0;
 }
 
