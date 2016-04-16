@@ -1,0 +1,96 @@
+0.
+
+constructor() {
+     foreach line in file {
+          convertLine(line);
+     }
+}
+
+
+1.
+
+convertLine(string line) {
+     string builder = "";
+     for(int i=0; i < line.length(); i++) {
+
+       append to builder;
+
+       if(line[i] == '=' || line[i] == ':') {
+           string key = builder[0 .. (builder.length()-2)];
+           string rest_of_line = line[i+1 .. the end of the line];
+           string value = evaluate(rest_of_line);
+
+           put in hashtable<key, value>;
+       } else if(line[i] == '{') {
+           arr<string> keywords = (line[i+1] until '}').split(' ');
+           push_to_keywords_array(keywords);
+       }
+
+     }
+}
+
+
+
+
+2. evaluate(string line) {
+
+
+   string linebuilder = "";
+   string builder="";
+
+   for(int i=0; i < line.length(); i++) {
+
+       append to builder.
+
+       if(line[i] == '-') {
+           linebuilder += range_clousre(line[i-1], line[i+1]);
+           i++;
+           builder = "";
+       } else if (
+               line[i] == '-'
+            || line[i] == '+'
+            || line[i] == '*'
+            || line[i] == '('
+            || line[i] == ')''
+            || line[i] == '|'
+            || line[i] == '\'
+            || line[i] == EOL
+       ) {
+           select key from the builder (all the string except the last char).
+           key = builder[0 .. (builder.length()-2)];
+           if (key in the hashtable) {
+               value = "(" + value of the key from the hashtable + ")";
+               if (line[i] == '\') {
+                   linebuilder += value + line[i] + line[i+1];
+                   i++;
+               } else {
+                   linebuilder += value + line[i];
+               }
+               builder = "";
+           } else {
+               leave as it is.
+           }
+       }
+
+   }
+
+   return linebuilder;
+
+}
+
+3.
+
+range_clousre(char1, char2) {
+   if (char2 > char1) {
+       if(is_int(char1) && is_int(char2)) {
+           string = "(";
+           string += char1 + '|' + char1+1 ...
+           string += ")";
+       }
+       else if(is_alphachar(char1) && is_alphacar(char2)){
+       }
+       else{error !}
+   }
+   else { error ! }
+}
+

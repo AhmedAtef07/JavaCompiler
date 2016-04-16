@@ -12,6 +12,8 @@ set(SOURCE_FILES
     src/State.cpp
     src/State.h
     src/Transition.cpp
-    src/Transition.h)
-
+    src/Transition.h
+    src/RegularExpression.cpp
+    src/RegularExpression.h
+)
 add_executable(JavaCompiler ${SOURCE_FILES})
