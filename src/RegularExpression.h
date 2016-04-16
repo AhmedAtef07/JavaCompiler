@@ -35,7 +35,9 @@ private:
 
     bool is_seperator(const string &line, unsigned int i) const;
 
-    void add_to_line_builder(const string &line, string &line_builder, unsigned int i, const string &value_of_key) const;
+    void add_to_line_builder_left(const string &line, string &line_builder, unsigned int i, const string &value_of_key) const;
+
+    void add_to_line_builder_right(const string &line, string &line_builder, unsigned int i, const string &value_of_key,const string &rest_of_line) const;
 };
 
 
