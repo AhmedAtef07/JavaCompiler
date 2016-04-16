@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <unistd.h>
 #include "Nfa.h"
 #include "RegularExpression.h"
 #include "RegularDefinition.h"
@@ -69,7 +70,8 @@ void test_regular_definition_array() {
 
 
 void test_lex_to_re() {
-    RegularExpression * re = new RegularExpression("/home/ramytamer/kolia/plt/project/phase-1/JavaCompiler/src/lexical_input.txt");
+    // Reference to bin directory
+    RegularExpression * re = new RegularExpression("../src/lexical_input.txt");
 
 
     /*for (set<string>::iterator i = re->keywords.begin(); i != re->keywords.end(); i++) {
@@ -146,7 +148,9 @@ int main() {
 //    test_regular_definition();
     test_regular_definition_array();
 
-    test_lex_to_re();
+    /*char buf[1024]; // hack, but fine for this
+    printf("%s\n", getcwd(buf, 1024));*/
+     test_lex_to_re();
     return 0;
 }
 
