@@ -10,7 +10,7 @@ using namespace std;
 
 void test_nfa() {
     string test = "(a*(k|l|(mn|k))*l)+";
-//    test = "([a-zA-z]*(k|l|(mn|k))*l)+";
+//    lexical_test = "([a-zA-z]*(k|l|(mn|k))*l)+";
     cout << test << endl;
     cout << endl << endl;
 
@@ -71,7 +71,7 @@ void test_regular_definition_array() {
 
 void test_lex_to_re() {
     // Reference to bin directory
-    RegularExpression * re = new RegularExpression("../src/lexical_input.txt");
+    RegularExpression * re = new RegularExpression("../lexical/lexical_input.txt");
 
 
     /*for (set<string>::iterator i = re->keywords.begin(); i != re->keywords.end(); i++) {
@@ -146,11 +146,12 @@ int main() {
 
 //    test_nfa();
 //    test_regular_definition();
-    test_regular_definition_array();
+//    test_regular_definition_array();
 
     /*char buf[1024]; // hack, but fine for this
     printf("%s\n", getcwd(buf, 1024));*/
-     test_lex_to_re();
+//     test_lex_to_re();
+    cout << "THIS IS THE MAIN" << endl;
     return 0;
 }
 
