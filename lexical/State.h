@@ -16,10 +16,12 @@ class Transition;
 class State {
 public:
     int id;
+    bool is_acceptence;
     // Should be changed to set for better performance.
     vector<Transition*> outgoing_transitions;
 
     State();
+    State(bool is_acceptence);
 
     void AddTransition(Transition* transition);
 
