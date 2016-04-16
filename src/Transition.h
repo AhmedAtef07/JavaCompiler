@@ -17,7 +17,7 @@ public:
     State* next_state;
     string value;
 
-    Transition(State *next_state, const string &value);
+    Transition(State *next_state, string value = "");
 };
 
 

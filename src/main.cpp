@@ -1,26 +1,22 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include "Nfa.h"
 #include "RegularExpression.h"
-
-#include <iomanip>
+#include "RegularDefinition.h"
 
 using namespace std;
 
-/*
- * 1. Eliminate all parentheses.
- * 2.
- */
-int main() {
-    /*
+void test_nfa() {
     string test = "(a*(k|l|(mn|k))*l)+";
+//    test = "([a-zA-z]*(k|l|(mn|k))*l)+";
     cout << test << endl;
     cout << endl << endl;
 
     Nfa* nfa0 = new Nfa("a");
     Nfa* nfa1 = new Nfa("b");
 
-    Nfa* nfa01 = Nfa::Concatenate(nfa0, nfa1);
+    Nfa* nfa01 = Nfa::Concatenate(nfa1, nfa0);
 
     cout << nfa01->start_state->id << endl;
     cout << nfa01->start_state->outgoing_transitions[0]->value << endl;
@@ -32,8 +28,47 @@ int main() {
     cout << nfa01->start_state->outgoing_transitions[0]->next_state->outgoing_transitions[0]->next_state->
             outgoing_transitions[0]->next_state->id << endl;
 
-     */
+//    cout << nfa->start_state->id << endl;
+//    cout << nfa->start_state->outgoing_transitions[0]->value << endl;
+//    cout << nfa->start_state->outgoing_transitions[0]->next_state->id << endl;
 
+}
+
+void test_regular_definition() {
+    string o1 = string("a");
+    RegularDefinition* rd1 = new RegularDefinition(RegularDefinition::Type::kNfa, new Nfa(o1));
+    string operation = string(1, '*');
+    RegularDefinition* rd2 = new RegularDefinition(RegularDefinition::Type::kOperation, &operation);
+
+//    cout << *static_cast<std::string*>(rd2->value) << endl;
+//    cout << static_cast<Nfa*>(rd1->value)->start_state->outgoing_transitions[0]->value << endl;
+
+    cout << rd1->ToString() << endl;
+}
+
+void test_regular_definition_array() {
+    string test = "(a*(k|l|(mn|k))*l)+";
+    vector<RegularDefinition*> regular_definition_vector;
+    for(int i = 0; i < test.size(); ++i) {
+        std::string *pstr = new std::string;
+        *pstr = test[i];
+
+        if(RegularDefinition::IsOperation(test[i])) {
+            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kOperation,
+                                                                      pstr));
+        } else {
+            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kNfa, new Nfa(*pstr)));
+        }
+    }
+
+
+    for(RegularDefinition* rd: regular_definition_vector) {
+        cout << rd->ToString() << endl;
+    }
+}
+
+
+void test_lex_to_re() {
     RegularExpression * re = new RegularExpression("/home/ramytamer/kolia/plt/project/phase-1/JavaCompiler/src/lexical_input.txt");
 
 
@@ -99,6 +134,19 @@ int main() {
     cout << "\nPuncituations:" << endl;
     cout << setw(35) << "Assert Puncituations size(6): " << setw(35) << (re->punctuations.size() == 6 ? "TRUE" : "FALSE") << endl;
 
+}
+
+/*
+ * 1. Eliminate all parentheses.
+ * 2.
+ */
+int main() {
+
+//    test_nfa();
+//    test_regular_definition();
+    test_regular_definition_array();
+
+    test_lex_to_re();
     return 0;
 }
 
