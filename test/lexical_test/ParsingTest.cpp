@@ -54,7 +54,8 @@ TEST(ParsingInputTest, MaximalMunchRule) {
     Dfa *dfa3 = new Dfa(nfa_abaabb2, new Token("b+|a+b+", 72));
 
     string input = "aaaabbbbbb";
-    cout << input << endl;
+    string error_string = "";
+    cout << input << endl << endl;
     Token *highest_token = nullptr;
     vector<Token*> answer;
     int last_position = 0, highest_priority = -1;
@@ -63,16 +64,22 @@ TEST(ParsingInputTest, MaximalMunchRule) {
     bool has_running = true, error_found = false;
     while(input.length() != 0) {
         fill(running_bools, running_bools + 3, true);
+        last_position = 0;
+        highest_priority = -1;
+        highest_token = nullptr;
+        has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
             if((!has_running || i == input.length()) && highest_token != nullptr) {
+                highest_token->pattern = input.substr (0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                cout << "error!!!" << endl;
+                cout << "Error!!!  >  ";
                 error_found = true;
+                error_string = input;
                 break;
             }
             has_running = false;
@@ -101,11 +108,13 @@ TEST(ParsingInputTest, MaximalMunchRule) {
 
     EXPECT_EQ(answer.size(), 1);
     EXPECT_EQ(error_found, false);
+    EXPECT_EQ(error_string, "");
     for(Token *t : answer) {
-        cout << t->name << endl;
+        cout << t->name << "  >  " << t->pattern << endl;
         EXPECT_EQ(t->name, "b+|a+b+");
+        EXPECT_EQ(t->pattern, "aaaabbbbbb");
     }
-    cout << "finished" << endl << endl;
+    cout << endl << "finished" << endl << endl;
 }
 
 
@@ -154,11 +163,9 @@ TEST(ParsingInputTest, PeriorityRule) {
     Nfa *nfa_abaabb = Nfa::Parallel(nfa_ab2, nfa_aabb);
     Dfa *dfa2 = new Dfa(nfa_abaabb, new Token("ab|a+b+", 6));
 
-
-
-
     string input = "aaaabbbbbb";
-    cout << input << endl;
+    string error_string = "";
+    cout << input << endl << endl;
     Token *highest_token = nullptr;
     vector<Token*> answer;
     int last_position = 0, highest_priority = -1;
@@ -167,16 +174,22 @@ TEST(ParsingInputTest, PeriorityRule) {
     bool has_running = true, error_found = false;
     while(input.length() != 0) {
         fill(running_bools, running_bools + 3, true);
+        last_position = 0;
+        highest_priority = -1;
+        highest_token = nullptr;
+        has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
             if((!has_running || i == input.length()) && highest_token != nullptr) {
+                highest_token->pattern = input.substr (0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                cout << "error!!!" << endl;
+                cout << "Error!!!  >  ";
                 error_found = true;
+                error_string = input;
                 break;
             }
             has_running = false;
@@ -205,11 +218,13 @@ TEST(ParsingInputTest, PeriorityRule) {
 
     EXPECT_EQ(answer.size(), 1);
     EXPECT_EQ(error_found, false);
+    EXPECT_EQ(error_string, "");
     for(Token *t : answer) {
-        cout << t->name << endl;
+        cout << t->name << "  >  " << t->pattern << endl;
         EXPECT_EQ(t->name, "ab|a+b+");
+        EXPECT_EQ(t->pattern, "aaaabbbbbb");
     }
-    cout << "finished" << endl << endl;
+    cout << endl << "finished" << endl << endl;
 }
 
 
@@ -259,7 +274,8 @@ TEST(ParsingInputTest, ManyTokens) {
     Dfa *dfa3 = new Dfa(nfa_abaabb2, new Token("b+|a+b+", 9));
 
     string input = "aaaabbbbbbcdbbbbb";
-    cout << input << endl;
+    string error_string = "";
+    cout << input << endl << endl;
     Token *highest_token = nullptr;
     vector<Token*> answer;
     int last_position = 0, highest_priority = -1;
@@ -274,18 +290,16 @@ TEST(ParsingInputTest, ManyTokens) {
         has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
             if((!has_running || i == input.length()) && highest_token != nullptr) {
+                highest_token->pattern = input.substr (0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
-                cout << input << endl;
-                for(int j = 0; j < 3; ++j) {
-                    dfas[j]->initialize_current_state();
-                }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                cout << "error!!!" << endl;
+                cout << "Error!!!  >  ";
                 error_found = true;
+                error_string = input;
                 break;
             }
             has_running = false;
@@ -314,17 +328,20 @@ TEST(ParsingInputTest, ManyTokens) {
 
     EXPECT_EQ(answer.size(), 2);
     EXPECT_EQ(error_found, false);
+    EXPECT_EQ(error_string, "");
     int curr = 0;
     for(Token *t : answer) {
-        cout << t->name << endl;
+        cout << t->name << "  >  " << t->pattern << endl;
         if(curr == 0) {
             EXPECT_EQ(t->name, "(a|b)+bcd");
+            EXPECT_EQ(t->pattern, "aaaabbbbbbcd");
         } else if(curr == 1) {
             EXPECT_EQ(t->name, "b+|a+b+");
+            EXPECT_EQ(t->pattern, "bbbbb");
         }
         ++curr;
     }
-    cout << "finished" << endl << endl;
+    cout << endl << "finished" << endl << endl;
 }
 
 
@@ -374,7 +391,8 @@ TEST(ParsingInputTest, WrongInput) {
     Dfa *dfa3 = new Dfa(nfa_abaabb2, new Token("b+|a+b+", 12));
 
     string input = "cbda";
-    cout << input << endl;
+    string error_string = "";
+    cout << input << endl << endl;
     Token *highest_token = nullptr;
     vector<Token*> answer;
     int last_position = 0, highest_priority = -1;
@@ -389,18 +407,16 @@ TEST(ParsingInputTest, WrongInput) {
         has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
             if((!has_running || i == input.length()) && highest_token != nullptr) {
+                highest_token->pattern = input.substr (0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
-                cout << input << endl;
-                for(int j = 0; j < 3; ++j) {
-                    dfas[j]->initialize_current_state();
-                }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                cout << "error!!!" << endl;
+                cout << "Error!!!  >  ";
                 error_found = true;
+                error_string = input;
                 break;
             }
             has_running = false;
@@ -429,10 +445,12 @@ TEST(ParsingInputTest, WrongInput) {
 
     EXPECT_EQ(answer.size(), 0);
     EXPECT_EQ(error_found, true);
+    EXPECT_EQ(error_string, "cbda");
+    cout << error_string << endl << endl;
     for(Token *t : answer) {
-        cout << t->name << endl;
+        cout << t->name << "  >  " << t->pattern << endl;
     }
-    cout << "finished" << endl << endl;
+    cout << endl << "finished" << endl << endl;
 }
 
 
@@ -482,7 +500,8 @@ TEST(ParsingInputTest, CorrectTokenAndWrongSubstring) {
     Dfa *dfa3 = new Dfa(nfa_abaabb2, new Token("b+|a+b+", 15));
 
     string input = "abcbda";
-    cout << input << endl;
+    string error_string = "";
+    cout << input << endl << endl;
     Token *highest_token = nullptr;
     vector<Token*> answer;
     int last_position = 0, highest_priority = -1;
@@ -497,18 +516,16 @@ TEST(ParsingInputTest, CorrectTokenAndWrongSubstring) {
         has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
             if((!has_running || i == input.length()) && highest_token != nullptr) {
+                highest_token->pattern = input.substr (0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
-                cout << input << endl;
-                for(int j = 0; j < 3; ++j) {
-                    dfas[j]->initialize_current_state();
-                }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                cout << "error!!!" << endl;
+                cout << "Error!!!  >  ";
                 error_found = true;
+                error_string = input;
                 break;
             }
             has_running = false;
@@ -537,11 +554,14 @@ TEST(ParsingInputTest, CorrectTokenAndWrongSubstring) {
 
     EXPECT_EQ(answer.size(), 1);
     EXPECT_EQ(error_found, true);
+    EXPECT_EQ(error_string, "cbda");
+    cout << error_string << endl << endl;
     for(Token *t : answer) {
-        cout << t->name << endl;
+        cout << t->name << "  >  " << t->pattern << endl;
         EXPECT_EQ(t->name, "b+|a+b+");
+        EXPECT_EQ(t->pattern, "ab");
     }
-    cout << "finished" << endl << endl;
+    cout << endl << "finished" << endl << endl;
 }
 
 
@@ -590,7 +610,8 @@ TEST(ParsingInputTest, CorrectTokensAndWrongSubstring) {
     Dfa *dfa3 = new Dfa(nfa_abaabb2, new Token("b+|a+b+", 18));
 
     string input = "aaaabbbbbbcdbbbbbdcc";
-    cout << input << endl;
+    string error_string = "";
+    cout << input << endl << endl;
     Token *highest_token = nullptr;
     vector<Token*> answer;
     int last_position = 0, highest_priority = -1;
@@ -605,18 +626,16 @@ TEST(ParsingInputTest, CorrectTokensAndWrongSubstring) {
         has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
             if((!has_running || i == input.length()) && highest_token != nullptr) {
+                highest_token->pattern = input.substr (0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
-                cout << input << endl;
-                for(int j = 0; j < 3; ++j) {
-                    dfas[j]->initialize_current_state();
-                }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                cout << "error!!!" << endl;
+                cout << "Error!!!  >  ";
                 error_found = true;
+                error_string = input;
                 break;
             }
             has_running = false;
@@ -645,15 +664,19 @@ TEST(ParsingInputTest, CorrectTokensAndWrongSubstring) {
 
     EXPECT_EQ(answer.size(), 2);
     EXPECT_EQ(error_found, true);
+    EXPECT_EQ(error_string, "dcc");
+    cout << error_string << endl << endl;
     int curr = 0;
     for(Token *t : answer) {
-        cout << t->name << endl;
+        cout << t->name << "  >  " << t->pattern << endl;
         if(curr == 0) {
             EXPECT_EQ(t->name, "(a|b)+bcd");
+            EXPECT_EQ(t->pattern, "aaaabbbbbbcd");
         } else if(curr == 1) {
             EXPECT_EQ(t->name, "b+|a+b+");
+            EXPECT_EQ(t->pattern, "bbbbb");
         }
         ++curr;
     }
-    cout << "finished" << endl << endl;
+    cout << endl << "finished" << endl << endl;
 }

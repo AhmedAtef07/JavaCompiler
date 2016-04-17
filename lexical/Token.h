@@ -16,6 +16,7 @@ public:
 
     int priority;
     string name;
+    string pattern;
 
     Token(string name, int priority);
     void delete_token();

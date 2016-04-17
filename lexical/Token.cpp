@@ -20,6 +20,6 @@ Token::Token(string name, int priority) {
 }
 
 void Token::delete_token() {
-    Token::priorities.erase (Token::priorities.find(this->priority), Token::priorities.end());
+    Token::priorities.erase(Token::priorities.find(this->priority), Token::priorities.end());
     free(this);
 }
