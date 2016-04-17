@@ -20,14 +20,16 @@ public:
 
     set<string> keywords;
     set<string> punctuations;
-    map<string, string> regular_definetions;
     map<string, string> regular_expressions;
+    map<string, string> regular_definetions_;
 
-    RegularExpression(string lexical_file_name);
+    RegularExpression(ifstream lexical_file);
+
+    RegularExpression();
+
+    void addRule(string line);
 
 private:
-
-    void convertLine(string line);
     string evaluate(string line);
     string range_closure(char char1, char char2);
 
