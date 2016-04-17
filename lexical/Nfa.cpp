@@ -142,7 +142,7 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
             if(solver.empty() || solver.top()->type == RegularDefinition::kOperation) {
                 solver.push(rd);
             } else if(solver.top()->type == RegularDefinition::kNfa) {
-                Nfa* concatenated_nfa = Nfa::Concatenate(rd->GetNfa(), solver.top()->GetNfa());
+                Nfa* concatenated_nfa = Nfa::Concatenate(solver.top()->GetNfa(), rd->GetNfa());
                 solver.pop();
                 solver.push(new RegularDefinition(RegularDefinition::kNfa, concatenated_nfa));
             }
