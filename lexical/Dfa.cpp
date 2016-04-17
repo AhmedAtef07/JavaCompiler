@@ -3,6 +3,7 @@
 //
 
 #include "Dfa.h"
+#include "Lexical.h"
 #include <map>
 #include <algorithm>
 
@@ -13,10 +14,10 @@ Dfa::Dfa(Nfa *nfa, Token *token) {
     this->start_state = construct_dfa(nfa);
 
     this->table = construct_table();
-    print_table(this->table, this->states_count);
+//    print_table(this->table, this->states_count);
 
     this->minimized_table = minimize_table();
-    print_table(minimized_table, this->minimized_states_count);
+//    print_table(minimized_table, this->minimized_states_count);
 
     cout << endl;
 }
@@ -46,13 +47,13 @@ void Dfa::print_transitions(State *state, bool *v) {
 
 void Dfa::print_table(Dfa::table_state **table, int rows) {
     cout << endl << "Table" << endl << "S | ";
-    for(int i = 0; i < alphapet_size; ++i) {
-        cout << alphapet[i] << " | ";
+    for(int i = 0; i < Lexical::alphabet.size(); ++i) {
+        cout << Lexical::alphabet[i] << " | ";
     }
     cout << endl;
     for(int j = 0; j < rows; ++j) {
         cout << j << " | ";
-        for(int i = 0; i < alphapet_size; ++i) {
+        for(int i = 0; i < Lexical::alphabet.size(); ++i) {
             if(table[j][i].next_state != -1 && table[j][i].is_acceptance) {
                 cout << "0" << table[j][i].next_state << " | ";
             }
@@ -119,10 +120,10 @@ bool Dfa::contains_accepted(set<State *> states) {
     return false;
 }
 
-int Dfa::find_alphapet_index(string s) {
+int Dfa::find_alphabet_index(string s) {
     int index = 0;
-    while(index < alphapet_size && alphapet[index] != s) ++index;
-    return index == alphapet_size ? -1 : index;
+    while(index < Lexical::alphabet.size() && Lexical::alphabet[index] != s) ++index;
+    return index == Lexical::alphabet.size() ? -1 : index;
 }
 
 int Dfa::find_state_index(State *s, vector<State *> states) {
@@ -134,12 +135,12 @@ int Dfa::find_state_index(State *s, vector<State *> states) {
 Dfa::table_state** Dfa::construct_table() {
     Dfa::table_state **table = (Dfa::table_state **) malloc(this->states_count * sizeof(Dfa::table_state));
     for(int i = 0; i < this->states_count; ++i) {
-        table[i] = (Dfa::table_state *) malloc(alphapet_size * sizeof(Dfa::table_state));
+        table[i] = (Dfa::table_state *) malloc(Lexical::alphabet.size() * sizeof(Dfa::table_state));
     }
 
-    bool is_set_cell_table[this->states_count][alphapet_size];
-    for(int i = 0; i < this->states_count * alphapet_size; ++i) {
-        is_set_cell_table[i / alphapet_size][i % alphapet_size] = false;
+    bool is_set_cell_table[this->states_count][Lexical::alphabet.size()];
+    for(int i = 0; i < this->states_count * Lexical::alphabet.size(); ++i) {
+        is_set_cell_table[i / Lexical::alphabet.size()][i % Lexical::alphabet.size()] = false;
     }
 
     for(State *s : this->states_vector) {
@@ -148,18 +149,18 @@ Dfa::table_state** Dfa::construct_table() {
             Dfa::table_state *temp = (Dfa::table_state *) malloc(sizeof(Dfa::table_state));
             temp->next_state = find_state_index(t->next_state, this->states_vector);
             temp->is_acceptance = t->next_state->is_acceptence;
-            int alphabet_index = find_alphapet_index(t->value);
+            int alphabet_index = find_alphabet_index(t->value);
             table[state_index][alphabet_index] = *temp;
             is_set_cell_table[state_index][alphabet_index] = true;
         }
     }
 
-    for(int i = 0; i < this->states_count * alphapet_size; ++i) {
-        if(!is_set_cell_table[i / alphapet_size][i % alphapet_size]) {
+    for(int i = 0; i < this->states_count * Lexical::alphabet.size(); ++i) {
+        if(!is_set_cell_table[i / Lexical::alphabet.size()][i % Lexical::alphabet.size()]) {
             Dfa::table_state *temp = (Dfa::table_state *) malloc(sizeof(Dfa::table_state));
             temp->next_state = -1;
             temp->is_acceptance = false;
-            table[i / alphapet_size][i % alphapet_size] = *temp;
+            table[i / Lexical::alphabet.size()][i % Lexical::alphabet.size()] = *temp;
         }
     }
     return table;
@@ -195,7 +196,7 @@ Dfa::table_state** Dfa::minimize_table() {
             for(int j = 0; j < this->states_count; ++j) {
                 if(j >= i) break;
                 if(!minimization_table[i][j]) continue;
-                for(int k = 0; k < alphapet_size; ++k) {
+                for(int k = 0; k < Lexical::alphabet.size(); ++k) {
                     int a = this->table[i][k].next_state, b = this->table[j][k].next_state;
                     if((a == -1 || b == -1) && a != b) {
                         minimization_table[i][j] = false;
@@ -209,21 +210,6 @@ Dfa::table_state** Dfa::minimize_table() {
             }
         }
     }
-
-//    cout << endl;
-//    for(int i = 0; i < this->states_count; ++i) {
-//        cout << i << "| ";
-//        for(int j = 0; j < this->states_count; ++j) {
-//            if(j >= i) break;
-//            cout << minimization_table[i][j] << " | ";
-//        }
-//        cout << endl;
-//    }
-//    cout << endl << " | ";
-//    for(int i = 0; i < this->states_count; ++i) {
-//        cout << i << " | ";
-//    }
-//    cout << endl;
 
     vector<vector<int>> minimized_states;
     int to_remove = 0, new_start_ind = -1;
@@ -302,11 +288,11 @@ Dfa::table_state** Dfa::minimize_table() {
 
     Dfa::table_state **minimized_table = (Dfa::table_state **) malloc(new_size * sizeof(Dfa::table_state));
     for(int i = 0; i < new_size; ++i) {
-        minimized_table[i] = (Dfa::table_state *) malloc(alphapet_size * sizeof(Dfa::table_state));
+        minimized_table[i] = (Dfa::table_state *) malloc(Lexical::alphabet.size() * sizeof(Dfa::table_state));
     }
 
     for(int i = 0; i < this->states_count; ++i) {
-        for(int j = 0; j < alphapet_size; ++j) {
+        for(int j = 0; j < Lexical::alphabet.size(); ++j) {
             Dfa::table_state *temp = (Dfa::table_state *) malloc(sizeof(Dfa::table_state));
             temp->next_state = -1;
             temp->is_acceptance = false;
@@ -346,7 +332,7 @@ State* Dfa::construct_dfa(Nfa *nfa) {
         added_new = false;
         for(map<string, bool>::iterator iterator = bool_map.begin(); iterator != bool_map.end(); iterator++) {
             if(!iterator->second) {
-                for(string input : alphapet) {
+                for(string input : Lexical::alphabet) {
                     set<State *> next_set = get_next_states(set_map[iterator->first], input);
                     string new_state = get_sorted_ids_as_string(get_ids_from_states(next_set));
                     if(new_state == "") continue;
@@ -381,7 +367,7 @@ void Dfa::initialize_current_state() {
 
 Token* Dfa::go_to(string input) {
     if(has_next_state(input)) {
-        table_state temp = this->minimized_table[this->current_state][find_alphapet_index(input)];
+        table_state temp = this->minimized_table[this->current_state][find_alphabet_index(input)];
         this->current_state = temp.next_state;
         if(temp.is_acceptance) {
             return this->token;
@@ -391,6 +377,6 @@ Token* Dfa::go_to(string input) {
 }
 
 bool Dfa::has_next_state(string input) {
-    return this->minimized_table[this->current_state][find_alphapet_index(input)].next_state != -1;
+    return this->minimized_table[this->current_state][find_alphabet_index(input)].next_state != -1;
 }
 

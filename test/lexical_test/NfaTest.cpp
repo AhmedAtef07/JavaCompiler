@@ -45,6 +45,15 @@ TEST_F(NfaTest, Concatenate) {
             outgoing_transitions[0]->next_state->id);
 }
 
+TEST_F(NfaTest, Star) {
+    Nfa* nfa = new Nfa("a");
+    Nfa* nfa_stared = Nfa::Star(nfa);
+
+    EXPECT_EQ(nfa->start_state->id, 0);
+    EXPECT_EQ(nfa->start_state->outgoing_transitions.size(), 1);
+    EXPECT_EQ(nfa->start_state->outgoing_transitions[0]->value, "a");
+}
+
 
 class NfaTestToString : public ::NfaTest { };
 
@@ -102,6 +111,13 @@ TEST_F(NfaTestToString, FourStatesParallelAtOnce) {
                       "9: \n");
 }
 
+TEST_F(NfaTestToString, Star) {
+    Nfa* nfa = new Nfa("a");
+    Nfa* nfa_stared = Nfa::Star(nfa);
+
+    cout << nfa_stared->ToString() << endl;
+}
+
 class NfaGeneratorFromRegularDefinition : public ::NfaTest { };
 
 TEST_F(NfaGeneratorFromRegularDefinition, SimpleOring) {
@@ -109,14 +125,16 @@ TEST_F(NfaGeneratorFromRegularDefinition, SimpleOring) {
     Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
 
     EXPECT_EQ(solved_nfa->ToString(),
-              "6: ('', 4) ('', 2) ('', 0) \n"
-              "4: ('c', 5) \n"
-              "2: ('b', 3) \n"
-              "0: ('a', 1) \n"
-              "5: ('', 7) \n"
-              "3: ('', 7) \n"
-              "1: ('', 7) \n"
-              "7: \n");
+              "8: ('', 6) \n"
+                      "6: ('', 4) ('', 2) ('', 0) \n"
+                      "4: ('c', 5) \n2: ('b', 3) \n"
+                      "0: ('a', 1) \n"
+                      "5: ('', 7) \n"
+                      "3: ('', 7) \n"
+                      "1: ('', 7) \n"
+                      "7: ('', 9) \n"
+                      "9: \n");
+
 }
 
 TEST_F(NfaGeneratorFromRegularDefinition, NestedParenthesesWithStarAndPlus) {

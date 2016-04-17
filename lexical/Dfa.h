@@ -45,7 +45,7 @@ private:
     set<State *> get_closure_states(set<State *> input_states);
     set<State *> get_next_states(set<State *> inputState, string inputCharacter);
     bool contains_accepted(set<State *> states);
-    int find_alphapet_index(string s);
+    int find_alphabet_index(string s);
     int find_state_index(State *s, vector<State *> states);
 
     table_state** construct_table();
@@ -53,7 +53,5 @@ private:
 
 };
 
-static const string alphapet[4] = {"a", "b", "c", "d"};
-static const int alphapet_size = 4;
 
 #endif //JAVACOMPILER_DFA_H
