@@ -9,8 +9,10 @@
 #include <set>
 #include "Transition.h"
 #include "State.h"
+#include "RegularDefinition.h"
 
 class State;
+class RegularDefinition;
 
 class Nfa {
 public:
@@ -25,6 +27,9 @@ public:
     static Nfa* Star(Nfa *nfa);
     static Nfa* Plus(Nfa *nfa);
     static Nfa* Parallel(Nfa* nfa1, Nfa* nfa2);
+    static Nfa* Parallel(vector<Nfa*> nfas);
+
+    static Nfa* Solver(vector<RegularDefinition *> regular_definition_vector);
 };
 
 

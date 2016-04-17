@@ -15,7 +15,7 @@ bool RegularDefinition::IsOperation(char c) {
     return allowed_operations.find(c) != string::npos;
 }
 
-string RegularDefinition::GetOperation() {
+string RegularDefinition::GetOperation() const {
     return *static_cast<std::string*>(this->value);
     try {
         throw -1;
@@ -37,4 +37,27 @@ string RegularDefinition::ToString() {
     } else {
         return *pstr + GetOperation();
     }
+}
+
+bool inline RegularDefinition::operator==(const RegularDefinition& rd) {
+    cout << "hey" << endl;
+    if(rd.type == RegularDefinition::kNfa || this->type == RegularDefinition::kNfa) return false;
+    return this->GetOperation() == rd.GetOperation();
+}
+
+// Accepts regular expression and tokenize it.
+vector<RegularDefinition *> RegularDefinition::Tokenize(string re) {
+    vector<RegularDefinition *> regular_definition_vector;
+    for(int i = 0; i < re.size(); ++i) {
+        std::string *pstr = new std::string;
+        *pstr = re[i];
+
+        if(RegularDefinition::IsOperation(re[i])) {
+            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kOperation,
+                                                                      pstr));
+        } else {
+            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kNfa, new Nfa(*pstr)));
+        }
+    }
+    return regular_definition_vector;
 }

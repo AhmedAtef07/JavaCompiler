@@ -8,6 +8,8 @@
 #include <string>
 #include "Nfa.h"
 
+class Nfa;
+
 using namespace std;
 
 class RegularDefinition {
@@ -24,12 +26,16 @@ public:
 
     RegularDefinition(Type type, void *value);
 
-    string GetOperation();
+    string GetOperation() const;
     Nfa * GetNfa();
 
     string ToString();
 
+    bool inline operator==(const RegularDefinition& rd);
+
     static bool IsOperation(char c);
+
+    static vector<RegularDefinition *> Tokenize(string re);
 };
 
 

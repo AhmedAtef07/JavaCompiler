@@ -3,6 +3,7 @@
 //
 
 #include <cstdlib>
+#include <stdexcept>
 #include "Token.h"
 
 set<int> Token::priorities;
