@@ -102,7 +102,7 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
     stack<RegularDefinition *> solver;
 
     for(RegularDefinition *rd: regular_definition_vector) {
-        if(rd->type == RegularDefinition::Type::kOperation) {
+        if(rd->type == RegularDefinition::kOperation) {
             string operation_value = rd->GetOperation();
             if(operation_value == "(" || operation_value == "|") {
                 solver.push(rd);
@@ -110,13 +110,13 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
                 Nfa* stared = Nfa::Star(solver.top()->GetNfa());
                 solver.pop();
 
-                RegularDefinition* stared_rd = new RegularDefinition(RegularDefinition::Type::kNfa, stared);
+                RegularDefinition* stared_rd = new RegularDefinition(RegularDefinition::kNfa, stared);
                 solver.push(stared_rd);
             } else if(operation_value == "+") {
                 Nfa* stared = Nfa::Plus(solver.top()->GetNfa());
                 solver.pop();
 
-                RegularDefinition* stared_rd = new RegularDefinition(RegularDefinition::Type::kNfa, stared);
+                RegularDefinition* stared_rd = new RegularDefinition(RegularDefinition::kNfa, stared);
                 solver.push(stared_rd);
             } else if(operation_value == ")") {
                 vector<Nfa*> parallel_nfa;
@@ -129,13 +129,19 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
                     solver.pop();
                 }
                 solver.pop();
-                solver.push(new RegularDefinition(RegularDefinition::Type::kNfa, Nfa::Parallel(parallel_nfa)));
+                solver.push(new RegularDefinition(RegularDefinition::kNfa, Nfa::Parallel(parallel_nfa)));
             } else {
                 throw std::invalid_argument("Unimplemented operation action.");
             }
 
-        } else {
-            solver.push(rd);
+        } else if(rd->type == RegularDefinition::kNfa) {
+            if(solver.empty() || solver.top()->type == RegularDefinition::kOperation) {
+                solver.push(rd);
+            } else if(solver.top()->type == RegularDefinition::kNfa) {
+                Nfa* concatenated_nfa = Nfa::Concatenate(rd->GetNfa(), solver.top()->GetNfa());
+                solver.pop();
+                solver.push(new RegularDefinition(RegularDefinition::kNfa, concatenated_nfa));
+            }
         }
     }
     cout << "Solver size: " << solver.size() << endl; // Must be 1 object.
