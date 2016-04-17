@@ -6,8 +6,10 @@
 #include <map>
 #include <algorithm>
 
-Dfa::Dfa(Nfa *nfa) {
+Dfa::Dfa(Nfa *nfa, Token *token) {
 
+    this->token = token;
+    this->current_state = 0;
     this->start_state = construct_dfa(nfa);
 
     this->table = construct_table();
@@ -51,7 +53,7 @@ void Dfa::print_table(Dfa::table_state **table, int rows) {
     for(int j = 0; j < rows; ++j) {
         cout << j << " | ";
         for(int i = 0; i < alphapet_size; ++i) {
-            if(table[j][i].next_state != -1 && table[j][i].is_acceptence) {
+            if(table[j][i].next_state != -1 && table[j][i].is_acceptance) {
                 cout << "0" << table[j][i].next_state << " | ";
             }
             else if(table[j][i].next_state != -1) {
@@ -110,7 +112,7 @@ set<State *> Dfa::get_next_states(set<State *> inputState, string inputCharacter
     return get_closure_states(output);
 }
 
-bool Dfa::contais_accepted(set<State *> states) {
+bool Dfa::contains_accepted(set<State *> states) {
     for(State *s : states) {
         if(s->is_acceptence) return true;
     }
@@ -145,7 +147,7 @@ Dfa::table_state** Dfa::construct_table() {
         for(Transition *t : s->outgoing_transitions) {
             Dfa::table_state *temp = (Dfa::table_state *) malloc(sizeof(Dfa::table_state));
             temp->next_state = find_state_index(t->next_state, this->states_vector);
-            temp->is_acceptence = t->next_state->is_acceptence;
+            temp->is_acceptance = t->next_state->is_acceptence;
             int alphabet_index = find_alphapet_index(t->value);
             table[state_index][alphabet_index] = *temp;
             is_set_cell_table[state_index][alphabet_index] = true;
@@ -156,7 +158,7 @@ Dfa::table_state** Dfa::construct_table() {
         if(!is_set_cell_table[i / alphapet_size][i % alphapet_size]) {
             Dfa::table_state *temp = (Dfa::table_state *) malloc(sizeof(Dfa::table_state));
             temp->next_state = -1;
-            temp->is_acceptence = false;
+            temp->is_acceptance = false;
             table[i / alphapet_size][i % alphapet_size] = *temp;
         }
     }
@@ -307,12 +309,12 @@ Dfa::table_state** Dfa::minimize_table() {
         for(int j = 0; j < alphapet_size; ++j) {
             Dfa::table_state *temp = (Dfa::table_state *) malloc(sizeof(Dfa::table_state));
             temp->next_state = -1;
-            temp->is_acceptence = false;
+            temp->is_acceptance = false;
             if(table[i][j].next_state != -1) {
                 temp->next_state = new_mapping[table[i][j].next_state];
             }
-            if(table[i][j].is_acceptence) {
-                temp->is_acceptence = true;
+            if(table[i][j].is_acceptance) {
+                temp->is_acceptance = true;
             }
             minimized_table[new_mapping[i]][j] = *temp;
         }
@@ -354,7 +356,7 @@ State* Dfa::construct_dfa(Nfa *nfa) {
                         states_map[new_state] = new State();
                         ++this->states_count;
                         states_vector.push_back(states_map[new_state]);
-                        if(contais_accepted(next_set)) {
+                        if(contains_accepted(next_set)) {
                             states_map[new_state]->is_acceptence = true;
                         }
                         set_map[new_state] = next_set;
@@ -372,3 +374,23 @@ State* Dfa::construct_dfa(Nfa *nfa) {
 
     return new_start_state;
 }
+
+void Dfa::initialize_current_state() {
+    this->current_state = 0;
+}
+
+Token* Dfa::go_to(string input) {
+    if(has_next_state(input)) {
+        table_state temp = this->minimized_table[this->current_state][find_alphapet_index(input)];
+        this->current_state = temp.next_state;
+        if(temp.is_acceptance) {
+            return this->token;
+        }
+    }
+    return nullptr;
+}
+
+bool Dfa::has_next_state(string input) {
+    return this->minimized_table[this->current_state][find_alphapet_index(input)].next_state != -1;
+}
+

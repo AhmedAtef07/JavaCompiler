@@ -19,7 +19,7 @@ TEST(DfaTest, BasicCreation) {
     Nfa *nfa_ababb = Nfa::Concatenate(nfa_abab, nfa_b2);
     Nfa *nfa_ababbc = Nfa::Concatenate(nfa_ababb, nfa_c);
     Nfa *nfa_ababbcd = Nfa::Concatenate(nfa_ababbc, nfa_d);
-    Dfa *dfa = new Dfa(nfa_ababbcd);
+    Dfa *dfa = new Dfa(nfa_ababbcd, new Token("(a|b)+bcd", 1));
 
     Dfa::table_state** minimized_table = dfa->minimized_table;
     int int_test_table[5][4] =
@@ -30,7 +30,7 @@ TEST(DfaTest, BasicCreation) {
     for(int i = 0; i < dfa->minimized_states_count; ++i) {
         for(int j = 0; j < alphapet_size; ++j) {
             EXPECT_EQ(minimized_table[i][j].next_state, int_test_table[i][j]);
-            EXPECT_EQ(minimized_table[i][j].is_acceptence, bool_test_table[i][j]);
+            EXPECT_EQ(minimized_table[i][j].is_acceptance, bool_test_table[i][j]);
         }
     }
 }
@@ -47,7 +47,7 @@ TEST(DfaTest, Minimizing) {
     Nfa *nfa_bb = Nfa::Plus(nfa_b1);
     Nfa *nfa_aabb = Nfa::Concatenate(nfa_aa, nfa_bb);
     Nfa *nfa_abaabb = Nfa::Parallel(nfa_ab, nfa_aabb);
-    Dfa *dfa = new Dfa(nfa_abaabb);
+    Dfa *dfa = new Dfa(nfa_abaabb, new Token("ab|a+b+", 2));
 
     Dfa::table_state** minimized_table = dfa->minimized_table;
     int int_test_table[3][4] =
@@ -57,7 +57,7 @@ TEST(DfaTest, Minimizing) {
     for(int i = 0; i < dfa->minimized_states_count; ++i) {
         for(int j = 0; j < alphapet_size; ++j) {
             EXPECT_EQ(minimized_table[i][j].next_state, int_test_table[i][j]);
-            EXPECT_EQ(minimized_table[i][j].is_acceptence, bool_test_table[i][j]);
+            EXPECT_EQ(minimized_table[i][j].is_acceptance, bool_test_table[i][j]);
         }
     }
 }
@@ -73,7 +73,7 @@ TEST(DfaTest, MinimizeWithMergingStartState) {
     Nfa *nfa_bb1 = Nfa::Plus(nfa_b1);
     Nfa *nfa_aabb = Nfa::Concatenate(nfa_aa, nfa_bb);
     Nfa *nfa_abaabb = Nfa::Parallel(nfa_bb1, nfa_aabb);
-    Dfa *dfa = new Dfa(nfa_abaabb);
+    Dfa *dfa = new Dfa(nfa_abaabb, new Token("b+|a+b+", 3));
 
     Dfa::table_state** minimized_table = dfa->minimized_table;
     int int_test_table[2][4] =
@@ -83,7 +83,7 @@ TEST(DfaTest, MinimizeWithMergingStartState) {
     for(int i = 0; i < dfa->minimized_states_count; ++i) {
         for(int j = 0; j < alphapet_size; ++j) {
             EXPECT_EQ(minimized_table[i][j].next_state, int_test_table[i][j]);
-            EXPECT_EQ(minimized_table[i][j].is_acceptence, bool_test_table[i][j]);
+            EXPECT_EQ(minimized_table[i][j].is_acceptance, bool_test_table[i][j]);
         }
     }
 }

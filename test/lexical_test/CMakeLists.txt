@@ -4,9 +4,8 @@ project(lexical_test)
 
 add_executable(TEST_FILES
         NfaTest.cpp
-        RegularDefinition.cpp
-        DfaTest.cpp
-        RegularDefinition.cpp)
+        RegularExpressionTest.cpp
+        DfaTest.cpp)
 
 target_link_libraries(TEST_FILES gtest gtest_main)
 target_link_libraries(TEST_FILES lexical)

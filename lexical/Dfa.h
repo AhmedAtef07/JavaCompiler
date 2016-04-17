@@ -7,6 +7,7 @@
 
 
 #include "Nfa.h"
+#include "Token.h"
 
 class Dfa {
 
@@ -14,17 +15,22 @@ public:
 
     struct table_state {
         int next_state;
-        bool is_acceptence;
+        bool is_acceptance;
     };
 
     State* start_state;
     vector<State *> states_vector;
+    Token *token;
+    int current_state;
     int states_count;
     int minimized_states_count;
     table_state** table;
     table_state** minimized_table;
 
-    Dfa(Nfa *nfa);
+    Dfa(Nfa *nfa, Token *token);
+    void initialize_current_state();
+    Token* go_to(string input);
+    bool has_next_state(string input);
     void print_transitions();
 
 private:
@@ -38,7 +44,7 @@ private:
     vector<int> get_ids_from_states(set<State *> states);
     set<State *> get_closure_states(set<State *> input_states);
     set<State *> get_next_states(set<State *> inputState, string inputCharacter);
-    bool contais_accepted(set<State *> states);
+    bool contains_accepted(set<State *> states);
     int find_alphapet_index(string s);
     int find_state_index(State *s, vector<State *> states);
 
