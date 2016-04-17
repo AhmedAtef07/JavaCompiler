@@ -6,71 +6,71 @@
 #include "RegularExpression.h"
 
 
-TEST(generate_regular_definition, created) {
+TEST(ReGernerateRegularDefinition, Creation) {
     RegularExpression * re = new RegularExpression();
     re->addRule("letter = a-z");
     EXPECT_TRUE(re->regular_definetions_.count("letter"));
 }
 
-TEST(generate_regular_definition, group_of_symbols) {
+TEST(ReGernerateRegularDefinition, GroupOfSymbols) {
     RegularExpression * re = new RegularExpression();
     re->addRule("letter = a-c");
     EXPECT_EQ(re->regular_definetions_.at("letter"), "(a|b|c)");
 }
 
-TEST(generate_regular_definition, concatenating_symbol_andgroup_of_symbols) {
+TEST(ReGernerateRegularDefinition, ConcatenatingSymbolAndGroupOfSymbols) {
     RegularExpression * re = new RegularExpression();
     re->addRule("letter = ea-c");
     EXPECT_EQ(re->regular_definetions_.at("letter"), "e(a|b|c)");
 }
 
-TEST(generate_regular_definition, or_two_symbols) {
+TEST(ReGernerateRegularDefinition, OrTwoSymbols) {
     RegularExpression * re = new RegularExpression();
     re->addRule("letter = a|b");
     EXPECT_EQ(re->regular_definetions_.at("letter"), "a|b");
 }
 
-TEST(generate_regular_definition, or_symbol_and_group_of_symbols) {
+TEST(ReGernerateRegularDefinition, OrSymbolAndGroupOfSymbols) {
     RegularExpression * re = new RegularExpression();
     re->addRule("letter = a|(a|b)");
     EXPECT_EQ(re->regular_definetions_.at("letter"), "a|(a|b)");
 }
 
-TEST(generate_regular_definition, or_symbol_and_definition) {
+TEST(ReGernerateRegularDefinition, OrSymbolAndDefinition) {
     RegularExpression * re = new RegularExpression();
     re->addRule("digit = 0-3");
     re->addRule("digits = a|digit");
     EXPECT_EQ(re->regular_definetions_.at("digits"), "a|((0|1|2|3))");
 }
 
-TEST(generate_regular_definition, or_definition_and_symbol) {
+TEST(ReGernerateRegularDefinition, OrDefinitionAndSymbol) {
     RegularExpression * re = new RegularExpression();
     re->addRule("digit = 0-3");
     re->addRule("digits = digit|a");
     EXPECT_EQ(re->regular_definetions_.at("digits"), "((0|1|2|3))|a");
 }
 
-TEST(generate_regular_definition, concatenating_two_or_more_symbols) {
+TEST(ReGernerateRegularDefinition, ConcatenatingTwoOrMoreSymbols) {
     RegularExpression * re = new RegularExpression();
     re->addRule("digit = 123");
     EXPECT_EQ(re->regular_definetions_.at("digit"), "123");
 }
 
-TEST(generate_regular_definition, concatenating_symbol_and_definition) {
+TEST(ReGernerateRegularDefinition, ConcatenatingSymbolAndDefinition) {
     RegularExpression * re = new RegularExpression();
     re->addRule("digit = 0-3");
     re->addRule("digits = edigit");
     EXPECT_EQ(re->regular_definetions_.at("digits"), "e((0|1|2|3))");
 }
 
-TEST(generate_regular_definition, concatenating_definition_and_symbol) {
+TEST(ReGernerateRegularDefinition, ConcatenatingDefinitionAndSymbol) {
     RegularExpression * re = new RegularExpression();
     re->addRule("digit = 0-3");
     re->addRule("digits = digite");
     EXPECT_EQ(re->regular_definetions_.at("digits"), "((0|1|2|3))e");
 }
 
-TEST(generate_regular_definition, escape_character) {
+TEST(ReGernerateRegularDefinition, EscapeCharacter) {
     RegularExpression * re = new RegularExpression();
     re->addRule("equals = \=\=");
     EXPECT_EQ(re->regular_definetions_.at("equals"), "==");
@@ -78,7 +78,7 @@ TEST(generate_regular_definition, escape_character) {
     EXPECT_EQ(re->regular_definetions_.at("mul"), "\*");
 }
 
-TEST(generate_regular_definition, defined_by_another_regular_definition) {
+TEST(ReGernerateRegularDefinition, DefinedByAnotherRegularDefinition) {
     RegularExpression * re = new RegularExpression();
     re->addRule("digit = 0-3");
     re->addRule("digits = digit");
@@ -86,7 +86,7 @@ TEST(generate_regular_definition, defined_by_another_regular_definition) {
 }
 
 
-TEST(keywords, keyword_generation) {
+TEST(ReKeywords, Creation) {
     RegularExpression * re = new RegularExpression();
     re->addRule("{for while}");
     EXPECT_EQ(*(re->keywords.find("for")), "for");
@@ -95,7 +95,7 @@ TEST(keywords, keyword_generation) {
 }
 
 
-TEST(punctuations, punctuations_generation) {
+TEST(RePunctuations, Creation) {
     RegularExpression * re = new RegularExpression();
     re->addRule("[; , \( \) { }]");
     EXPECT_EQ(*(re->punctuations.find(";")), ";");
