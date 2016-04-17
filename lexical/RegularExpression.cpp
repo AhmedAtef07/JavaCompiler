@@ -6,16 +6,22 @@
 
 #include <iostream>
 #include <iomanip>
+#include <cstring>
+#include <unistd.h>
 
 
-RegularExpression::RegularExpression(ifstream lexical_file) {
+RegularExpression::RegularExpression(string lexical_file_name) {
+    ifstream lexical_file;
+
+//    char the_path[256];
+//    getcwd(the_path, 255);
+//    printf("%s\n", the_path);
+
     string line;
-
+    lexical_file.open(lexical_file_name);
     while(getline(lexical_file, line)) {
-        // cout << "proccessing line: " << line << endl;
         this->addRule(line);
     }
-
 }
 
 RegularExpression::RegularExpression() {}
@@ -249,8 +255,6 @@ string RegularExpression::range_closure(char char1, char char2) {
 }
 
 
+void RegularExpression::addRulesFromFilePath(string file_path) {
 
-
-
-
-
+}

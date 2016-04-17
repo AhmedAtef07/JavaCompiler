@@ -23,11 +23,13 @@ public:
     map<string, string> regular_expressions;
     map<string, string> regular_definetions_;
 
-    RegularExpression(ifstream lexical_file);
+    RegularExpression(string lexical_file_name);
 
     RegularExpression();
 
     void addRule(string line);
+
+    void addRulesFromFilePath(string file_path);
 
 private:
     string evaluate(string line);
