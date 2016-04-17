@@ -4,6 +4,7 @@
 
 #include "Dfa.h"
 #include <map>
+#include <algorithm>
 
 Dfa::Dfa(Nfa *nfa) {
 

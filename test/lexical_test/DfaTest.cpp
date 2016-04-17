@@ -6,7 +6,7 @@
 #include <Dfa.h>
 #include "gtest/gtest.h"
 
-TEST(creation_test, basic_creation) {
+TEST(DfaTest, BasicCreation) {
 //    "(a|b)+bcd"
     Nfa *nfa_a = new Nfa("a");
     Nfa *nfa_b = new Nfa("b");
@@ -35,7 +35,7 @@ TEST(creation_test, basic_creation) {
     }
 }
 
-TEST(minimizing_test, minimize_test) {
+TEST(DfaTest, Minimizing) {
 //    "ab|a+b+"
     Nfa *nfa_a = new Nfa("a");
     Nfa *nfa_b = new Nfa("b");
@@ -62,7 +62,7 @@ TEST(minimizing_test, minimize_test) {
     }
 }
 
-TEST(minimizng_test, minimize_test_with_start_merge) {
+TEST(DfaTest, MinimizeWithMergingStartState) {
 //    "b+|a+b+"
     Nfa *nfa_a = new Nfa("a");
     Nfa *nfa_b = new Nfa("b");

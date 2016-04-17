@@ -2,6 +2,7 @@
 // Created by ahmedatef on 4/15/16.
 //
 
+#include <stdexcept>
 #include "Nfa.h"
 
 Nfa::Nfa() { }
@@ -20,7 +21,11 @@ Nfa::Nfa(string value) {
 }
 
 Nfa::Nfa(State *start_state, State *terminal_state) :
-        start_state(start_state), terminal_state(terminal_state) { }
+        start_state(start_state), terminal_state(terminal_state) {
+    if(!this->terminal_state->is_acceptence) {
+        throw std::invalid_argument("terminal_state passed is not set as an acceptance state.");
+    }
+}
 
 Nfa* Nfa::Concatenate(Nfa* nfa1, Nfa* nfa2) {
     nfa1->terminal_state->is_acceptence = false;

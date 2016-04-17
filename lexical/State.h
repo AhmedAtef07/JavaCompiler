@@ -25,7 +25,7 @@ public:
 
     void AddTransition(Transition* transition);
 
-private:
+protected:
     static int next_id;
 };
 
