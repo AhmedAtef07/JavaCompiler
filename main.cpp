@@ -14,7 +14,7 @@ int main() {
     Lexical* lexical = new Lexical();
     int priority = 1000;
     for(string keyword: regular_expression->keywords) {
-        lexical->AddDfa(new Nfa(keyword), new Token(keyword, priority--));
+        lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
     }
 
     for(pair<string, string> re: regular_expression->regular_expressions) {
