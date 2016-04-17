@@ -34,11 +34,7 @@ public:
     static Nfa* Solver(vector<RegularDefinition *> regular_definition_vector);
 
 private:
-    string* make_str_pointer_(string s) {
-        std::string *pstr = new std::string;
-        *pstr = s;
-        return pstr;
-    }
+    static string * make_str_pointer_(string s);
 };
 
 

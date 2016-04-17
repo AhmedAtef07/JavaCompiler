@@ -99,6 +99,10 @@ void print_vector_(vector<Nfa*> nfa_vector) {
 }
 
 Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
+    // Must enclose the vector into ( ), as the OR parsing depends on a closing parenthesis.
+    regular_definition_vector.insert(regular_definition_vector.begin(),
+                                     new RegularDefinition(RegularDefinition::kOperation, make_str_pointer_("(")));
+    regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kOperation, make_str_pointer_(")")));
     stack<RegularDefinition *> solver;
 
     for(RegularDefinition *rd: regular_definition_vector) {
@@ -174,4 +178,10 @@ string Nfa::ToString() {
         result += outgoing_states;
     }
     return result;
+}
+
+string *Nfa::make_str_pointer_(string s) {
+    std::string *pstr = new std::string;
+    *pstr = s;
+    return pstr;
 }

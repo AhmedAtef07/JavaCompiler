@@ -104,7 +104,7 @@ TEST_F(NfaTestToString, FourStatesParallelAtOnce) {
 
 class NfaGeneratorFromRegularDefinition : public ::NfaTest { };
 
-TEST_F(NfaGeneratorFromRegularDefinition, Solver2) {
+TEST_F(NfaGeneratorFromRegularDefinition, SimpleOring) {
     string sample = "(a|b|c)";
     Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
 
@@ -119,15 +119,22 @@ TEST_F(NfaGeneratorFromRegularDefinition, Solver2) {
               "7: \n");
 }
 
-TEST_F(NfaGeneratorFromRegularDefinition, Solver3) {
+TEST_F(NfaGeneratorFromRegularDefinition, NestedParenthesesWithStarAndPlus) {
     string sample = "(a*(k|l))+";
     Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
 
     cout << solved_nfa->ToString() << endl;
 }
 
-TEST_F(NfaGeneratorFromRegularDefinition, Solver4) {
+TEST_F(NfaGeneratorFromRegularDefinition, NestedParenthesesWithStarEnclosed) {
     string sample = "(a*(k|l))";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+}
+
+TEST_F(NfaGeneratorFromRegularDefinition, SingleNfaEnclosedWithManyParentheses) {
+    string sample = "(((a)))";
     Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
 
     cout << solved_nfa->ToString() << endl;
@@ -152,6 +159,14 @@ TEST_F(NfaGeneratorFromRegularDefinition, Solver5) {
 
 TEST_F(NfaGeneratorFromRegularDefinition, Concatenation) {
     string sample = "abc";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+
+}
+
+TEST_F(NfaGeneratorFromRegularDefinition, OrWithoutParentheses) {
+    string sample = "a|b|c";
     Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
 
     cout << solved_nfa->ToString() << endl;
