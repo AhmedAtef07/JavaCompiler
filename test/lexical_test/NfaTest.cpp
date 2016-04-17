@@ -190,3 +190,11 @@ TEST_F(NfaGeneratorFromRegularDefinition, OrWithoutParentheses) {
     cout << solved_nfa->ToString() << endl;
 
 }
+
+TEST_F(NfaGeneratorFromRegularDefinition, EscapeCharacter) {
+    string sample = "\\+|\\-";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+}
+

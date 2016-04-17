@@ -4,7 +4,7 @@
 
 #include "RegularDefinition.h"
 
-const string RegularDefinition::allowed_operations = "()*+|";
+const string RegularDefinition::allowed_operations = "()*+|\\";
 
 RegularDefinition::RegularDefinition(RegularDefinition::Type type, void *value) {
     this->type = type;
@@ -53,7 +53,13 @@ vector<RegularDefinition *> RegularDefinition::Tokenize(string re) {
         *pstr = re[i];
 
         if(RegularDefinition::IsOperation(re[i])) {
-            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kOperation, pstr));
+            if(re[i] == '\\') {
+                *pstr = re[i + 1];
+                regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kNfa, new Nfa(*pstr)));
+                ++i; // Escape next character because it is resolved.
+            } else {
+                regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kOperation, pstr));
+            }
         } else {
             regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kNfa, new Nfa(*pstr)));
         }
