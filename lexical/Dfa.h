@@ -1,0 +1,53 @@
+//
+// Created by Ahmed Barakat on 107 / 16 / 16.
+//
+
+#ifndef JAVACOMPILER_DFA_H
+#define JAVACOMPILER_DFA_H
+
+
+#include "Nfa.h"
+
+class Dfa {
+
+public:
+
+    struct table_state {
+        int next_state;
+        bool is_acceptence;
+    };
+
+    State* start_state;
+    vector<State *> states_vector;
+    int states_count;
+    int minimized_states_count;
+    table_state** table;
+    table_state** minimized_table;
+
+    Dfa(Nfa *nfa);
+    void print_transitions();
+
+private:
+
+    State* construct_dfa(Nfa *nfa);
+
+    void print_transitions(State *state, bool *v);
+    void print_table(table_state **table, int rows);
+
+    string get_sorted_ids_as_string(vector<int> ids);
+    vector<int> get_ids_from_states(set<State *> states);
+    set<State *> get_closure_states(set<State *> input_states);
+    set<State *> get_next_states(set<State *> inputState, string inputCharacter);
+    bool contais_accepted(set<State *> states);
+    int find_alphapet_index(string s);
+    int find_state_index(State *s, vector<State *> states);
+
+    table_state** construct_table();
+    table_state** minimize_table();
+
+};
+
+static const string alphapet[4] = {"a", "b", "c", "d"};
+static const int alphapet_size = 4;
+
+#endif //JAVACOMPILER_DFA_H
