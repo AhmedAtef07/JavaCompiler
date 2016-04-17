@@ -87,3 +87,11 @@ TEST(DfaTest, MinimizeWithMergingStartState) {
         }
     }
 }
+
+TEST(DfaTest, SimpleFromRegularExpression) {
+    string sample = "(a*|b)+";
+    sample = "a";
+    Nfa* nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    Dfa* dfa = new Dfa(nfa, new Token(sample, 2));
+}

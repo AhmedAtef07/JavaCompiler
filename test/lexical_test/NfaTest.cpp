@@ -45,3 +45,115 @@ TEST_F(NfaTest, Concatenate) {
             outgoing_transitions[0]->next_state->id);
 }
 
+
+class NfaTestToString : public ::NfaTest { };
+
+TEST_F(NfaTestToString, OneState) {
+    Nfa* nfa = new Nfa("a");
+    EXPECT_EQ(nfa->ToString(),
+              "0: ('a', 1) \n"
+                      "1: \n");
+}
+
+TEST_F(NfaTestToString, TwoStatesConcatenated) {
+    Nfa* nfa_a = new Nfa("a");
+    Nfa* nfa_b = new Nfa("b");
+    Nfa* nfa_ab = Nfa::Concatenate(nfa_a, nfa_b);
+
+    EXPECT_EQ(nfa_ab->ToString(),
+              "0: ('a', 1) \n"
+                      "1: ('', 2) \n"
+                      "2: ('b', 3) \n"
+                      "3: \n");
+}
+
+TEST_F(NfaTestToString, TwoStatesParallel) {
+    Nfa* nfa_a = new Nfa("a");
+    Nfa* nfa_b = new Nfa("b");
+    Nfa* nfa_a_or_b = Nfa::Parallel(nfa_a, nfa_b);
+
+    EXPECT_EQ(nfa_a_or_b->ToString(),
+              "4: ('', 0) ('', 2) \n"
+                      "0: ('a', 1) \n"
+                      "2: ('b', 3) \n"
+                      "1: ('', 5) \n"
+                      "3: ('', 5) \n"
+                      "5: \n");
+}
+
+TEST_F(NfaTestToString, FourStatesParallelAtOnce) {
+    Nfa* nfa_a = new Nfa("a");
+    Nfa* nfa_b = new Nfa("b");
+    Nfa* nfa_c = new Nfa("c");
+    Nfa* nfa_d = new Nfa("d");
+    Nfa* nfa_or_abcd = Nfa::Parallel(vector<Nfa*> {nfa_a, nfa_b, nfa_c, nfa_d});
+
+    cout << nfa_or_abcd->ToString() << endl;
+    EXPECT_EQ(nfa_or_abcd->ToString(),
+              "8: ('', 0) ('', 2) ('', 4) ('', 6) \n"
+                      "0: ('a', 1) \n"
+                      "2: ('b', 3) \n"
+                      "4: ('c', 5) \n"
+                      "6: ('d', 7) \n"
+                      "1: ('', 9) \n"
+                      "3: ('', 9) \n"
+                      "5: ('', 9) \n"
+                      "7: ('', 9) \n"
+                      "9: \n");
+}
+
+class NfaGeneratorFromRegularDefinition : public ::NfaTest { };
+
+TEST_F(NfaGeneratorFromRegularDefinition, Solver2) {
+    string sample = "(a|b|c)";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    EXPECT_EQ(solved_nfa->ToString(),
+              "6: ('', 4) ('', 2) ('', 0) \n"
+              "4: ('c', 5) \n"
+              "2: ('b', 3) \n"
+              "0: ('a', 1) \n"
+              "5: ('', 7) \n"
+              "3: ('', 7) \n"
+              "1: ('', 7) \n"
+              "7: \n");
+}
+
+TEST_F(NfaGeneratorFromRegularDefinition, Solver3) {
+    string sample = "(a*(k|l))+";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+}
+
+TEST_F(NfaGeneratorFromRegularDefinition, Solver4) {
+    string sample = "(a*(k|l))";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+}
+
+TEST_F(NfaGeneratorFromRegularDefinition, Solver) {
+    string sample = "(a*(k|l|(mn|k))*l)+";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+}
+
+TEST_F(NfaGeneratorFromRegularDefinition, Solver5) {
+    string sample = "(a*|b)+";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+
+    cout << solved_nfa->terminal_state->is_acceptence << endl;
+}
+
+
+TEST_F(NfaGeneratorFromRegularDefinition, Concatenation) {
+    string sample = "abc";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
+
+}

@@ -4,6 +4,8 @@
 
 #include <stdexcept>
 #include <stack>
+#include <queue>
+#include <cstring>
 #include "Nfa.h"
 
 Nfa::Nfa() { }
@@ -100,7 +102,7 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
     stack<RegularDefinition *> solver;
 
     for(RegularDefinition *rd: regular_definition_vector) {
-        if(rd->type == RegularDefinition::Type::kOperation){
+        if(rd->type == RegularDefinition::Type::kOperation) {
             string operation_value = rd->GetOperation();
             if(operation_value == "(" || operation_value == "|") {
                 solver.push(rd);
@@ -117,10 +119,8 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
                 RegularDefinition* stared_rd = new RegularDefinition(RegularDefinition::Type::kNfa, stared);
                 solver.push(stared_rd);
             } else if(operation_value == ")") {
-                cout << "Closing parenthsis" << endl;
                 vector<Nfa*> parallel_nfa;
                 while(solver.top()->type == RegularDefinition::kNfa || solver.top()->GetOperation() != "(") {
-                    cout << "In While Loop" << endl;
                     if(solver.top()->type == RegularDefinition::kOperation) {
                         solver.pop();
                         continue;
@@ -129,8 +129,6 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
                     solver.pop();
                 }
                 solver.pop();
-//                cout << "After Loop" << endl;
-//                print_vector(parallel_nfa);
                 solver.push(new RegularDefinition(RegularDefinition::Type::kNfa, Nfa::Parallel(parallel_nfa)));
             } else {
                 throw std::invalid_argument("Unimplemented operation action.");
@@ -139,9 +137,35 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
         } else {
             solver.push(rd);
         }
-        cout << rd->ToString() << endl;
     }
     cout << "Solver size: " << solver.size() << endl; // Must be 1 object.
     cout << "Top Type: " << solver.top()->type << endl; // 0 is Nfa.
     return solver.top()->GetNfa();
+}
+
+// Traverse from the start state of the Nfa to all possible outgoing nodes.
+string Nfa::ToString() {
+    set<State *> visited_states;
+    queue<State *> bfs;
+    bfs.push(start_state);
+    visited_states.insert(start_state);
+    string result = "";
+
+    while(!bfs.empty()) {
+        State* front_state = bfs.front();
+        bfs.pop();
+        string outgoing_states = to_string(front_state->id) + ": ";
+        for(Transition* transition: front_state->outgoing_transitions) {
+            outgoing_states += "('" + transition->value + "', ";
+            outgoing_states += to_string(transition->next_state->id) + ") ";
+            if(visited_states.find(transition->next_state) == visited_states.end()) {
+                bfs.push(transition->next_state);
+                visited_states.insert(transition->next_state);
+            }
+        }
+//        if(front_state->is_acceptence) outgoing_states += "\t[Accepted State]";
+        outgoing_states += "\n";
+        result += outgoing_states;
+    }
+    return result;
 }

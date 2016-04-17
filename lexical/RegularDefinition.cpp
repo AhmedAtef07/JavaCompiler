@@ -53,10 +53,9 @@ vector<RegularDefinition *> RegularDefinition::Tokenize(string re) {
         *pstr = re[i];
 
         if(RegularDefinition::IsOperation(re[i])) {
-            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kOperation,
-                                                                      pstr));
+            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kOperation, pstr));
         } else {
-            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::Type::kNfa, new Nfa(*pstr)));
+            regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kNfa, new Nfa(*pstr)));
         }
     }
     return regular_definition_vector;
