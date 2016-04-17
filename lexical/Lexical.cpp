@@ -15,9 +15,8 @@ void Lexical::AddDfa(Nfa* nfa, Token* token) {
     dfas.push_back(new Dfa(nfa, token));
 }
 
-vector<Token *> Lexical::ParseInput(string input) {
+Lexical::Output Lexical::ParseInput(string input) {
     string error_string = "";
-    cout << input << endl << endl;
     Token *highest_token = nullptr;
     vector<Token*> answer;
     int last_position = 0, highest_priority = -1;
@@ -27,7 +26,7 @@ vector<Token *> Lexical::ParseInput(string input) {
 
     bool has_running = true, error_found = false;
 
-    while(input.length() != 0) {
+    while(input.length() != 0 && !error_found) {
         fill(running_bools, running_bools + dfas.size(), true);
         last_position = 0;
         highest_priority = -1;
@@ -42,7 +41,6 @@ vector<Token *> Lexical::ParseInput(string input) {
                 input.erase(0, last_position + 1);
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                cout << "Error!!!  >  ";
                 error_found = true;
                 error_string = input;
                 break;
@@ -68,7 +66,7 @@ vector<Token *> Lexical::ParseInput(string input) {
                 }
             }
         }
-        if(error_found) break;
     }
-    return answer;
+    Output output = { answer, error_found, error_string };
+    return output;
 }

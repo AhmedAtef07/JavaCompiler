@@ -21,6 +21,7 @@ public:
     set<string> keywords;
     set<string> punctuations;
     map<string, string> regular_expressions;
+
     map<string, string> regular_definetions_;
 
     RegularExpression(string lexical_file_name);
