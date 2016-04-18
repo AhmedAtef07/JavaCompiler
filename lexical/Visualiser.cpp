@@ -66,7 +66,8 @@ string Visualiser::JsonFromState(State *state) {
                 link += " \"type\": \"SelfLink\", \n";
                 set_index_of_node(node_indexat, node_index, transition->next_state);
                 link += " \"node\": " + to_string(node_indexat.at(transition->next_state->id)) + ", \n";
-                link += " \"text\": \"" + transition->value + "\" \n";
+                link += " \"text\": \"" + transition->value + "\", \n";
+                link += " \"anchorAngle\": " + to_string(-0.2852221988545617) + " \n";
                 link += "}, \n";
 
                 transitions += link;
