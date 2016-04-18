@@ -33,12 +33,17 @@ Lexical::Output Lexical::ParseInput(string input) {
         highest_token = nullptr;
         has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
-            if((!has_running || i == input.length()) && highest_token != nullptr) {
-                highest_token->pattern = input.substr (0, last_position + 1);
+            string curr_string = string(1, input[i]);
+            if((!has_running || i == input.length() || curr_string == " ") && highest_token != nullptr) {
+//                if(curr_string == " ") input.erase(i, 1);
+                highest_token->pattern = input.substr(0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
+                if(last_position == i -1) {
+                    input.erase(0, 1);
+                }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
                 error_found = true;
@@ -46,7 +51,6 @@ Lexical::Output Lexical::ParseInput(string input) {
                 break;
             }
             has_running = false;
-            string curr_string = string(1, input[i]);
             for(int j = 0; j < dfas.size(); ++j) {
                 if(running_bools[j]) {
                     has_running = true;

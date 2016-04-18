@@ -148,8 +148,8 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
             }
         }
     }
-    cout << "Solver size: " << solver.size() << endl; // Must be 1 object.
-    cout << "Top Type: " << solver.top()->type << endl; // 0 is Nfa.
+//    cout << "Solver size: " << solver.size() << endl; // Must be 1 object.
+//    cout << "Top Type: " << solver.top()->type << endl; // 0 is Nfa.
     return solver.top()->GetNfa();
 }
 

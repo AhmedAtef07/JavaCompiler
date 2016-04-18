@@ -5,6 +5,7 @@
 #include "Dfa.h"
 #include "Lexical.h"
 #include <map>
+#include <queue>
 #include <algorithm>
 
 Dfa::Dfa(Nfa *nfa, Token *token) {
@@ -19,7 +20,6 @@ Dfa::Dfa(Nfa *nfa, Token *token) {
     this->minimized_table = minimize_table();
 //    print_table(minimized_table, this->minimized_states_count);
 
-    cout << endl;
 }
 
 void Dfa::print_transitions() {
@@ -43,6 +43,12 @@ void Dfa::print_transitions(State *state, bool *v) {
     for(Transition *s : state->outgoing_transitions) {
         print_transitions(s->next_state, v);
     }
+}
+
+bool Dfa::is_different_sets(set<State *> states1, set<State *> states2) {
+    string s1 = get_sorted_ids_as_string(get_ids_from_states(states1));
+    string s2 = get_sorted_ids_as_string(get_ids_from_states(states2));
+    return s1 != s2;
 }
 
 void Dfa::print_table(Dfa::table_state **table, int rows) {
@@ -83,21 +89,42 @@ vector<int> Dfa::get_ids_from_states(set<State *> states) {
 }
 
 set<State *> Dfa::get_closure_states(set<State *> input_states) {
+//    set<State *> output;
+//    output.insert(input_states.begin(), input_states.end());
+//    set<State *> n;
+//    for(State *s : input_states) {
+//        for(Transition *t : s->outgoing_transitions) {
+//            if(t->value == "") {
+//                output.insert(t->next_state);
+//                n.insert(t->next_state);
+//            }
+//        }
+//    }
+//    if(!n.empty() && is_different_sets(n, input_states)) {
+//        set<State *> n_closure = get_closure_states(n);
+//        output.insert(begin(n_closure), end(n_closure));
+//    }
+
     set<State *> output;
-    output.insert(begin(input_states), end(input_states));
-    set<State *> n;
-    for(State *s : input_states) {
+    output.insert(input_states.begin(), input_states.end());
+    set<int> visited;
+    queue<State *> to_visit;
+    for(State *s : output) to_visit.push(s);
+
+    output.insert(input_states.begin(), input_states.end());
+
+    while(!to_visit.empty()) {
+        State *s = to_visit.front();
+        to_visit.pop();
+        visited.insert(s->id);
         for(Transition *t : s->outgoing_transitions) {
-            if(t->value == "") {
+            if(t->value == "" && (visited.find(t->next_state->id) == visited.end())) {
                 output.insert(t->next_state);
-                n.insert(t->next_state);
+                to_visit.push(t->next_state);
             }
         }
     }
-    if(!n.empty()) {
-        set<State *> n_closure = get_closure_states(n);
-        output.insert(begin(n_closure), end(n_closure));
-    }
+
     return output;
 }
 

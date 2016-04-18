@@ -45,6 +45,7 @@ private:
     set<State *> get_closure_states(set<State *> input_states);
     set<State *> get_next_states(set<State *> inputState, string inputCharacter);
     bool contains_accepted(set<State *> states);
+    bool is_different_sets(set<State *> states1, set<State *> states2);
     int find_alphabet_index(string s);
     int find_state_index(State *s, vector<State *> states);
 
