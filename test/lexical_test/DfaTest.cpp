@@ -13,10 +13,13 @@ TEST(DfaTest, BasicCreation) {
 
     cout << endl;
     Nfa *n = Nfa::Solver(RegularDefinition::Tokenize("(((a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)|(A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z))|_|$)(((a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)|(A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z))|((0|1|2|3|4|5|6|7|8|9))|_|$)*"));
+//    Nfa *n = Nfa::Solver(RegularDefinition::Tokenize("int"));
+//    cout << n->ToString() << endl;
+//    cout << n->terminal_state->id << endl;
     Dfa *dfa = new Dfa(n, new Token("i", 77));
 
 //    cout << endl << n->ToString() << endl;
-//    cout << endl << dfa->ToString() << endl;
+    cout << endl << dfa->ToString(true) << endl;
 
 //    Lexical *l = new Lexical();
 //    l->AddDfa(Nfa::Solver(RegularDefinition::Tokenize("int")), new Token("i", 77));
@@ -121,5 +124,5 @@ TEST(DfaGeneratorFromRegularDefinition, SingleThenStar) {
     string sample = "ba*";
     Dfa* dfa = new Dfa(Nfa::Solver(RegularDefinition::Tokenize(sample)), new Token("ba*", 64531));
 
-    cout << dfa->ToString() << endl;
+    cout << dfa->ToString(false) << endl;
 }

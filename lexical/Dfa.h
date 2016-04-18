@@ -18,8 +18,8 @@ public:
         bool is_acceptance;
     };
 
-    State* start_state;
-    vector<State *> states_vector;
+    State *start_state, *minimized_start_state;
+
     Token *token;
     int current_state;
     int states_count;
@@ -31,23 +31,20 @@ public:
     void initialize_current_state();
     Token* go_to(string input);
     bool has_next_state(string input);
-    void print_transitions();
-
-    string ToString();
+    string ToString(bool minimized);
 
 private:
 
     State* construct_dfa(Nfa *nfa);
-
+    vector<State *> states_vector;
     void print_transitions(State *state, bool *v);
     void print_table(table_state **table, int rows);
 
-    string get_sorted_ids_as_string(vector<int> ids);
     vector<int> get_ids_from_states(set<State *> states);
+    string get_sorted_ids_as_string(vector<int> ids);
     set<State *> get_closure_states(set<State *> input_states);
     set<State *> get_next_states(set<State *> inputState, string inputCharacter);
     bool contains_accepted(set<State *> states);
-    bool is_different_sets(set<State *> states1, set<State *> states2);
     int find_alphabet_index(string s);
     int find_state_index(State *s, vector<State *> states);
 
