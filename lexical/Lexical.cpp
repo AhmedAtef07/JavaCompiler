@@ -34,13 +34,14 @@ Lexical::Output Lexical::ParseInput(string input) {
         has_running = true;
         for(int i = 0; i <= input.length(); ++i) {
             string curr_string = string(1, input[i]);
-            if((!has_running || i == input.length() || curr_string == " ") && highest_token != nullptr) {
+            if((!has_running || i == input.length() || curr_string == " " || curr_string == "\n" || curr_string == "\t")
+               && highest_token != nullptr) {
                 highest_token->pattern = input.substr(0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
-                if(curr_string == " " && last_position == i -1) {
+                if((curr_string == " " || curr_string == "\n" || curr_string == "\t") && last_position == i -1) {
                     input.erase(0, 1);
                 }
                 break;
