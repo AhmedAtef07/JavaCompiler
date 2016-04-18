@@ -209,15 +209,15 @@ void RegularExpression::add_to_line_builder_right(const string &line, string &li
     string value;
     if(line[i] == '\\') {
         value = "(" + value_of_key + ")" ;
-        value.append(rest_of_line);
-        value = value + line[i] + line[i+1];
+        value += rest_of_line;
+        value += line[i] + line[i+1];
         line_builder.append(value);
         i++;
     } else {
         value = "(" + value_of_key + ")";
-        value.append(rest_of_line);
+        value += rest_of_line;
         cout << "value : " << value << endl;
-        if (i+1 != line.length() || is_seperator(line, i)) value += line[i];
+        if (i + 1 != line.length() || is_seperator(line, i)) value += line[i];
         line_builder.append(value);
     }
 }

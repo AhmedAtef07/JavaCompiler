@@ -5,21 +5,51 @@
 #include <Nfa.h>
 #include <Visualiser.h>
 #include <fstream>
+#include <Token.h>
+#include <Dfa.h>
 #include "gtest/gtest.h"
 
-TEST(Visualiser, NFAToJson) {
-    Nfa* nfa_a = new Nfa("a");
-    Nfa* nfa_b = new Nfa("b");
-    Nfa* nfa_c = new Nfa("c");
-    Nfa* nfa_d = new Nfa("d");
-    Nfa* nfa_or_abcd = Nfa::Parallel(vector<Nfa*> {nfa_a, nfa_b, nfa_c, nfa_d});
+TEST(VisualiserNfaToJson, BasicConcatenation) {
+    Nfa* nfa = Nfa::Solver(RegularDefinition::Tokenize("abcd"));
 
-    cout << "TEST" << endl;
     // cout << Visualiser::JsonFromNfa(nfa_or_abcd) << endl;
     ofstream outjson("outjson.json");
-    outjson << Visualiser::JsonFromNfa(nfa_or_abcd);
+    outjson << Visualiser::JsonFromNfa(nfa);
     outjson.close();
 
 
-    cout << Visualiser::JsonFromNfa(nfa_or_abcd) << endl;
+    cout << Visualiser::JsonFromNfa(nfa) << endl;
+}
+
+TEST(VisualiserNFAToJson, BasicStar) {
+    Nfa* nfa = Nfa::Solver(RegularDefinition::Tokenize("a*"));
+
+    // cout << Visualiser::JsonFromNfa(nfa_or_abcd) << endl;
+    ofstream outjson("outjson.json");
+    outjson << Visualiser::JsonFromNfa(nfa);
+    outjson.close();
+
+
+    cout << Visualiser::JsonFromNfa(nfa) << endl;
+}
+
+TEST(VisualiserDfaToJson, BasicStar) {
+    Nfa* nfa = Nfa::Solver(RegularDefinition::Tokenize("a*"));
+    Dfa* dfa = new Dfa(nfa, new Token("a*", 50));
+
+    // cout << Visualiser::JsonFromNfa(nfa_or_abcd) << endl;
+    ofstream outjson("outjson.json");
+    outjson << Visualiser::JsonFromDfa(dfa);
+    outjson.close();
+
+}
+
+TEST(VisualiserDfaToJson, BasicPlus) {
+    Nfa* nfa = Nfa::Solver(RegularDefinition::Tokenize("a+"));
+    Dfa* dfa = new Dfa(nfa, new Token("a+", 500));
+
+    // cout << Visualiser::JsonFromNfa(nfa_or_abcd) << endl;
+    ofstream outjson("outjson.json");
+    outjson << Visualiser::JsonFromDfa(dfa);
+    outjson.close();
 }

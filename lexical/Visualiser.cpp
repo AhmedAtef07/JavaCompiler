@@ -4,14 +4,30 @@
 
 #include "Visualiser.h"
 #include "State.h"
+#include "Dfa.h"
 #include <queue>
 #include <map>
 
+struct JsonState {
+    State * state;
+    int order_y; // Order in the depth.
+    int order_x; // Order in the sibling generation.
+};
+
 string Visualiser::JsonFromNfa(Nfa *nfa) {
+    return JsonFromState(nfa->start_state);
+}
+
+
+string Visualiser::JsonFromDfa(Dfa *dfa) {
+    return JsonFromState(dfa->start_state);
+}
+
+string Visualiser::JsonFromState(State *state) {
     set<State *> visited_states;
-    queue<State *> bfs;
-    bfs.push(nfa->start_state);
-    visited_states.insert(nfa->start_state);
+    queue<JsonState> bfs;
+    bfs.push({ state, 0 , 0 });
+    visited_states.insert(state);
     string result = "";
 
     string json = "{ \n";
@@ -22,27 +38,29 @@ string Visualiser::JsonFromNfa(Nfa *nfa) {
     int last_x_level = 1;
     map<int, int> node_indexat;
     int node_index = 0;
+
     while(!bfs.empty()) {
-
-
-        State* front_state = bfs.front();
+        JsonState front_json_state = bfs.front();
+        State* front_state = front_json_state.state;
         bfs.pop();
-         string outgoing_states = to_string(front_state->id) + ": ";
+
+        string outgoing_states = to_string(front_state->id) + ": ";
 
         string node = "{ \n";
         string isAcceptenceState = front_state->is_acceptence ? "true" : "false";
         node += " \"isAcceptState\":" + isAcceptenceState + ",  \n";
         node += " \"text\": \"" + to_string(front_state->id) + "\",  \n";
-        node += " \"y\":" + to_string(level++ * 55) + ",  \n";
-        node += " \"x\":" + to_string(last_x_level * 25) + "  \n";
+        node += " \"y\":" + to_string(200 + front_json_state.order_y * 120) + ",  \n";
+        node += " \"x\":" + to_string(200 + front_json_state.order_x * 120) + "  \n";
         node += "}, \n";
         nodes += node;
 
         set_index_of_node(node_indexat, node_index, front_state);
 
+        int number_of_siblings = 0;
         for(Transition* transition: front_state->outgoing_transitions) {
 
-            if(front_state->id == transition->next_state->id){
+            if(front_state->id == transition->next_state->id) {
                 string link = "{ \n";
                 // selflink
                 link += " \"type\": \"SelfLink\", \n";
@@ -88,7 +106,7 @@ string Visualiser::JsonFromNfa(Nfa *nfa) {
              outgoing_states += "('" + transition->value + "', ";
              outgoing_states += to_string(transition->next_state->id) + ") ";
             if(visited_states.find(transition->next_state) == visited_states.end()) {
-                bfs.push(transition->next_state);
+                bfs.push({ transition->next_state, front_json_state.order_y + 1, number_of_siblings++ });
                 visited_states.insert(transition->next_state);
             }
         }
