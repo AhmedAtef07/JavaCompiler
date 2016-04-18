@@ -116,3 +116,10 @@ TEST(DfaTest, BasicCreation) {
 //
 //    Dfa* dfa = new Dfa(nfa, new Token(sample, 2));
 //}
+
+TEST(DfaGeneratorFromRegularDefinition, SingleThenStar) {
+    string sample = "ba*";
+    Dfa* dfa = new Dfa(Nfa::Solver(RegularDefinition::Tokenize(sample)), new Token("ba*", 64531));
+
+    cout << dfa->ToString() << endl;
+}

@@ -8,11 +8,6 @@
 using namespace std;
 
 int main() {
-//    cout << "size of state: " << sizeof(State) << endl;
-//    cout << "size of Transition: " << sizeof(Transition) << endl;
-//    cout << "size of Nfa: " << sizeof(Nfa) << endl;
-//    cout << "size of Dfa: " << sizeof(Dfa) << endl;
-//    cout << "size of Lexical: " << sizeof(Lexical) << endl;
     // Opening the file through the Regular Expression class.
     RegularExpression* regular_expression = new RegularExpression("../lexical/lexical_input.txt");
 
@@ -28,24 +23,26 @@ int main() {
         lexical->AddDfa(a, new Token("Punctuation", priority--));
     }
 
-
     for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
         iterator != regular_expression->regular_expressions.end(); iterator++) {
             lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(iterator->second)),
                             new Token(iterator->first, priority--));
-//        cout << iterator->first << iterator->second << endl;
     }
 
+    ifstream ifs("input.java");
+    ofstream ofs("input.java_lexemes");
 
-    Lexical::Output output = lexical->ParseInput(
-            "int sum , count , pass , mnt; while (pass != 10) {pass = pass + 1 ; }");
-
-    cout << "Error Exists: " << output.error_found << endl;
-    cout << "Error String Remaning: " << output.error_string << endl << endl;
-    cout << "# of Tokens: " << output.tokens.size() << endl;
-    for(Token *k : output.tokens) {
-        cout << k->name << "  >  " << k->pattern << endl;
+    string current_line;
+    while(getline(ifs, current_line)) {
+        Lexical::Output output = lexical->ParseInput(current_line);
+        for(Token *k : output.tokens) {
+            ofs << k->name << "  >  " << k->pattern << endl;
+        }
     }
+
+//    cout << "Error Exists: " << output.error_found << endl;
+//    cout << "Error String Remaning: " << output.error_string << endl << endl;
+//    cout << "# of Tokens: " << output.tokens.size() << endl;
 
     return 0;
 }
