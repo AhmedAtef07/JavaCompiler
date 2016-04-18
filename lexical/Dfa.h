@@ -33,6 +33,8 @@ public:
     bool has_next_state(string input);
     void print_transitions();
 
+    string ToString();
+
 private:
 
     State* construct_dfa(Nfa *nfa);

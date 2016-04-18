@@ -35,13 +35,12 @@ Lexical::Output Lexical::ParseInput(string input) {
         for(int i = 0; i <= input.length(); ++i) {
             string curr_string = string(1, input[i]);
             if((!has_running || i == input.length() || curr_string == " ") && highest_token != nullptr) {
-//                if(curr_string == " ") input.erase(i, 1);
                 highest_token->pattern = input.substr(0, last_position + 1);
                 answer.push_back(highest_token);
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
-                if(last_position == i -1) {
+                if(curr_string == " " && last_position == i -1) {
                     input.erase(0, 1);
                 }
                 break;
@@ -62,7 +61,8 @@ Lexical::Output Lexical::ParseInput(string input) {
                         if(t != nullptr) {
                             if(t->priority > highest_priority || i > last_position) {
                                 highest_priority = t->priority;
-                                highest_token = t;
+                                highest_token = new Token();
+                                highest_token->name = t->name;
                                 last_position = i;
                             }
                         }
@@ -71,6 +71,9 @@ Lexical::Output Lexical::ParseInput(string input) {
             }
         }
     }
+
+
+
     Output output = { answer, error_found, error_string };
     return output;
 }

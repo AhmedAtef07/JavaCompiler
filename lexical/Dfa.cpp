@@ -22,6 +22,32 @@ Dfa::Dfa(Nfa *nfa, Token *token) {
 
 }
 
+string Dfa::ToString() {
+    set<State *> visited_states;
+    queue<State *> bfs;
+    bfs.push(start_state);
+    visited_states.insert(start_state);
+    string result = "";
+
+    while(!bfs.empty()) {
+        State* front_state = bfs.front();
+        bfs.pop();
+        string outgoing_states = to_string(front_state->id) + ": ";
+        for(Transition* transition: front_state->outgoing_transitions) {
+            outgoing_states += "('" + transition->value + "', ";
+            outgoing_states += to_string(transition->next_state->id) + ") ";
+            if(visited_states.find(transition->next_state) == visited_states.end()) {
+                bfs.push(transition->next_state);
+                visited_states.insert(transition->next_state);
+            }
+        }
+//        if(front_state->is_acceptence) outgoing_states += "\t[Accepted State]";
+        outgoing_states += "\n";
+        result += outgoing_states;
+    }
+    return result;
+}
+
 void Dfa::print_transitions() {
     bool visited[50];
     cout << endl << "DFA" << endl;
@@ -52,9 +78,9 @@ bool Dfa::is_different_sets(set<State *> states1, set<State *> states2) {
 }
 
 void Dfa::print_table(Dfa::table_state **table, int rows) {
-    cout << endl << "Table" << endl << "S | ";
+    cout << endl << "Table" << endl << "S |  ";
     for(int i = 0; i < Lexical::alphabet.size(); ++i) {
-        cout << Lexical::alphabet[i] << " | ";
+        cout << Lexical::alphabet[i] << " |  ";
     }
     cout << endl;
     for(int j = 0; j < rows; ++j) {
@@ -64,10 +90,10 @@ void Dfa::print_table(Dfa::table_state **table, int rows) {
                 cout << "0" << table[j][i].next_state << " | ";
             }
             else if(table[j][i].next_state != -1) {
-                cout << table[j][i].next_state << " | ";
+                cout << " " << table[j][i].next_state << " | ";
             }
             else {
-                cout << "  | ";
+                cout << "   | ";
             }
         }
         cout << endl;
@@ -238,7 +264,7 @@ Dfa::table_state** Dfa::minimize_table() {
         }
     }
 
-    vector<vector<int>> minimized_states;
+    vector<set<int>> minimized_states;
     int to_remove = 0, new_start_ind = -1;
     changed = true;
     while(changed) {
@@ -247,10 +273,11 @@ Dfa::table_state** Dfa::minimize_table() {
             for(int j = 0; j < this->states_count; ++j) {
                 if(j >= i) break;
                 if(!minimization_table[i][j]) continue;
-                vector<int> v, temp;
-                v.push_back(i);
+                vector<int> temp;
+                set<int> v;
+                v.insert(i);
                 temp.push_back(i);
-                v.push_back(j);
+                v.insert(j);
                 temp.push_back(j);
                 if(i == 0 || j == 0) new_start_ind = minimized_states.size();
                 ++to_remove;
@@ -261,7 +288,7 @@ Dfa::table_state** Dfa::minimize_table() {
                     for(int k = 0; k < this->states_count; ++k) {
                         if(k >= in) break;
                         if(minimization_table[in][k]) {
-                            v.push_back(k);
+                            v.insert(k);
                             temp.push_back(k);
                             if(k == 0) new_start_ind = minimized_states.size();
                             minimization_table[in][k] = false;
@@ -272,7 +299,7 @@ Dfa::table_state** Dfa::minimize_table() {
                     for(int k = this->states_count - 1; k >= 0; --k) {
                         if(in >= k) break;
                         if(minimization_table[k][in]) {
-                            v.push_back(k);
+                            v.insert(k);
                             temp.push_back(k);
                             if(k == 0) new_start_ind = minimized_states.size();
                             minimization_table[k][in] = false;
@@ -284,6 +311,18 @@ Dfa::table_state** Dfa::minimize_table() {
                 minimized_states.push_back(v);
             }
         }
+    }
+
+
+//    for(set<int> v : minimized_states) {
+//        for(int i : v) {
+//            cout << i << "  ";
+//        }
+//        cout << endl;
+//    }
+    to_remove = 0;
+    for(set<int> v : minimized_states) {
+        to_remove += v.size() - 1;
     }
 
     int curr = 0, new_size = this->states_count - to_remove;
@@ -301,7 +340,7 @@ Dfa::table_state** Dfa::minimize_table() {
     }
 
     int last = new_size - 1;
-    for(vector<int> v : minimized_states) {
+    for(set<int> v : minimized_states) {
         for(int in : v) {
             new_mapping[in] = last;
         }
@@ -329,7 +368,8 @@ Dfa::table_state** Dfa::minimize_table() {
             if(table[i][j].is_acceptance) {
                 temp->is_acceptance = true;
             }
-            minimized_table[new_mapping[i]][j] = *temp;
+            int new_togo = new_mapping[i];
+            minimized_table[new_togo][j] = *temp;
         }
     }
 

@@ -14,6 +14,7 @@ class Token {
 
 public:
 
+    Token();
     int priority;
     string name;
     string pattern;

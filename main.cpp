@@ -29,27 +29,16 @@ int main() {
     }
 
 
-
     for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
         iterator != regular_expression->regular_expressions.end(); iterator++) {
-        cout << iterator->first << ": " << iterator->second << endl;
+            lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(iterator->second)),
+                            new Token(iterator->first, priority--));
+//        cout << iterator->first << iterator->second << endl;
     }
-    cout << endl;
-
-//    for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
-//        iterator != regular_expression->regular_expressions.end(); iterator++) {
-//        if(i != 2 && i != 4 && i != 5) {
-//            lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(iterator->second)),
-//                            new Token(iterator->first, priority--));
-//        } else {
-//            cout << "not: " << iterator->first << ": " << iterator->second << endl;
-//        }
-//        ++i;
-//    }
 
 
     Lexical::Output output = lexical->ParseInput(
-            "int while (short != 10) {pass = pass + 1 ; }");
+            "int sum , count , pass , mnt; while (pass != 10) {pass = pass + 1 ; }");
 
     cout << "Error Exists: " << output.error_found << endl;
     cout << "Error String Remaning: " << output.error_string << endl << endl;

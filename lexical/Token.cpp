@@ -8,6 +8,9 @@
 
 set<int> Token::priorities;
 
+Token::Token() {
+}
+
 Token::Token(string name, int priority) {
     this->name = name;
     if(Token::priorities.find(priority) != Token::priorities.end()) {
