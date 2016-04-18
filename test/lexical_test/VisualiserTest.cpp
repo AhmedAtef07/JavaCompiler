@@ -53,3 +53,13 @@ TEST(VisualiserDfaToJson, BasicPlus) {
     outjson << Visualiser::JsonFromDfa(dfa);
     outjson.close();
 }
+
+TEST(VisualiserDfaToJson, BasicConcatenateStar) {
+    Nfa* nfa = Nfa::Solver(RegularDefinition::Tokenize("ba*"));
+    Dfa* dfa = new Dfa(nfa, new Token("ba*", 600));
+
+    // cout << Visualiser::JsonFromNfa(nfa_or_abcd) << endl;
+    ofstream outjson("outjson.json");
+    outjson << Visualiser::JsonFromDfa(dfa);
+    outjson.close();
+}
