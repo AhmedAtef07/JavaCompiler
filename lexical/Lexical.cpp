@@ -32,6 +32,9 @@ Lexical::Output Lexical::ParseInput(string input) {
         highest_priority = -1;
         highest_token = nullptr;
         has_running = true;
+        for(int j = 0; j < dfas.size(); ++j) {
+            dfas[j]->initialize_current_state();
+        }
         for(int i = 0; i <= input.length(); ++i) {
             string curr_string = string(1, input[i]);
             if((!has_running || i == input.length() || curr_string == " " || curr_string == "\n" || curr_string == "\t")
@@ -41,13 +44,17 @@ Lexical::Output Lexical::ParseInput(string input) {
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
-                if((curr_string == " " || curr_string == "\n" || curr_string == "\t") && last_position == i -1) {
+                if((curr_string == " " || curr_string == "\n" || curr_string == "\t") && last_position == i - 1) {
                     input.erase(0, 1);
                 }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
                 error_found = true;
                 error_string = input;
+                break;
+            }
+            if(curr_string == " " || curr_string == "\n" || curr_string == "\t") {
+                input.erase(0, 1);
                 break;
             }
             has_running = false;
