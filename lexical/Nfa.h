@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <set>
+#include <stack>
 #include "Transition.h"
 #include "State.h"
 #include "RegularDefinition.h"
@@ -26,6 +27,7 @@ public:
     string ToString();
 
     static Nfa* Concatenate(Nfa* nfa1, Nfa* nfa2);
+    static Nfa* Concatenate(vector<Nfa*> nfas);
     static Nfa* Star(Nfa *nfa);
     static Nfa* Plus(Nfa *nfa);
     static Nfa* Parallel(Nfa* nfa1, Nfa* nfa2);
@@ -35,6 +37,8 @@ public:
 
 private:
     static string * make_str_pointer_(string s);
+
+    static void ConcatenateAllPreviousTillOperation(stack<RegularDefinition *> &solver);
 };
 
 

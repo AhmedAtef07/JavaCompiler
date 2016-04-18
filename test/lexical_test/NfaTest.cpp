@@ -174,13 +174,18 @@ TEST_F(NfaGeneratorFromRegularDefinition, Solver5) {
     cout << solved_nfa->terminal_state->is_acceptence << endl;
 }
 
-
 TEST_F(NfaGeneratorFromRegularDefinition, Concatenation) {
     string sample = "abc";
     Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
 
     cout << solved_nfa->ToString() << endl;
+}
 
+TEST_F(NfaGeneratorFromRegularDefinition, SingleState) {
+    string sample = "ba*";
+    Nfa* solved_nfa = Nfa::Solver(RegularDefinition::Tokenize(sample));
+
+    cout << solved_nfa->ToString() << endl;
 }
 
 TEST_F(NfaGeneratorFromRegularDefinition, OrWithoutParentheses) {

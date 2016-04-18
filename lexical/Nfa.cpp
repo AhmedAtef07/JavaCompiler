@@ -6,6 +6,7 @@
 #include <stack>
 #include <queue>
 #include <cstring>
+#include <algorithm>
 #include "Nfa.h"
 
 Nfa::Nfa() { }
@@ -40,6 +41,20 @@ Nfa* Nfa::Concatenate(Nfa* nfa1, Nfa* nfa2) {
 //    free(nfa1);
 //    free(nfa2);
     return nfa;
+}
+
+Nfa* Nfa::Concatenate(vector<Nfa*> nfas) {
+    if(nfas.size() == 1) return nfas[0];
+
+    for(int i = 0; i < nfas.size() - 1; ++i) {
+        nfas[i]->terminal_state->AddTransition(new Transition(nfas[i + 1]->start_state));
+        nfas[i]->start_state->is_acceptence = false;
+    }
+
+    nfas[nfas.size() - 1]->start_state->is_acceptence = false;
+    nfas[nfas.size() - 1]->terminal_state->is_acceptence = true;
+
+    return new Nfa(nfas[0]->start_state, nfas[nfas.size() - 1]->terminal_state);
 }
 
 Nfa* Nfa::Star(Nfa* nfa) {
@@ -108,7 +123,7 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
     for(RegularDefinition *rd: regular_definition_vector) {
         if(rd->type == RegularDefinition::kOperation) {
             string operation_value = rd->GetOperation();
-            if(operation_value == "(" || operation_value == "|") {
+            if(operation_value == "(") {
                 solver.push(rd);
             } else if(operation_value == "*") {
                 Nfa* stared = Nfa::Star(solver.top()->GetNfa());
@@ -123,6 +138,7 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
                 RegularDefinition* stared_rd = new RegularDefinition(RegularDefinition::kNfa, stared);
                 solver.push(stared_rd);
             } else if(operation_value == ")") {
+                ConcatenateAllPreviousTillOperation(solver);
                 vector<Nfa*> parallel_nfa;
                 while(solver.top()->type == RegularDefinition::kNfa || solver.top()->GetOperation() != "(") {
                     if(solver.top()->type == RegularDefinition::kOperation) {
@@ -134,23 +150,31 @@ Nfa* Nfa::Solver(vector<RegularDefinition *> regular_definition_vector) {
                 }
                 solver.pop();
                 solver.push(new RegularDefinition(RegularDefinition::kNfa, Nfa::Parallel(parallel_nfa)));
+            } else if(operation_value == "|") {
+                ConcatenateAllPreviousTillOperation(solver);
+                solver.push(rd); // | the or operation.
+
             } else {
                 throw std::invalid_argument("Unimplemented operation action.");
             }
 
         } else if(rd->type == RegularDefinition::kNfa) {
-            if(solver.empty() || solver.top()->type == RegularDefinition::kOperation) {
-                solver.push(rd);
-            } else if(solver.top()->type == RegularDefinition::kNfa) {
-                Nfa* concatenated_nfa = Nfa::Concatenate(solver.top()->GetNfa(), rd->GetNfa());
-                solver.pop();
-                solver.push(new RegularDefinition(RegularDefinition::kNfa, concatenated_nfa));
-            }
+            solver.push(rd);
         }
     }
 //    cout << "Solver size: " << solver.size() << endl; // Must be 1 object.
 //    cout << "Top Type: " << solver.top()->type << endl; // 0 is Nfa.
     return solver.top()->GetNfa();
+}
+
+void Nfa::ConcatenateAllPreviousTillOperation(stack<RegularDefinition *> &solver) {
+    vector<Nfa *> nfas_to_be_concatenated;
+    while(solver.top()->type != RegularDefinition::kOperation) {
+        nfas_to_be_concatenated.push_back(solver.top()->GetNfa());
+        solver.pop();
+    }
+    reverse(nfas_to_be_concatenated.begin(), nfas_to_be_concatenated.end());
+    solver.push(new RegularDefinition(RegularDefinition::kNfa, Concatenate(nfas_to_be_concatenated)));
 }
 
 // Traverse from the start state of the Nfa to all possible outgoing nodes.
