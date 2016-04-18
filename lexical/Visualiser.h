@@ -6,11 +6,17 @@
 #define JAVACOMPILER_VISUALISER_H
 
 
+#include <map>
 #include "Nfa.h"
+#include "State.h"
 
 class Visualiser {
 
-    string JsonFromNfa(Nfa *);
+public:
+    static string JsonFromNfa(Nfa *);
+
+    static void set_index_of_node(std::map<int, int> &node_indexat, int &node_index, const State *front_state);
+    static string is_epsilon(string v);
 };
 
 

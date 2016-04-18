@@ -7,7 +7,7 @@ add_executable(TEST_FILES
         RegularExpressionTest.cpp
         DfaTest.cpp
         ParsingTest.cpp
-        RegularDefinitionTest.cpp)
+        RegularDefinitionTest.cpp VisualiserTest.cpp)
 
 target_link_libraries(TEST_FILES gtest gtest_main)
 target_link_libraries(TEST_FILES lexical)
