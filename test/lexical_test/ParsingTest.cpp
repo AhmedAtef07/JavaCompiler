@@ -107,7 +107,7 @@ TEST(ParsingInputTest, MaximalMunchRule) {
     }
 
     EXPECT_EQ(answer.size(), 1);
-    EXPECT_EQ(error_found, false);
+    EXPECT_EQ(error_found, 0);
     EXPECT_EQ(error_string, "");
     for(Token *t : answer) {
         cout << t->name << "  >  " << t->pattern << endl;
@@ -284,8 +284,8 @@ TEST(ParsingInputTest, ManyTokens) {
     vector<Token*> answer = output.tokens;
 
     EXPECT_EQ(answer.size(), 2);
-    EXPECT_EQ(output.error_found, false);
-    EXPECT_EQ(output.error_string, "");
+    EXPECT_EQ(output.errors_found, 0);
+    EXPECT_EQ(output.errors_strings.size(), 0);
     int curr = 0;
     for(Token *t : answer) {
         cout << t->name << "  >  " << t->pattern << endl;
@@ -357,9 +357,20 @@ TEST(ParsingInputTest, WrongInput) {
     Lexical::Output output = lexical->ParseInput(input);
     vector<Token*> answer = output.tokens;
 
-    EXPECT_EQ(answer.size(), 0);
-    EXPECT_EQ(output.error_found, true);
-    EXPECT_EQ(output.error_string, "cbda");
+    EXPECT_EQ(answer.size(), 1);
+    EXPECT_EQ(answer[0]->pattern, "b");
+    EXPECT_EQ(answer[0]->name, "b+|a+b+");
+    cout << endl << answer[0]->name << "  >  " << answer[0]->pattern << endl;
+
+    EXPECT_EQ(output.errors_found, 3);
+    cout << "Errors found = " << output.errors_found << endl;
+    for(int i = 0; i < output.errors_strings.size(); ++i) {
+        if(i == 0) EXPECT_EQ(output.errors_strings[i], "cbda");
+        else if(i == 1) EXPECT_EQ(output.errors_strings[i], "da");
+        else if(i == 2) EXPECT_EQ(output.errors_strings[i], "a");
+        cout << output.errors_strings[i] << endl;
+    }
+//    EXPECT_EQ(output.errors_strings[0], "cbda");
 }
 
 

@@ -9,10 +9,28 @@
 
 TEST(DfaTest, BasicCreation) {
     cout << endl;
-    Nfa *n = Nfa::Solver(RegularDefinition::Tokenize("(((a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)|(A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z))|_|$)(((a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)|(A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z))|((0|1|2|3|4|5|6|7|8|9))|_|$)*"));
+    Nfa *n = Nfa::Solver(RegularDefinition::Tokenize("int"));
 //    Nfa *n = Nfa::Solver(RegularDefinition::Tokenize("int"));
 
-    Dfa *dfa = new Dfa(n, new Token("i", 77));
+//    Dfa *dfa = new Dfa(n, new Token("i", 77));
+//
+//    cout << n->ToString() << endl;
+//    cout << dfa->ToString(false) << endl;
+
+    //    "b+|a+b+"
+//    Nfa *nfa_a3 = new Nfa("a");
+//    Nfa *nfa_b4 = new Nfa("b");
+//    Nfa *nfa_b5 = new Nfa("b");
+//
+//    Nfa *nfa_aa3 = Nfa::Plus(nfa_a3);
+//    Nfa *nfa_bb3 = Nfa::Plus(nfa_b4);
+//    Nfa *nfa_bb5 = Nfa::Plus(nfa_b5);
+//    Nfa *nfa_aabb2 = Nfa::Concatenate(nfa_aa3, nfa_bb3);
+//    Nfa *nfa_abaabb2 = Nfa::Parallel(nfa_bb5, nfa_aabb2);
+//    Dfa *dfa3 = new Dfa(nfa_abaabb2, new Token("b+|a+b+", 72));
+//
+//    cout << nfa_abaabb2->ToString() << endl;
+//    cout << dfa3->ToString(true) << endl;
 
 //    cout << endl << n->ToString() << endl;
 //    cout << endl << dfa->ToString(true) << endl;

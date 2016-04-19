@@ -352,8 +352,8 @@ Dfa::table_state** Dfa::minimize_table() {
 
 State* Dfa::construct_dfa(Nfa *nfa) {
     map<string, State *> states_map;
-    map<string, set<State *>> set_map;
-    map<string, bool> bool_map;
+    map<string, set<State *>> new_mapping_sets_map;
+    map<string, bool> bool_is_visited_map;
 
     this->states_count = 0;
     vector<State *> states_vector;
@@ -365,16 +365,19 @@ State* Dfa::construct_dfa(Nfa *nfa) {
     ++this->states_count;
     states_vector.push_back(states_map[key]);
     new_start_state = states_map[key];
-    set_map[key] = get_closure_states(s);
-    bool_map[key] = false;
+    new_mapping_sets_map[key] = get_closure_states(s);
+    bool_is_visited_map[key] = false;
 
     bool added_new = true;
     while(added_new) {
         added_new = false;
-        for(map<string, bool>::iterator iterator = bool_map.begin(); iterator != bool_map.end(); iterator++) {
+        for(map<string, bool>::iterator iterator = bool_is_visited_map.begin(); iterator != bool_is_visited_map.end(); iterator++) {
             if(!iterator->second) {
+                if(contains_accepted(new_mapping_sets_map[iterator->first])) {
+                    states_map[iterator->first]->is_acceptence = true;
+                }
                 for(string input : Lexical::alphabet) {
-                    set<State *> next_set = get_next_states(set_map[iterator->first], input);
+                    set<State *> next_set = get_next_states(new_mapping_sets_map[iterator->first], input);
                     string new_state = get_sorted_ids_as_string(get_ids_from_states(next_set));
                     if(new_state == "") continue;
                     if(states_map.find(new_state) != states_map.end()) {
@@ -383,16 +386,14 @@ State* Dfa::construct_dfa(Nfa *nfa) {
                         states_map[new_state] = new State();
                         ++this->states_count;
                         states_vector.push_back(states_map[new_state]);
-                        if(contains_accepted(next_set)) {
-                            states_map[new_state]->is_acceptence = true;
-                        }
-                        set_map[new_state] = next_set;
-                        bool_map[new_state] = false;
+                        new_mapping_sets_map[new_state] = next_set;
+                        bool_is_visited_map[new_state] = false;
                         added_new = true;
                         states_map[iterator->first]->AddTransition(new Transition(states_map[new_state], input));
                     }
                 }
-                bool_map[iterator->first] = true;
+                bool_is_visited_map[iterator->first] = true;
+                if(added_new) break;
             }
         }
     }

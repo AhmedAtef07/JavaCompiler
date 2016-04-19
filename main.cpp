@@ -16,6 +16,13 @@ int main() {
 
     for(string keyword: regular_expression->keywords) {
         lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
+//        cout << keyword << endl;
+        if(keyword == "long") {
+            Nfa *nf = Nfa::Solver(RegularDefinition::Tokenize(keyword));
+            cout << nf->ToString() << endl;
+            Dfa *df = new Dfa(nf, new Token("??", 77));
+            cout << df->ToString(false) << endl;
+        }
     }
 
     for(string symbol: regular_expression->punctuations) {
@@ -38,6 +45,11 @@ int main() {
         for(Token *k : output.tokens) {
             ofs << k->name << "  >  " << k->pattern << endl;
         }
+        ofs << endl << "Error Exists: " << output.errors_found << endl;
+        for(string error : output.errors_strings) {
+            ofs << "Error String Remaning: " << error << endl;
+        }
+        ofs << "---------------------------------------------------------------------------" << endl << endl;
     }
 
 //    cout << "Error Exists: " << output.error_found << endl;

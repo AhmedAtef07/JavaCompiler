@@ -16,17 +16,17 @@ void Lexical::AddDfa(Nfa* nfa, Token* token) {
 }
 
 Lexical::Output Lexical::ParseInput(string input) {
-    string error_string = "";
+    vector<string> error_strings;
     Token *highest_token = nullptr;
     vector<Token*> answer;
-    int last_position = 0, highest_priority = -1;
+    int last_position = 0, highest_priority = -1, errors_found = 0;
 
     bool running_bools[dfas.size()];
     fill(running_bools, running_bools + dfas.size(), true);
 
-    bool has_running = true, error_found = false;
+    bool has_running = true;
 
-    while(input.length() != 0 && !error_found) {
+    while(input.length() != 0) {
         fill(running_bools, running_bools + dfas.size(), true);
         last_position = 0;
         highest_priority = -1;
@@ -49,8 +49,9 @@ Lexical::Output Lexical::ParseInput(string input) {
                 }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                error_found = true;
-                error_string = input;
+                ++errors_found;
+                error_strings.push_back(input);
+                input.erase(0, 1);
                 break;
             }
             if(curr_string == " " || curr_string == "\n" || curr_string == "\t") {
@@ -82,6 +83,6 @@ Lexical::Output Lexical::ParseInput(string input) {
 
 
 
-    Output output = { answer, error_found, error_string };
+    Output output = { answer, errors_found, error_strings };
     return output;
 }
