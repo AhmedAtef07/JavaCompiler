@@ -63,3 +63,13 @@ TEST(VisualiserDfaToJson, BasicConcatenateStar) {
     outjson << Visualiser::JsonFromDfa(dfa);
     outjson.close();
 }
+
+TEST(VisualiserDfaToJson, ComplexRegex) {
+    Nfa* nfa = Nfa::Solver(RegularDefinition::Tokenize("(a*(k|l|(mn|k))*l)+"));
+    Dfa* dfa = new Dfa(nfa, new Token("(a*(k|l|(mn|k))*l)+", 700));
+
+//    cout << Visualiser::JsonFromDfa(dfa) << endl;
+    ofstream outjson("outjson.json");
+    outjson << Visualiser::JsonFromDfa(dfa);
+    outjson.close();
+}
