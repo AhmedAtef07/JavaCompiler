@@ -14,7 +14,7 @@ TEST(DfaTest, BasicCreation) {
 
 //    Dfa *dfa = new Dfa(n, new Token("i", 77));
 //
-//    cout << n->ToString() << endl;
+    cout << n->ToString() << endl;
 //    cout << dfa->ToString(false) << endl;
 
     //    "b+|a+b+"
