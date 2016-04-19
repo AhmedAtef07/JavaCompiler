@@ -73,7 +73,7 @@ void RegularExpression::addRule(string line) {
             string bldr = "";
 
             for (unsigned int j = 0; j < puncs.length(); ++j) {
-                if ((puncs[j] == ' ' || puncs[j] == ']') && bldr != "") {
+                if ((puncs[j] == ' ' || (puncs[j] == ']' && puncs[j-1] != '\\')) && bldr != "") {
                     this->punctuations.insert(bldr);
                     bldr = "";
                 } else {
