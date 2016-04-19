@@ -16,13 +16,6 @@ int main() {
 
     for(string keyword: regular_expression->keywords) {
         lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
-//        cout << keyword << endl;
-        if(keyword == "long") {
-            Nfa *nf = Nfa::Solver(RegularDefinition::Tokenize(keyword));
-            cout << nf->ToString() << endl;
-            Dfa *df = new Dfa(nf, new Token("??", 77));
-            cout << df->ToString(false) << endl;
-        }
     }
 
     for(string symbol: regular_expression->punctuations) {
