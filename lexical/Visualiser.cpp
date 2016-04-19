@@ -30,10 +30,10 @@ string Visualiser::JsonFromState(State *state) {
     visited_states.insert(state);
     string result = "";
 
-    string json = "{ \n";
+    string json = "{";
 
-    string nodes = "\"nodes\":[ \n";
-    string transitions = "\"links\":[ \n";
+    string nodes = "\"nodes\":[";
+    string transitions = "\"links\":[";
     int level = 1;
     int last_x_level = 1;
     map<int, int> node_indexat;
@@ -46,13 +46,13 @@ string Visualiser::JsonFromState(State *state) {
 
         string outgoing_states = to_string(front_state->id) + ": ";
 
-        string node = "{ \n";
+        string node = "{";
         string isAcceptenceState = front_state->is_acceptence ? "true" : "false";
-        node += " \"isAcceptState\":" + isAcceptenceState + ",  \n";
-        node += " \"text\": \"" + to_string(front_state->id) + "\",  \n";
-        node += " \"y\":" + to_string(200 + front_json_state.order_y * 120) + ",  \n";
-        node += " \"x\":" + to_string(200 + front_json_state.order_x * 120) + "  \n";
-        node += "}, \n";
+        node += " \"isAcceptState\":" + isAcceptenceState + ",";
+        node += " \"text\": \"" + to_string(front_state->id) + "\",";
+        node += " \"y\":" + to_string(200 + front_json_state.order_y * 120) + ",";
+        node += " \"x\":" + to_string(200 + front_json_state.order_x * 120) + "";
+        node += "},";
         nodes += node;
 
         set_index_of_node(node_indexat, node_index, front_state);
@@ -61,44 +61,44 @@ string Visualiser::JsonFromState(State *state) {
         for(Transition* transition: front_state->outgoing_transitions) {
 
             if(front_state->id == transition->next_state->id) {
-                string link = "{ \n";
+                string link = "{";
                 // selflink
-                link += " \"type\": \"SelfLink\", \n";
+                link += " \"type\": \"SelfLink\",";
                 set_index_of_node(node_indexat, node_index, transition->next_state);
-                link += " \"node\": " + to_string(node_indexat.at(transition->next_state->id)) + ", \n";
-                link += " \"text\": \"" + transition->value + "\", \n";
-                link += " \"anchorAngle\": " + to_string(-0.2852221988545617) + " \n";
-                link += "}, \n";
+                link += " \"node\": " + to_string(node_indexat.at(transition->next_state->id)) + ",";
+                link += " \"text\": \"" + transition->value + "\",";
+                link += " \"anchorAngle\": " + to_string(-0.2852221988545617) + "";
+                link += "},";
 
                 transitions += link;
             }
             /*if(nfa->start_state->id == front_state->id) {
                 cout << "nfa_start_state:" << nfa->start_state->id << ", front_state:" << front_state->id << endl;
-                string link = "{ \n";
+                string link = "{";
                 // startlink
-                link += " \"type\": \"StartLink\", \n";
+                link += " \"type\": \"StartLink\",";
                 set_index_of_node(node_indexat, node_index, front_state);
-                link += " \"node\": " + to_string(node_indexat.at(front_state->id)) + ", \n";
-                link += " \"text\": \"" + is_epsilon(transition->value) + "\", \n";
-                link += " \"deltaX\": " + to_string(-40) + ", \n";
-                link += " \"deltaY\": " + to_string(-67) + " \n";
-                link += "}, \n";
+                link += " \"node\": " + to_string(node_indexat.at(front_state->id)) + ",";
+                link += " \"text\": \"" + is_epsilon(transition->value) + "\",";
+                link += " \"deltaX\": " + to_string(-40) + ",";
+                link += " \"deltaY\": " + to_string(-67) + "";
+                link += "},";
 
                 transitions += link;
             }*/
             if(front_state->id != transition->next_state->id) {
-                string link = "{ \n";
+                string link = "{";
                 // link
-                link += " \"type\": \"Link\", \n";
+                link += " \"type\": \"Link\",";
                 set_index_of_node(node_indexat, node_index, front_state);
                 set_index_of_node(node_indexat, node_index, transition->next_state);
-                link += " \"nodeA\": " + to_string(node_indexat.at(front_state->id)) + ", \n";
-                link += " \"nodeB\": " + to_string(node_indexat.at(transition->next_state->id)) + ", \n";
-                link += " \"text\": \"" + is_epsilon(transition->value) + "\", \n";
-                link += " \"lineAngleAdjust\": " + to_string(0) + ", \n";
-                link += " \"parallelPart\": " + to_string(0.5) + ", \n";
-                link += " \"perpendicularPart\": " + to_string(0) + " \n";
-                link += "}, \n";
+                link += " \"nodeA\": " + to_string(node_indexat.at(front_state->id)) + ",";
+                link += " \"nodeB\": " + to_string(node_indexat.at(transition->next_state->id)) + ",";
+                link += " \"text\": \"" + is_epsilon(transition->value) + "\",";
+                link += " \"lineAngleAdjust\": " + to_string(0) + ",";
+                link += " \"parallelPart\": " + to_string(0.5) + ",";
+                link += " \"perpendicularPart\": " + to_string(0) + "";
+                link += "},";
 
                 transitions += link;
             }
@@ -118,10 +118,11 @@ string Visualiser::JsonFromState(State *state) {
         last_x_level++;
     }
 
-    nodes[nodes.length() - 3] = ' ';
-    transitions[transitions.length() - 3] = ' ';
-    nodes += "], \n";
-    transitions += "]  \n";
+    nodes[nodes.length() - 1] = ' ';
+    transitions[transitions.length() - 1] = ' ';
+
+    nodes += "],";
+    transitions += "]";
 
     json += nodes;
     json += transitions;
