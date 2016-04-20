@@ -31,16 +31,19 @@ int main() {
     }
     ifstream ifs("input.java");
     ofstream ofs("input.java_lexemes");
+    ofstream detailed_report("input.java_lexemes_detailed");
 
-    ofstream outjson("outjson.json");
-    outjson << "[";
+    ofstream outjson("../report/dfa.js");
+    outjson << "var dfas = {";
     for (vector<Dfa *>::iterator it = lexical->dfas.begin(); it != lexical->dfas.end(); ++it) {
         Dfa* d = *it;
+
+        outjson << "\"" + d->token->name + "\":";
         outjson << Visualiser::JsonFromDfa(d);
         if (it != lexical->dfas.end() - 1)
             outjson << ", ";
     }
-    outjson << "]";
+    outjson << "}";
     outjson.close();
 
 
@@ -48,14 +51,21 @@ int main() {
     while(getline(ifs, current_line)) {
         Lexical::Output output = lexical->ParseInput(current_line);
         for(Token *k : output.tokens) {
-            ofs << k->name << "  >  " << k->pattern << endl;
+            detailed_report << k->name << "  >  " << k->pattern << endl;
+            ofs << k->name << " ";
         }
-        ofs << endl << "Error Exists: " << output.errors_found << endl;
+        detailed_report << endl << "Error Exists: " << output.errors_found << endl;
         for(string error : output.errors_strings) {
-            ofs << "Error String Remaning: " << error << endl;
+            detailed_report << "Error String Remaning: " << error << endl;
         }
-        ofs << "---------------------------------------------------------------------------" << endl << endl;
+
+        detailed_report << "---------------------------------------------------------------------------" << endl << endl;
+        ofs << endl;
     }
+
+    system("google-chrome-stable ../report/index.html"); // more general
+    // system("xdg-open ../report/index.html"); // for linux
+    // system("open ../report/index.html"); for mac
 
 //    cout << "Error Exists: " << output.error_found << endl;
 //    cout << "Error String Remaning: " << output.error_string << endl << endl;
