@@ -20,8 +20,8 @@ public:
     void AddDfa(Nfa* nfa, Token* token);
     Lexical::Output ParseInput(string input);
 
-private:
     vector<Dfa *> dfas;
+
 };
 
 

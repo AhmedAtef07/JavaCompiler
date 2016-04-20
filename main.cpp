@@ -4,6 +4,7 @@
 #include <RegularExpression.h>
 #include <RegularDefinition.h>
 #include <Lexical.h>
+#include <Visualiser.h>
 
 using namespace std;
 
@@ -28,9 +29,20 @@ int main() {
             lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(iterator->second)),
                             new Token(iterator->first, priority--));
     }
-
     ifstream ifs("input.java");
     ofstream ofs("input.java_lexemes");
+
+    ofstream outjson("outjson.json");
+    outjson << "[";
+    for (vector<Dfa *>::iterator it = lexical->dfas.begin(); it != lexical->dfas.end(); ++it) {
+        Dfa* d = *it;
+        outjson << Visualiser::JsonFromDfa(d);
+        if (it != lexical->dfas.end() - 1)
+            outjson << ", ";
+    }
+    outjson << "]";
+    outjson.close();
+
 
     string current_line;
     while(getline(ifs, current_line)) {
