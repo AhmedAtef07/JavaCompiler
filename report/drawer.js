@@ -54,14 +54,14 @@ Link.prototype.setAnchorPoint = function(x, y) {
 	this.parallelPart = (dx * (x - this.nodeA.x) + dy * (y - this.nodeA.y)) / (scale * scale);
 	this.perpendicularPart = (dx * (y - this.nodeA.y) - dy * (x - this.nodeA.x)) / scale;
 	// snap to a straight line
-	if(this.parallelPart > 0 && this.parallelPart < 1 && Math.abs(this.perpendicularPart) < snapToPadding) {
+	if (this.parallelPart > 0 && this.parallelPart < 1 && Math.abs(this.perpendicularPart) < snapToPadding) {
 		this.lineAngleAdjust = (this.perpendicularPart < 0) * Math.PI;
 		this.perpendicularPart = 0;
 	}
 };
 
 Link.prototype.getEndPointsAndCircle = function() {
-	if(this.perpendicularPart === 0) {
+	if (this.perpendicularPart == 0) {
 		var midX = (this.nodeA.x + this.nodeB.x) / 2;
 		var midY = (this.nodeA.y + this.nodeB.y) / 2;
 		var start = this.nodeA.closestPointOnCircle(midX, midY);
@@ -104,7 +104,7 @@ Link.prototype.draw = function(c) {
 	var stuff = this.getEndPointsAndCircle();
 	// draw arc
 	c.beginPath();
-	if(stuff.hasCircle) {
+	if (stuff.hasCircle) {
 		c.arc(stuff.circleX, stuff.circleY, stuff.circleRadius, stuff.startAngle, stuff.endAngle, stuff.isReversed);
 	} else {
 		c.moveTo(stuff.startX, stuff.startY);
@@ -112,16 +112,16 @@ Link.prototype.draw = function(c) {
 	}
 	c.stroke();
 	// draw the head of the arrow
-	if(stuff.hasCircle) {
+	if (stuff.hasCircle) {
 		drawArrow(c, stuff.endX, stuff.endY, stuff.endAngle - stuff.reverseScale * (Math.PI / 2));
 	} else {
 		drawArrow(c, stuff.endX, stuff.endY, Math.atan2(stuff.endY - stuff.startY, stuff.endX - stuff.startX));
 	}
 	// draw the text
-	if(stuff.hasCircle) {
+	if (stuff.hasCircle) {
 		var startAngle = stuff.startAngle;
 		var endAngle = stuff.endAngle;
-		if(endAngle < startAngle) {
+		if (endAngle < startAngle) {
 			endAngle += Math.PI * 2;
 		}
 		var textAngle = (startAngle + endAngle) / 2 + stuff.isReversed * Math.PI;
@@ -138,25 +138,25 @@ Link.prototype.draw = function(c) {
 
 Link.prototype.containsPoint = function(x, y) {
 	var stuff = this.getEndPointsAndCircle();
-	if(stuff.hasCircle) {
+	if (stuff.hasCircle) {
 		var dx = x - stuff.circleX;
 		var dy = y - stuff.circleY;
-		var distance = Math.sqrt(dx*dx + dy*dy) - stuff.circleRadius;
-		if(Math.abs(distance) < hitTargetPadding) {
+		var distance = Math.sqrt(dx * dx + dy * dy) - stuff.circleRadius;
+		if (Math.abs(distance) < hitTargetPadding) {
 			var angle = Math.atan2(dy, dx);
 			var startAngle = stuff.startAngle;
 			var endAngle = stuff.endAngle;
-			if(stuff.isReversed) {
+			if (stuff.isReversed) {
 				var temp = startAngle;
 				startAngle = endAngle;
 				endAngle = temp;
 			}
-			if(endAngle < startAngle) {
+			if (endAngle < startAngle) {
 				endAngle += Math.PI * 2;
 			}
-			if(angle < startAngle) {
+			if (angle < startAngle) {
 				angle += Math.PI * 2;
-			} else if(angle > endAngle) {
+			} else if (angle > endAngle) {
 				angle -= Math.PI * 2;
 			}
 			return (angle > startAngle && angle < endAngle);
@@ -164,7 +164,7 @@ Link.prototype.containsPoint = function(x, y) {
 	} else {
 		var dx = stuff.endX - stuff.startX;
 		var dy = stuff.endY - stuff.startY;
-		var length = Math.sqrt(dx*dx + dy*dy);
+		var length = Math.sqrt(dx * dx + dy * dy);
 		var percent = (dx * (x - stuff.startX) + dy * (y - stuff.startY)) / (length * length);
 		var distance = (dx * (y - stuff.startY) - dy * (x - stuff.startX)) / length;
 		return (percent > 0 && percent < 1 && Math.abs(distance) < hitTargetPadding);
@@ -201,7 +201,7 @@ Node.prototype.draw = function(c) {
 	drawText(c, this.text, this.x, this.y, null, selectedObject == this);
 
 	// draw a double circle for an accept state
-	if(this.isAcceptState) {
+	if (this.isAcceptState) {
 		c.beginPath();
 		c.arc(this.x, this.y, nodeRadius - 6, 0, 2 * Math.PI, false);
 		c.stroke();
@@ -219,7 +219,7 @@ Node.prototype.closestPointOnCircle = function(x, y) {
 };
 
 Node.prototype.containsPoint = function(x, y) {
-	return (x - this.x)*(x - this.x) + (y - this.y)*(y - this.y) < nodeRadius*nodeRadius;
+	return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y) < nodeRadius * nodeRadius;
 };
 
 function SelfLink(node, mouse) {
@@ -228,7 +228,7 @@ function SelfLink(node, mouse) {
 	this.mouseOffsetAngle = 0;
 	this.text = '';
 
-	if(mouse) {
+	if (mouse) {
 		this.setAnchorPoint(mouse.x, mouse.y);
 	}
 }
@@ -241,10 +241,10 @@ SelfLink.prototype.setAnchorPoint = function(x, y) {
 	this.anchorAngle = Math.atan2(y - this.node.y, x - this.node.x) + this.mouseOffsetAngle;
 	// snap to 90 degrees
 	var snap = Math.round(this.anchorAngle / (Math.PI / 2)) * (Math.PI / 2);
-	if(Math.abs(this.anchorAngle - snap) < 0.1) this.anchorAngle = snap;
+	if (Math.abs(this.anchorAngle - snap) < 0.1) this.anchorAngle = snap;
 	// keep in the range -pi to pi so our containsPoint() function always works
-	if(this.anchorAngle < -Math.PI) this.anchorAngle += 2 * Math.PI;
-	if(this.anchorAngle > Math.PI) this.anchorAngle -= 2 * Math.PI;
+	if (this.anchorAngle < -Math.PI) this.anchorAngle += 2 * Math.PI;
+	if (this.anchorAngle > Math.PI) this.anchorAngle -= 2 * Math.PI;
 };
 
 SelfLink.prototype.getEndPointsAndCircle = function() {
@@ -289,7 +289,7 @@ SelfLink.prototype.containsPoint = function(x, y) {
 	var stuff = this.getEndPointsAndCircle();
 	var dx = x - stuff.circleX;
 	var dy = y - stuff.circleY;
-	var distance = Math.sqrt(dx*dx + dy*dy) - stuff.circleRadius;
+	var distance = Math.sqrt(dx * dx + dy * dy) - stuff.circleRadius;
 	return (Math.abs(distance) < hitTargetPadding);
 };
 
@@ -299,7 +299,7 @@ function StartLink(node, start) {
 	this.deltaY = 0;
 	this.text = '';
 
-	if(start) {
+	if (start) {
 		this.setAnchorPoint(start.x, start.y);
 	}
 }
@@ -308,11 +308,11 @@ StartLink.prototype.setAnchorPoint = function(x, y) {
 	this.deltaX = x - this.node.x;
 	this.deltaY = y - this.node.y;
 
-	if(Math.abs(this.deltaX) < snapToPadding) {
+	if (Math.abs(this.deltaX) < snapToPadding) {
 		this.deltaX = 0;
 	}
 
-	if(Math.abs(this.deltaY) < snapToPadding) {
+	if (Math.abs(this.deltaY) < snapToPadding) {
 		this.deltaY = 0;
 	}
 };
@@ -350,7 +350,7 @@ StartLink.prototype.containsPoint = function(x, y) {
 	var stuff = this.getEndPoints();
 	var dx = stuff.endX - stuff.startX;
 	var dy = stuff.endY - stuff.startY;
-	var length = Math.sqrt(dx*dx + dy*dy);
+	var length = Math.sqrt(dx * dx + dy * dy);
 	var percent = (dx * (x - stuff.startX) + dy * (y - stuff.startY)) / (length * length);
 	var distance = (dx * (y - stuff.startY) - dy * (x - stuff.startX)) / length;
 	return (percent > 0 && percent < 1 && Math.abs(distance) < hitTargetPadding);
@@ -401,24 +401,24 @@ function ExportAsLaTeX() {
 		x *= this._scale;
 		y *= this._scale;
 		radius *= this._scale;
-		if(endAngle - startAngle == Math.PI * 2) {
+		if (endAngle - startAngle == Math.PI * 2) {
 			this._texData += '\\draw [' + this.strokeStyle + '] (' + fixed(x, 3) + ',' + fixed(-y, 3) + ') circle (' + fixed(radius, 3) + ');\n';
 		} else {
-			if(isReversed) {
+			if (isReversed) {
 				var temp = startAngle;
 				startAngle = endAngle;
 				endAngle = temp;
 			}
-			if(endAngle < startAngle) {
+			if (endAngle < startAngle) {
 				endAngle += Math.PI * 2;
 			}
 			// TikZ needs the angles to be in between -2pi and 2pi or it breaks
-			if(Math.min(startAngle, endAngle) < -2*Math.PI) {
-				startAngle += 2*Math.PI;
-				endAngle += 2*Math.PI;
-			} else if(Math.max(startAngle, endAngle) > 2*Math.PI) {
-				startAngle -= 2*Math.PI;
-				endAngle -= 2*Math.PI;
+			if (Math.min(startAngle, endAngle) < -2 * Math.PI) {
+				startAngle += 2 * Math.PI;
+				endAngle += 2 * Math.PI;
+			} else if (Math.max(startAngle, endAngle) > 2 * Math.PI) {
+				startAngle -= 2 * Math.PI;
+				endAngle -= 2 * Math.PI;
 			}
 			startAngle = -startAngle;
 			endAngle = -endAngle;
@@ -428,21 +428,24 @@ function ExportAsLaTeX() {
 	this.moveTo = this.lineTo = function(x, y) {
 		x *= this._scale;
 		y *= this._scale;
-		this._points.push({ 'x': x, 'y': y });
+		this._points.push({
+			'x': x,
+			'y': y
+		});
 	};
 	this.stroke = function() {
-		if(this._points.length === 0) return;
+		if (this._points.length == 0) return;
 		this._texData += '\\draw [' + this.strokeStyle + ']';
-		for(var i = 0; i < this._points.length; i++) {
+		for (var i = 0; i < this._points.length; i++) {
 			var p = this._points[i];
 			this._texData += (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')';
 		}
 		this._texData += ';\n';
 	};
 	this.fill = function() {
-		if(this._points.length === 0) return;
+		if (this._points.length == 0) return;
 		this._texData += '\\fill [' + this.strokeStyle + ']';
-		for(var i = 0; i < this._points.length; i++) {
+		for (var i = 0; i < this._points.length; i++) {
 			var p = this._points[i];
 			this._texData += (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')';
 		}
@@ -454,18 +457,18 @@ function ExportAsLaTeX() {
 		return c.measureText(text);
 	};
 	this.advancedFillText = function(text, originalText, x, y, angleOrNull) {
-		if(text.replace(' ', '').length > 0) {
+		if (text.replace(' ', '').length > 0) {
 			var nodeParams = '';
 			// x and y start off as the center of the text, but will be moved to one side of the box when angleOrNull != null
-			if(angleOrNull !== null) {
+			if (angleOrNull != null) {
 				var width = this.measureText(text).width;
 				var dx = Math.cos(angleOrNull);
 				var dy = Math.sin(angleOrNull);
-				if(Math.abs(dx) > Math.abs(dy)) {
-					if(dx > 0) nodeParams = '[right] ', x -= width / 2;
+				if (Math.abs(dx) > Math.abs(dy)) {
+					if (dx > 0) nodeParams = '[right] ', x -= width / 2;
 					else nodeParams = '[left] ', x += width / 2;
 				} else {
-					if(dy > 0) nodeParams = '[below] ', y -= 10;
+					if (dy > 0) nodeParams = '[below] ', y -= 10;
 					else nodeParams = '[above] ', y += 10;
 				}
 			}
@@ -475,7 +478,7 @@ function ExportAsLaTeX() {
 		}
 	};
 
-	this.translate = this.save = this.restore = this.clearRect = function(){};
+	this.translate = this.save = this.restore = this.clearRect = function() {};
 }
 
 // draw using this instead of a canvas and call toSVG() afterward
@@ -501,16 +504,16 @@ function ExportAsSVG() {
 		y += this._transY;
 		var style = 'stroke="' + this.strokeStyle + '" stroke-width="' + this.lineWidth + '" fill="none"';
 
-		if(endAngle - startAngle == Math.PI * 2) {
+		if (endAngle - startAngle == Math.PI * 2) {
 			this._svgData += '\t<ellipse ' + style + ' cx="' + fixed(x, 3) + '" cy="' + fixed(y, 3) + '" rx="' + fixed(radius, 3) + '" ry="' + fixed(radius, 3) + '"/>\n';
 		} else {
-			if(isReversed) {
+			if (isReversed) {
 				var temp = startAngle;
 				startAngle = endAngle;
 				endAngle = temp;
 			}
 
-			if(endAngle < startAngle) {
+			if (endAngle < startAngle) {
 				endAngle += Math.PI * 2;
 			}
 
@@ -534,20 +537,23 @@ function ExportAsSVG() {
 	this.moveTo = this.lineTo = function(x, y) {
 		x += this._transX;
 		y += this._transY;
-		this._points.push({ 'x': x, 'y': y });
+		this._points.push({
+			'x': x,
+			'y': y
+		});
 	};
 	this.stroke = function() {
-		if(this._points.length === 0) return;
+		if (this._points.length == 0) return;
 		this._svgData += '\t<polygon stroke="' + this.strokeStyle + '" stroke-width="' + this.lineWidth + '" points="';
-		for(var i = 0; i < this._points.length; i++) {
+		for (var i = 0; i < this._points.length; i++) {
 			this._svgData += (i > 0 ? ' ' : '') + fixed(this._points[i].x, 3) + ',' + fixed(this._points[i].y, 3);
 		}
 		this._svgData += '"/>\n';
 	};
 	this.fill = function() {
-		if(this._points.length === 0) return;
+		if (this._points.length == 0) return;
 		this._svgData += '\t<polygon fill="' + this.fillStyle + '" stroke-width="' + this.lineWidth + '" points="';
-		for(var i = 0; i < this._points.length; i++) {
+		for (var i = 0; i < this._points.length; i++) {
 			this._svgData += (i > 0 ? ' ' : '') + fixed(this._points[i].x, 3) + ',' + fixed(this._points[i].y, 3);
 		}
 		this._svgData += '"/>\n';
@@ -560,7 +566,7 @@ function ExportAsSVG() {
 	this.fillText = function(text, x, y) {
 		x += this._transX;
 		y += this._transY;
-		if(text.replace(' ', '').length > 0) {
+		if (text.replace(' ', '').length > 0) {
 			this._svgData += '\t<text x="' + fixed(x, 3) + '" y="' + fixed(y, 3) + '" font-family="Times New Roman" font-size="20">' + textToXML(text) + '</text>\n';
 		}
 	};
@@ -569,21 +575,21 @@ function ExportAsSVG() {
 		this._transY = y;
 	};
 
-	this.save = this.restore = this.clearRect = function(){};
+	this.save = this.restore = this.clearRect = function() {};
 }
 
-var greekLetterNames = [ 'Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi', 'Psi', 'Omega' ];
+var greekLetterNames = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi', 'Psi', 'Omega'];
 
 function convertLatexShortcuts(text) {
 	// html greek characters
-	for(var i = 0; i < greekLetterNames.length; i++) {
+	for (var i = 0; i < greekLetterNames.length; i++) {
 		var name = greekLetterNames[i];
 		text = text.replace(new RegExp('\\\\' + name, 'g'), String.fromCharCode(913 + i + (i > 16)));
 		text = text.replace(new RegExp('\\\\' + name.toLowerCase(), 'g'), String.fromCharCode(945 + i + (i > 16)));
 	}
 
 	// subscripts
-	for(i = 0; i < 10; i++) {
+	for (var i = 0; i < 10; i++) {
 		text = text.replace(new RegExp('_' + i, 'g'), String.fromCharCode(8320 + i));
 	}
 
@@ -593,9 +599,9 @@ function convertLatexShortcuts(text) {
 function textToXML(text) {
 	text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	var result = '';
-	for(var i = 0; i < text.length; i++) {
+	for (var i = 0; i < text.length; i++) {
 		var c = text.charCodeAt(i);
-		if(c >= 0x20 && c <= 0x7E) {
+		if (c >= 0x20 && c <= 0x7E) {
 			result += text[i];
 		} else {
 			result += '&#' + c + ';';
@@ -627,7 +633,7 @@ function drawText(c, originalText, x, y, angleOrNull, isSelected) {
 	x -= width / 2;
 
 	// position the text intelligently if given an angle
-	if(angleOrNull !== null) {
+	if (angleOrNull != null) {
 		var cos = Math.cos(angleOrNull);
 		var sin = Math.sin(angleOrNull);
 		var cornerPointX = (width / 2 + 5) * (cos > 0 ? 1 : -1);
@@ -638,13 +644,13 @@ function drawText(c, originalText, x, y, angleOrNull, isSelected) {
 	}
 
 	// draw text and caret (round the coordinates so the caret falls on a pixel)
-	if('advancedFillText' in c) {
+	if ('advancedFillText' in c) {
 		c.advancedFillText(text, originalText, x + width / 2, y, angleOrNull);
 	} else {
 		x = Math.round(x);
 		y = Math.round(y);
 		c.fillText(text, x, y + 6);
-		if(isSelected && caretVisible && canvasHasFocus() && document.hasFocus()) {
+		if (isSelected && caretVisible && canvasHasFocus() && document.hasFocus()) {
 			x += width;
 			c.beginPath();
 			c.moveTo(x, y - 10);
@@ -659,10 +665,7 @@ var caretVisible = true;
 
 function resetCaret() {
 	clearInterval(caretTimer);
-	caretTimer = setInterval(function(){
-		caretVisible = !caretVisible;
-		draw();
-	}, 500);
+	caretTimer = setInterval('caretVisible = !caretVisible; draw()', 500);
 	caretVisible = true;
 }
 
@@ -684,17 +687,17 @@ function drawUsing(c) {
 	c.save();
 	c.translate(0.5, 0.5);
 
-	for(var i = 0; i < nodes.length; i++) {
+	for (var i = 0; i < nodes.length; i++) {
 		c.lineWidth = 1;
 		c.fillStyle = c.strokeStyle = (nodes[i] == selectedObject) ? 'blue' : 'black';
 		nodes[i].draw(c);
 	}
-	for(i = 0; i < links.length; i++) {
+	for (var i = 0; i < links.length; i++) {
 		c.lineWidth = 1;
 		c.fillStyle = c.strokeStyle = (links[i] == selectedObject) ? 'blue' : 'black';
 		links[i].draw(c);
 	}
-	if(currentLink !== null) {
+	if (currentLink != null) {
 		c.lineWidth = 1;
 		c.fillStyle = c.strokeStyle = 'black';
 		currentLink.draw(c);
@@ -709,13 +712,13 @@ function draw() {
 }
 
 function selectObject(x, y) {
-	for(var i = 0; i < nodes.length; i++) {
-		if(nodes[i].containsPoint(x, y)) {
+	for (var i = 0; i < nodes.length; i++) {
+		if (nodes[i].containsPoint(x, y)) {
 			return nodes[i];
 		}
 	}
-	for(i = 0; i < links.length; i++) {
-		if(links[i].containsPoint(x, y)) {
+	for (var i = 0; i < links.length; i++) {
+		if (links[i].containsPoint(x, y)) {
 			return links[i];
 		}
 	}
@@ -723,21 +726,28 @@ function selectObject(x, y) {
 }
 
 function snapNode(node) {
-	for(var i = 0; i < nodes.length; i++) {
-		if(nodes[i] == node) continue;
+	for (var i = 0; i < nodes.length; i++) {
+		if (nodes[i] == node) continue;
 
-		if(Math.abs(node.x - nodes[i].x) < snapToPadding) {
+		if (Math.abs(node.x - nodes[i].x) < snapToPadding) {
 			node.x = nodes[i].x;
 		}
 
-		if(Math.abs(node.y - nodes[i].y) < snapToPadding) {
+		if (Math.abs(node.y - nodes[i].y) < snapToPadding) {
 			node.y = nodes[i].y;
 		}
 	}
 }
 
 window.onload = function() {
+	reDraw();
+};
+
+window.reDraw = function() {
+	console.info('reDrawing');
 	canvas = document.getElementById('canvas');
+	cntxt = canvas.getContext('2d');
+	cntxt.clearRect(0, 0, canvas.width, canvas.height);
 	restoreBackup();
 	draw();
 
@@ -747,24 +757,24 @@ window.onload = function() {
 		movingObject = false;
 		originalClick = mouse;
 
-		if(selectedObject !== null) {
-			if(shift && selectedObject instanceof Node) {
+		if (selectedObject != null) {
+			if (shift && selectedObject instanceof Node) {
 				currentLink = new SelfLink(selectedObject, mouse);
 			} else {
 				movingObject = true;
 				deltaMouseX = deltaMouseY = 0;
-				if(selectedObject.setMouseStart) {
+				if (selectedObject.setMouseStart) {
 					selectedObject.setMouseStart(mouse.x, mouse.y);
 				}
 			}
 			resetCaret();
-		} else if(shift) {
+		} else if (shift) {
 			currentLink = new TemporaryLink(mouse, mouse);
 		}
 
 		draw();
 
-		if(canvasHasFocus()) {
+		if (canvasHasFocus()) {
 			// disable drag-and-drop only if the canvas is already focused
 			return false;
 		} else {
@@ -778,12 +788,12 @@ window.onload = function() {
 		var mouse = crossBrowserRelativeMousePos(e);
 		selectedObject = selectObject(mouse.x, mouse.y);
 
-		if(selectedObject === null) {
+		if (selectedObject == null) {
 			selectedObject = new Node(mouse.x, mouse.y);
 			nodes.push(selectedObject);
 			resetCaret();
 			draw();
-		} else if(selectedObject instanceof Node) {
+		} else if (selectedObject instanceof Node) {
 			selectedObject.isAcceptState = !selectedObject.isAcceptState;
 			draw();
 		}
@@ -792,22 +802,22 @@ window.onload = function() {
 	canvas.onmousemove = function(e) {
 		var mouse = crossBrowserRelativeMousePos(e);
 
-		if(currentLink !== null) {
+		if (currentLink != null) {
 			var targetNode = selectObject(mouse.x, mouse.y);
-			if(!(targetNode instanceof Node)) {
+			if (!(targetNode instanceof Node)) {
 				targetNode = null;
 			}
 
-			if(selectedObject === null) {
-				if(targetNode !== null) {
+			if (selectedObject == null) {
+				if (targetNode != null) {
 					currentLink = new StartLink(targetNode, originalClick);
 				} else {
 					currentLink = new TemporaryLink(originalClick, mouse);
 				}
 			} else {
-				if(targetNode == selectedObject) {
+				if (targetNode == selectedObject) {
 					currentLink = new SelfLink(selectedObject, mouse);
-				} else if(targetNode !== null) {
+				} else if (targetNode != null) {
 					currentLink = new Link(selectedObject, targetNode);
 				} else {
 					currentLink = new TemporaryLink(selectedObject.closestPointOnCircle(mouse.x, mouse.y), mouse);
@@ -816,9 +826,9 @@ window.onload = function() {
 			draw();
 		}
 
-		if(movingObject) {
+		if (movingObject) {
 			selectedObject.setAnchorPoint(mouse.x, mouse.y);
-			if(selectedObject instanceof Node) {
+			if (selectedObject instanceof Node) {
 				snapNode(selectedObject);
 			}
 			draw();
@@ -828,8 +838,8 @@ window.onload = function() {
 	canvas.onmouseup = function(e) {
 		movingObject = false;
 
-		if(currentLink !== null) {
-			if(!(currentLink instanceof TemporaryLink)) {
+		if (currentLink != null) {
+			if (!(currentLink instanceof TemporaryLink)) {
 				selectedObject = currentLink;
 				links.push(currentLink);
 				resetCaret();
@@ -845,13 +855,13 @@ var shift = false;
 document.onkeydown = function(e) {
 	var key = crossBrowserKey(e);
 
-	if(key == 16) {
+	if (key == 16) {
 		shift = true;
-	} else if(!canvasHasFocus()) {
+	} else if (!canvasHasFocus()) {
 		// don't read keystrokes when other things have focus
 		return true;
-	} else if(key == 8) { // backspace key
-		if(selectedObject !== null && 'text' in selectedObject) {
+	} else if (key == 8) { // backspace key
+		if (selectedObject != null && 'text' in selectedObject) {
 			selectedObject.text = selectedObject.text.substr(0, selectedObject.text.length - 1);
 			resetCaret();
 			draw();
@@ -859,15 +869,15 @@ document.onkeydown = function(e) {
 
 		// backspace is a shortcut for the back button, but do NOT want to change pages
 		return false;
-	} else if(key == 46) { // delete key
-		if(selectedObject !== null) {
-			for(var i = 0; i < nodes.length; i++) {
-				if(nodes[i] == selectedObject) {
+	} else if (key == 46) { // delete key
+		if (selectedObject != null) {
+			for (var i = 0; i < nodes.length; i++) {
+				if (nodes[i] == selectedObject) {
 					nodes.splice(i--, 1);
 				}
 			}
-			for(i = 0; i < links.length; i++) {
-				if(links[i] == selectedObject || links[i].node == selectedObject || links[i].nodeA == selectedObject || links[i].nodeB == selectedObject) {
+			for (var i = 0; i < links.length; i++) {
+				if (links[i] == selectedObject || links[i].node == selectedObject || links[i].nodeA == selectedObject || links[i].nodeB == selectedObject) {
 					links.splice(i--, 1);
 				}
 			}
@@ -880,7 +890,7 @@ document.onkeydown = function(e) {
 document.onkeyup = function(e) {
 	var key = crossBrowserKey(e);
 
-	if(key == 16) {
+	if (key == 16) {
 		shift = false;
 	}
 };
@@ -888,17 +898,17 @@ document.onkeyup = function(e) {
 document.onkeypress = function(e) {
 	// don't read keystrokes when other things have focus
 	var key = crossBrowserKey(e);
-	if(!canvasHasFocus()) {
+	if (!canvasHasFocus()) {
 		// don't read keystrokes when other things have focus
 		return true;
-	} else if(key >= 0x20 && key <= 0x7E && !e.metaKey && !e.altKey && !e.ctrlKey && selectedObject !== null && 'text' in selectedObject) {
+	} else if (key >= 0x20 && key <= 0x7E && !e.metaKey && !e.altKey && !e.ctrlKey && selectedObject != null && 'text' in selectedObject) {
 		selectedObject.text += String.fromCharCode(key);
 		resetCaret();
 		draw();
 
 		// don't let keys do their actions (like space scrolls down the page)
 		return false;
-	} else if(key == 8) {
+	} else if (key == 8) {
 		// backspace is a shortcut for the back button, but do NOT want to change pages
 		return false;
 	}
@@ -912,13 +922,17 @@ function crossBrowserKey(e) {
 function crossBrowserElementPos(e) {
 	e = e || window.event;
 	var obj = e.target || e.srcElement;
-	var x = 0, y = 0;
-	while(obj.offsetParent) {
+	var x = 0,
+		y = 0;
+	while (obj.offsetParent) {
 		x += obj.offsetLeft;
 		y += obj.offsetTop;
 		obj = obj.offsetParent;
 	}
-	return { 'x': x, 'y': y };
+	return {
+		'x': x,
+		'y': y
+	};
 }
 
 function crossBrowserMousePos(e) {
@@ -976,18 +990,18 @@ function saveAsLaTeX() {
 }
 
 function det(a, b, c, d, e, f, g, h, i) {
-	return a*e*i + b*f*g + c*d*h - a*f*h - b*d*i - c*e*g;
+	return a * e * i + b * f * g + c * d * h - a * f * h - b * d * i - c * e * g;
 }
 
 function circleFromThreePoints(x1, y1, x2, y2, x3, y3) {
 	var a = det(x1, y1, 1, x2, y2, 1, x3, y3, 1);
-	var bx = -det(x1*x1 + y1*y1, y1, 1, x2*x2 + y2*y2, y2, 1, x3*x3 + y3*y3, y3, 1);
-	var by = det(x1*x1 + y1*y1, x1, 1, x2*x2 + y2*y2, x2, 1, x3*x3 + y3*y3, x3, 1);
-	var c = -det(x1*x1 + y1*y1, x1, y1, x2*x2 + y2*y2, x2, y2, x3*x3 + y3*y3, x3, y3);
+	var bx = -det(x1 * x1 + y1 * y1, y1, 1, x2 * x2 + y2 * y2, y2, 1, x3 * x3 + y3 * y3, y3, 1);
+	var by = det(x1 * x1 + y1 * y1, x1, 1, x2 * x2 + y2 * y2, x2, 1, x3 * x3 + y3 * y3, x3, 1);
+	var c = -det(x1 * x1 + y1 * y1, x1, y1, x2 * x2 + y2 * y2, x2, y2, x3 * x3 + y3 * y3, x3, y3);
 	return {
-		'x': -bx / (2*a),
-		'y': -by / (2*a),
-		'radius': Math.sqrt(bx*bx + by*by - 4*a*c) / (2*Math.abs(a))
+		'x': -bx / (2 * a),
+		'y': -by / (2 * a),
+		'radius': Math.sqrt(bx * bx + by * by - 4 * a * c) / (2 * Math.abs(a))
 	};
 }
 
@@ -995,47 +1009,53 @@ function fixed(number, digits) {
 	return number.toFixed(digits).replace(/0+$/, '').replace(/\.$/, '');
 }
 
-function restoreBackup(jsonobj) {
-	try {
-		var backup = JSON.parse(jsonobj);
+function restoreBackup() {
+	console.info('restoring');
+	if (!localStorage || !JSON) {
+		return;
+	}
 
-		for(var i = 0; i < backup.nodes.length; i++) {
+	try {
+		var backup = JSON.parse(localStorage['fsm']);
+		console.info('backup', backup);
+
+		for (var i = 0; i < backup.nodes.length; i++) {
 			var backupNode = backup.nodes[i];
 			var node = new Node(backupNode.x, backupNode.y);
 			node.isAcceptState = backupNode.isAcceptState;
 			node.text = backupNode.text;
 			nodes.push(node);
 		}
-		for(i = 0; i < backup.links.length; i++) {
+		for (var i = 0; i < backup.links.length; i++) {
 			var backupLink = backup.links[i];
 			var link = null;
-			if(backupLink.type == 'SelfLink') {
+			if (backupLink.type == 'SelfLink') {
 				link = new SelfLink(nodes[backupLink.node]);
 				link.anchorAngle = backupLink.anchorAngle;
 				link.text = backupLink.text;
-			} else if(backupLink.type == 'StartLink') {
+			} else if (backupLink.type == 'StartLink') {
 				link = new StartLink(nodes[backupLink.node]);
 				link.deltaX = backupLink.deltaX;
 				link.deltaY = backupLink.deltaY;
 				link.text = backupLink.text;
-			} else if(backupLink.type == 'Link') {
+			} else if (backupLink.type == 'Link') {
 				link = new Link(nodes[backupLink.nodeA], nodes[backupLink.nodeB]);
 				link.parallelPart = backupLink.parallelPart;
 				link.perpendicularPart = backupLink.perpendicularPart;
 				link.text = backupLink.text;
 				link.lineAngleAdjust = backupLink.lineAngleAdjust;
 			}
-			if(link !== null) {
+			if (link != null) {
 				links.push(link);
 			}
 		}
-	} catch(e) {
-		localStorage.fsm = '';
+	} catch (e) {
+		localStorage['fsm'] = '';
 	}
 }
 
 function saveBackup() {
-	if(!localStorage || !JSON) {
+	if (!localStorage || !JSON) {
 		return;
 	}
 
@@ -1043,7 +1063,7 @@ function saveBackup() {
 		'nodes': [],
 		'links': [],
 	};
-	for(var i = 0; i < nodes.length; i++) {
+	for (var i = 0; i < nodes.length; i++) {
 		var node = nodes[i];
 		var backupNode = {
 			'x': node.x,
@@ -1053,17 +1073,17 @@ function saveBackup() {
 		};
 		backup.nodes.push(backupNode);
 	}
-	for(i = 0; i < links.length; i++) {
+	for (var i = 0; i < links.length; i++) {
 		var link = links[i];
 		var backupLink = null;
-		if(link instanceof SelfLink) {
+		if (link instanceof SelfLink) {
 			backupLink = {
 				'type': 'SelfLink',
 				'node': nodes.indexOf(link.node),
 				'text': link.text,
 				'anchorAngle': link.anchorAngle,
 			};
-		} else if(link instanceof StartLink) {
+		} else if (link instanceof StartLink) {
 			backupLink = {
 				'type': 'StartLink',
 				'node': nodes.indexOf(link.node),
@@ -1071,7 +1091,7 @@ function saveBackup() {
 				'deltaX': link.deltaX,
 				'deltaY': link.deltaY,
 			};
-		} else if(link instanceof Link) {
+		} else if (link instanceof Link) {
 			backupLink = {
 				'type': 'Link',
 				'nodeA': nodes.indexOf(link.nodeA),
@@ -1082,10 +1102,10 @@ function saveBackup() {
 				'perpendicularPart': link.perpendicularPart,
 			};
 		}
-		if(backupLink !== null) {
+		if (backupLink != null) {
 			backup.links.push(backupLink);
 		}
 	}
 
-	localStorage.fsm = JSON.stringify(backup);
+	localStorage['fsm'] = JSON.stringify(backup);
 }
