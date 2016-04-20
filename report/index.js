@@ -17,9 +17,10 @@ $(function() {
    for (var i = 0; i < dfa_values.length; i++) {
         // var option = $('option').attr('value', dfa_names[i]).text($.trim(dfa_names[i]));
         // console.info(option);
+        var t = $.trim(dfa_values[i]);
         $('#dfas').append($("<option></option>")
                     .attr("value", dfa_values[i])
-                    .text($.trim(dfa_values[i])));
+                    .text(t.split('_')[0]));
 
     }
 

@@ -35,10 +35,11 @@ int main() {
 
     ofstream outjson("../report/dfa.js");
     outjson << "var dfas = {";
+    int k = 0;
     for (vector<Dfa *>::iterator it = lexical->dfas.begin(); it != lexical->dfas.end(); ++it) {
         Dfa* d = *it;
 
-        outjson << "\"" + d->token->name + "\":";
+        outjson << "\"" + d->token->name + "_" + to_string(k++)  +"\":";
         outjson << Visualiser::JsonFromDfa(d);
         if (it != lexical->dfas.end() - 1)
             outjson << ", ";
@@ -63,7 +64,7 @@ int main() {
         ofs << endl;
     }
 
-    system("google-chrome-stable ../report/index.html"); // more general
+    //system("google-chrome-stable ../report/index.html"); // more general
     // system("xdg-open ../report/index.html"); // for linux
     // system("open ../report/index.html"); for mac
 
