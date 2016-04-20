@@ -30,6 +30,9 @@ $(function() {
 
     $('#dfas').change(function(event) {
         localStorage.clear();
+        window.nodes = [];
+        window.links = [];
+        window.reDraw();
         // $('#canvas').remove();
         // delete canvas
         localStorage.fsm = JSON.stringify(dfas[$(this).val()]);

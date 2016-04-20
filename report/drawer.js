@@ -671,8 +671,8 @@ function resetCaret() {
 
 var canvas;
 var nodeRadius = 30;
-var nodes = [];
-var links = [];
+window.nodes = [];
+window.links = [];
 
 var cursorVisible = true;
 var snapToPadding = 6; // pixels
