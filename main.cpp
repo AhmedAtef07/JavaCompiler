@@ -5,6 +5,7 @@
 #include <RegularDefinition.h>
 #include <Lexical.h>
 #include <Visualiser.h>
+#include <ContextFreeGrammar.h>
 
 using namespace std;
 
@@ -69,11 +70,14 @@ int main() {
     //system("google-chrome-stable ../report/index.html"); // more general
 //    system("google-chrome-stable ../report/index.html"); // more general
     // system("xdg-open ../report/index.html"); // for linux
-     system("open ../report/index.html");  // for mac
+//     system("open ../report/index.html");  // for mac
 
 //    cout << "Error Exists: " << output.error_found << endl;
 //    cout << "Error String Remaning: " << output.error_string << endl << endl;
 //    cout << "# of Tokens: " << output.tokens.size() << endl;
 
+    ContextFreeGrammar *cfg = new ContextFreeGrammar("../lexical/cfg.txt");
+
     return 0;
 }
+
