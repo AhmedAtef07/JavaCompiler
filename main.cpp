@@ -19,11 +19,13 @@ int main() {
         lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
     }
 
-    for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
-        iterator != regular_expression->regular_expressions.end(); iterator++) {
-        Nfa *n = Nfa::Solver(RegularDefinition::Tokenize(iterator->second));
-        lexical->AddDfa(n, new Token(iterator->first, priority--));
+//    for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
+//        iterator != regular_expression->regular_expressions.end(); iterator++) {
+    for(pair<string, string> p : regular_expression->regular_expressions) {
+        Nfa *n = Nfa::Solver(RegularDefinition::Tokenize(p.second));
+        lexical->AddDfa(n, new Token(p.first, priority--));
     }
+//    }
     for(string symbol: regular_expression->punctuations) {
         Nfa *a = Nfa::Solver(RegularDefinition::Tokenize(symbol));
         lexical->AddDfa(a, new Token("Punctuation", priority--));
@@ -52,7 +54,7 @@ int main() {
         Lexical::Output output = lexical->ParseInput(current_line);
         for(Token *k : output.tokens) {
             detailed_report << k->name << "  >  " << k->pattern << endl;
-            ofs << k->name << " ";
+            ofs << k->name << "  " << k->pattern << endl;
         }
         detailed_report << endl << "Error Exists: " << output.errors_found << endl;
         for(string error : output.errors_strings) {
@@ -60,7 +62,7 @@ int main() {
         }
 
         detailed_report << "---------------------------------------------------------------------------" << endl << endl;
-        ofs << endl;
+//        ofs << endl;
     }
 
 
