@@ -11,7 +11,6 @@
 #include <sstream>
 #include <set>
 #include <map>
-#include <vector>
 
 using namespace std;
 
@@ -21,7 +20,7 @@ public:
 
     set<string> keywords;
     set<string> punctuations;
-    vector<pair<string, string>> regular_expressions;
+    map<string, string> regular_expressions;
 
     map<string, string> regular_definetions_;
 
