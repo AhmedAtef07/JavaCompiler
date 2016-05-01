@@ -19,15 +19,14 @@ int main() {
         lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
     }
 
+    for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
+        iterator != regular_expression->regular_expressions.end(); iterator++) {
+        Nfa *n = Nfa::Solver(RegularDefinition::Tokenize(iterator->second));
+        lexical->AddDfa(n, new Token(iterator->first, priority--));
+    }
     for(string symbol: regular_expression->punctuations) {
         Nfa *a = Nfa::Solver(RegularDefinition::Tokenize(symbol));
         lexical->AddDfa(a, new Token("Punctuation", priority--));
-    }
-
-    for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
-        iterator != regular_expression->regular_expressions.end(); iterator++) {
-            lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(iterator->second)),
-                            new Token(iterator->first, priority--));
     }
     ifstream ifs("input.java");
     ofstream ofs("input.java_lexemes");
@@ -64,9 +63,11 @@ int main() {
         ofs << endl;
     }
 
+
     //system("google-chrome-stable ../report/index.html"); // more general
+//    system("google-chrome-stable ../report/index.html"); // more general
     // system("xdg-open ../report/index.html"); // for linux
-    // system("open ../report/index.html"); for mac
+     system("open ../report/index.html");  // for mac
 
 //    cout << "Error Exists: " << output.error_found << endl;
 //    cout << "Error String Remaning: " << output.error_string << endl << endl;

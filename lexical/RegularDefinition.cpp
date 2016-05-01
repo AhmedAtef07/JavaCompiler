@@ -54,8 +54,12 @@ vector<RegularDefinition *> RegularDefinition::Tokenize(string re) {
 
         if(RegularDefinition::IsOperation(re[i])) {
             if(re[i] == '\\') {
-                *pstr = re[i + 1];
-                regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kNfa, new Nfa(*pstr)));
+                if(re[i + 1] == 'L') {
+                    regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kNfa, new Nfa("")));
+                } else {
+                    *pstr = re[i + 1];
+                    regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kNfa, new Nfa(*pstr)));
+                }
                 ++i; // Escape next character because it is resolved.
             } else {
                 regular_definition_vector.push_back(new RegularDefinition(RegularDefinition::kOperation, pstr));

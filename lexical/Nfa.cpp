@@ -188,15 +188,15 @@ string Nfa::ToString() {
     while(!bfs.empty()) {
         State* front_state = bfs.front();
         bfs.pop();
-        string outgoing_states;
-        if(front_state->is_acceptence) {
-            outgoing_states += "0";
-        }
-        outgoing_states += to_string(front_state->id) + ": ";
-//        string outgoing_states = to_string(front_state->id) + ": ";
+//        string outgoing_states;
+//        if(front_state->is_acceptence) {
+//            outgoing_states += "0";
+//        }
+//        outgoing_states += to_string(front_state->id) + ": ";
+        string outgoing_states = to_string(front_state->id) + ": ";
         for(Transition* transition: front_state->outgoing_transitions) {
             outgoing_states += "('" + transition->value + "', ";
-            if(transition->next_state->is_acceptence) outgoing_states += "0";
+//            if(transition->next_state->is_acceptence) outgoing_states += "0";
             outgoing_states += to_string(transition->next_state->id) + ") ";
             if(visited_states.find(transition->next_state) == visited_states.end()) {
                 bfs.push(transition->next_state);
