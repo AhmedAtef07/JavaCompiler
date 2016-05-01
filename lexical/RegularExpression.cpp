@@ -51,7 +51,11 @@ void RegularExpression::addRule(string line) {
             // cout << "i will evaluate" << setw(20) << key << ":(" << rest_of_line << ")" << endl;
             string value = this->evaluate(rest_of_line);
 //             cout << "evaluating" << key << ":" << rest_of_line << "\tvalue:" << value << endl;
-            (line[i] == '=') ? this->regular_definetions_[key] = value : this->regular_expressions[key] = value;
+            if(line[i] == '=') {
+                this->regular_definetions_[key] = value;
+            } else {
+                this->regular_expressions.push_back(make_pair(key, value));
+            }
             break;
         }else if(line[i] == '{') {
             line = older_line;
@@ -73,7 +77,7 @@ void RegularExpression::addRule(string line) {
             string bldr = "";
 
             for (unsigned int j = 0; j < puncs.length(); ++j) {
-                if ((puncs[j] == ' ' || puncs[j] == ']') && bldr != "") {
+                if ((puncs[j] == ' ' || (puncs[j] == ']' && puncs[j-1] != '\\')) && bldr != "") {
                     this->punctuations.insert(bldr);
                     bldr = "";
                 } else {

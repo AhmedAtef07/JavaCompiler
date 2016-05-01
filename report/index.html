@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Report</title>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="bootstrap.css">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="bootstrap-select.css">
+
+
+		<style>
+			canvas {
+				background-color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<h1 class="text-center"> Java Lexical Analyzer </h1>
+					<div class="row">
+						<div class="col-xs-12">
+							<p class="text-center">Students in the order of program execution :D</p>
+						</div>
+						<div class="col-xs-3">
+							<p class="text-center"><b>Ahmed Magdy <i>****</i></b></p>
+						</div>
+						<div class="col-xs-3">
+							<p class="text-center"><b>Ahmed Atef <i>****</i></b></p>
+						</div>
+						<div class="col-xs-3">
+							<p class="text-center"><b>Ahmed Emad <i>****</i></b></p>
+						</div>
+						<div class="col-xs-3">
+							<p class="text-center"><b>Ramy Tamer <i>2162</i></b></p>
+						</div>
+					</div>
+					<hr>
+					<p class="text-center">The goal of this project to get the lexemes of the input Java code & identify each token & put it in the symbol table.</p>
+					<br>
+					<h2 class="text-left">The Program works in this flow:</h2>
+					<ul class="list-group">
+						<li class="list-group-item">
+							<b>1. Parse the lexical Input file</b>
+							<p>It evaluates the regular defenitions & provide the right regular expression for the language.</p>
+							<pre>
+letter = a-z|A-Z
+
+digit = 0-9
+digits = digit+
+num: digit+ | digit+.digits( \L|E digits )
+
+id:(letter|_|$)(letter|digit|_|$)*
+
+{abstract assert*** boolean break ...etc}
+[; , \( \) { } \[ \] .]
+
+
+equals = \=\=
+notequals = !\=
+larger = > | >\=
+smaller = < | <\=
+
+relop: equals | notequals | larger | smaller
+
+assign: \=
+addop: \+ | \-
+mulop: \* | /</pre>
+						</li>
+						<li class="list-group-item">
+							<b>2. There are 3 results of the first step: <i>Keywords, Punctuations, Regular Expressions.</i> </b>
+
+							<h3 class="text-left">Keywords</h3>
+							<pre>while int if boolean break ...</pre>
+
+							<h3 class="text-left">Punctuations</h3>
+							<pre>; , . { } [ ] ( )</pre>
+
+							<h3 class="text-left">Regular Expressions</h3>
+							<pre>assign: \=
+num: (0-9)+ | (0-9)+.((0-9))+( \L|E ((0-9))+ )</pre>
+						</li>
+						<li class="list-group-item">
+							<b>3. Generate the proper NFA for the keywords, punctuations & the regular Expressions</b>
+						</li>
+						<li class="list-group-item">
+							<b>4. Generate the DFA from the NFA provided by step 3</b>
+						</li>
+						<li class="list-group-item">
+							<b>5. Minimize the DFA</b>
+						</li>
+						<li class="list-group-item">
+							<b>6. Provide the final Lexical Result with errors (if exists) & putting them in symbol table.</b>
+							<div class="row">
+								<div class="col-xs-6">
+									<pre>public class SumOfArray {
+    public static void main(String[] args) {
+        int i;
+        int[] nums = {1, 2, 3, 4, 5};
+
+        int sum =0;
+
+        for(i = 0; i < nums.length(); i++) {
+            sum += nums[i];
+        }
+
+        System.out.println("Sum is: " + sum);
+    }
+}</pre>
+								</div>
+								<div class="col-xs-6">
+									<pre>public class id Punctuation 
+public static void id Punctuation id Punctuation Punctuation id Punctuation Punctuation 
+int id Punctuation 
+int Punctuation Punctuation id assign Punctuation num Punctuation num Punctuation num Punctuation num Punctuation num Punctuation Punctuation 
+
+int id assign num Punctuation 
+
+for Punctuation id assign num Punctuation id relop id Punctuation id Punctuation Punctuation Punctuation id addop addop Punctuation Punctuation 
+id addop assign id Punctuation id Punctuation Punctuation 
+Punctuation 
+
+id Punctuation id Punctuation id Punctuation id id addop id Punctuation Punctuation 
+Error Exists: 1
+Error String Remaning: "Sum is: " + sum);
+
+Punctuation 
+Punctuation </pre>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<h4 class="text-left">Detailed Report</h4>
+									<pre>public  >  public
+class  >  class
+id  >  SumOfArray
+Punctuation  >  {
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+public  >  public
+static  >  static
+void  >  void
+id  >  main
+Punctuation  >  (
+id  >  String
+Punctuation  >  [
+Punctuation  >  ]
+id  >  args
+Punctuation  >  )
+Punctuation  >  {
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+int  >  int
+id  >  i
+Punctuation  >  ;
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+int  >  int
+Punctuation  >  [
+Punctuation  >  ]
+id  >  nums
+assign  >  =
+Punctuation  >  {
+num  >  1
+Punctuation  >  ,
+num  >  2
+Punctuation  >  ,
+num  >  3
+Punctuation  >  ,
+num  >  4
+Punctuation  >  ,
+num  >  5
+Punctuation  >  }
+Punctuation  >  ;
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+int  >  int
+id  >  sum
+assign  >  =
+num  >  0
+Punctuation  >  ;
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+for  >  for
+Punctuation  >  (
+id  >  i
+assign  >  =
+num  >  0
+Punctuation  >  ;
+id  >  i
+relop  >  <
+id  >  nums
+Punctuation  >  .
+id  >  length
+Punctuation  >  (
+Punctuation  >  )
+Punctuation  >  ;
+id  >  i
+addop  >  +
+addop  >  +
+Punctuation  >  )
+Punctuation  >  {
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+id  >  sum
+addop  >  +
+assign  >  =
+id  >  nums
+Punctuation  >  [
+id  >  i
+Punctuation  >  ]
+Punctuation  >  ;
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+Punctuation  >  }
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+id  >  System
+Punctuation  >  .
+id  >  out
+Punctuation  >  .
+id  >  println
+Punctuation  >  (
+id  >  Sum
+id  >  is
+addop  >  +
+id  >  sum
+Punctuation  >  )
+Punctuation  >  ;
+
+Error Exists: 1
+Error String Remaning: "Sum is: " + sum);
+---------------------------------------------------------------------------
+
+Punctuation  >  }
+
+Error Exists: 0
+---------------------------------------------------------------------------
+
+Punctuation  >  }
+
+Error Exists: 0
+---------------------------------------------------------------------------</pre>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<h3 class="text-left">Choose a Minimized DFA to draw it's FSM:</h3>
+					<select class="selectpicker" id="dfas">
+						<option value="" disabled selected></option>
+					</select>
+					<span id="canvas_container">
+						<canvas id="canvas" width="4048px" height="2048px">
+							<span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
+						</canvas>	
+					</span>
+					
+				</div>
+			</div>
+		</div>
+		
+		<script src="jquery.js"></script>
+		<script src="bootstrap.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="bootstrap-select.js"></script>
+		<script src="dfa.js"></script>
+		<script src="drawer.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>

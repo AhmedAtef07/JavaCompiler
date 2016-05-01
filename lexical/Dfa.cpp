@@ -22,17 +22,26 @@ Dfa::Dfa(Nfa *nfa, Token *token) {
 
 }
 
-string Dfa::ToString() {
+string Dfa::ToString(bool minimized) {
     set<State *> visited_states;
     queue<State *> bfs;
-    bfs.push(start_state);
-    visited_states.insert(start_state);
+    if(minimized) {
+        bfs.push(minimized_start_state);
+        visited_states.insert(minimized_start_state);
+    } else {
+        bfs.push(start_state);
+        visited_states.insert(start_state);
+    }
     string result = "";
 
     while(!bfs.empty()) {
         State* front_state = bfs.front();
         bfs.pop();
-        string outgoing_states = to_string(front_state->id) + ": ";
+        string outgoing_states;
+        if(front_state->is_acceptence) {
+            outgoing_states += "0";
+        }
+        outgoing_states += to_string(front_state->id) + ": ";
         for(Transition* transition: front_state->outgoing_transitions) {
             outgoing_states += "('" + transition->value + "', ";
             outgoing_states += to_string(transition->next_state->id) + ") ";
@@ -46,35 +55,6 @@ string Dfa::ToString() {
         result += outgoing_states;
     }
     return result;
-}
-
-void Dfa::print_transitions() {
-    bool visited[50];
-    cout << endl << "DFA" << endl;
-    fill(visited, visited + sizeof(visited), false);
-    print_transitions(this->start_state, visited);
-    cout << endl;
-}
-
-void Dfa::print_transitions(State *state, bool *v) {
-    if(v[state->id]) return;
-    cout << "--------------" << endl;
-    if(state->is_acceptence)
-        cout << "0";
-    cout << state->id << endl;
-    for(Transition *s : state->outgoing_transitions) {
-        cout << "->" + s->value + "| " << s->next_state->id << endl;
-    }
-    v[state->id] = true;
-    for(Transition *s : state->outgoing_transitions) {
-        print_transitions(s->next_state, v);
-    }
-}
-
-bool Dfa::is_different_sets(set<State *> states1, set<State *> states2) {
-    string s1 = get_sorted_ids_as_string(get_ids_from_states(states1));
-    string s2 = get_sorted_ids_as_string(get_ids_from_states(states2));
-    return s1 != s2;
 }
 
 void Dfa::print_table(Dfa::table_state **table, int rows) {
@@ -115,22 +95,6 @@ vector<int> Dfa::get_ids_from_states(set<State *> states) {
 }
 
 set<State *> Dfa::get_closure_states(set<State *> input_states) {
-//    set<State *> output;
-//    output.insert(input_states.begin(), input_states.end());
-//    set<State *> n;
-//    for(State *s : input_states) {
-//        for(Transition *t : s->outgoing_transitions) {
-//            if(t->value == "") {
-//                output.insert(t->next_state);
-//                n.insert(t->next_state);
-//            }
-//        }
-//    }
-//    if(!n.empty() && is_different_sets(n, input_states)) {
-//        set<State *> n_closure = get_closure_states(n);
-//        output.insert(begin(n_closure), end(n_closure));
-//    }
-
     set<State *> output;
     output.insert(input_states.begin(), input_states.end());
     set<int> visited;
@@ -264,8 +228,8 @@ Dfa::table_state** Dfa::minimize_table() {
         }
     }
 
-    vector<set<int>> minimized_states;
-    int to_remove = 0, new_start_ind = -1;
+    vector<set<int>> to_be_minimized_states_ids;
+    int new_start_ind = -1;
     changed = true;
     while(changed) {
         changed = false;
@@ -279,8 +243,7 @@ Dfa::table_state** Dfa::minimize_table() {
                 temp.push_back(i);
                 v.insert(j);
                 temp.push_back(j);
-                if(i == 0 || j == 0) new_start_ind = minimized_states.size();
-                ++to_remove;
+                if(i == 0 || j == 0) new_start_ind = to_be_minimized_states_ids.size();
                 minimization_table[i][j] = false;
                 while(!temp.empty()) {
                     int in = temp[0];
@@ -290,10 +253,9 @@ Dfa::table_state** Dfa::minimize_table() {
                         if(minimization_table[in][k]) {
                             v.insert(k);
                             temp.push_back(k);
-                            if(k == 0) new_start_ind = minimized_states.size();
+                            if(k == 0) new_start_ind = to_be_minimized_states_ids.size();
                             minimization_table[in][k] = false;
                             changed = true;
-                            ++to_remove;
                         };
                     }
                     for(int k = this->states_count - 1; k >= 0; --k) {
@@ -301,27 +263,19 @@ Dfa::table_state** Dfa::minimize_table() {
                         if(minimization_table[k][in]) {
                             v.insert(k);
                             temp.push_back(k);
-                            if(k == 0) new_start_ind = minimized_states.size();
+                            if(k == 0) new_start_ind = to_be_minimized_states_ids.size();
                             minimization_table[k][in] = false;
                             changed = true;
-                            ++to_remove;
                         };
                     }
                 }
-                minimized_states.push_back(v);
+                to_be_minimized_states_ids.push_back(v);
             }
         }
     }
 
-
-//    for(set<int> v : minimized_states) {
-//        for(int i : v) {
-//            cout << i << "  ";
-//        }
-//        cout << endl;
-//    }
-    to_remove = 0;
-    for(set<int> v : minimized_states) {
+    int to_remove = 0;
+    for(set<int> v : to_be_minimized_states_ids) {
         to_remove += v.size() - 1;
     }
 
@@ -332,15 +286,15 @@ Dfa::table_state** Dfa::minimize_table() {
     vector<int> new_mapping(this->states_count, -1);
 
     if(new_start_ind != -1) {
-        for(int in : minimized_states[new_start_ind]) {
+        for(int in : to_be_minimized_states_ids[new_start_ind]) {
             new_mapping[in] = curr;
         }
         ++curr;
-        minimized_states.erase(minimized_states.begin() + new_start_ind);
+        to_be_minimized_states_ids.erase(to_be_minimized_states_ids.begin() + new_start_ind);
     }
 
     int last = new_size - 1;
-    for(set<int> v : minimized_states) {
+    for(set<int> v : to_be_minimized_states_ids) {
         for(int in : v) {
             new_mapping[in] = last;
         }
@@ -373,13 +327,33 @@ Dfa::table_state** Dfa::minimize_table() {
         }
     }
 
+    State **minimized_states = (State **) malloc(new_size * sizeof(State));
+    for(int i = 0; i < new_size; ++i) {
+        minimized_states[i] = new State();
+    }
+
+    for(int i = 0; i < this->minimized_states_count; ++i) {
+        for(int j = 0; j < Lexical::alphabet.size(); ++j) {
+            if(minimized_table[i][j].next_state != -1) {
+                int to_go_to = minimized_table[i][j].next_state;
+                int is_accepted = minimized_table[i][j].is_acceptance;
+                minimized_states[i]->AddTransition(new Transition(minimized_states[to_go_to], Lexical::alphabet[j]));
+                if(is_accepted) {
+                    minimized_states[to_go_to]->is_acceptence = true;
+                }
+            }
+        }
+    }
+
+    this->minimized_start_state = minimized_states[0];
+
     return minimized_table;
 }
 
 State* Dfa::construct_dfa(Nfa *nfa) {
     map<string, State *> states_map;
-    map<string, set<State *>> set_map;
-    map<string, bool> bool_map;
+    map<string, set<State *>> new_mapping_sets_map;
+    map<string, bool> bool_is_visited_map;
 
     this->states_count = 0;
     vector<State *> states_vector;
@@ -391,16 +365,19 @@ State* Dfa::construct_dfa(Nfa *nfa) {
     ++this->states_count;
     states_vector.push_back(states_map[key]);
     new_start_state = states_map[key];
-    set_map[key] = get_closure_states(s);
-    bool_map[key] = false;
+    new_mapping_sets_map[key] = get_closure_states(s);
+    bool_is_visited_map[key] = false;
 
     bool added_new = true;
     while(added_new) {
         added_new = false;
-        for(map<string, bool>::iterator iterator = bool_map.begin(); iterator != bool_map.end(); iterator++) {
+        for(map<string, bool>::iterator iterator = bool_is_visited_map.begin(); iterator != bool_is_visited_map.end(); iterator++) {
             if(!iterator->second) {
+                if(contains_accepted(new_mapping_sets_map[iterator->first])) {
+                    states_map[iterator->first]->is_acceptence = true;
+                }
                 for(string input : Lexical::alphabet) {
-                    set<State *> next_set = get_next_states(set_map[iterator->first], input);
+                    set<State *> next_set = get_next_states(new_mapping_sets_map[iterator->first], input);
                     string new_state = get_sorted_ids_as_string(get_ids_from_states(next_set));
                     if(new_state == "") continue;
                     if(states_map.find(new_state) != states_map.end()) {
@@ -409,16 +386,14 @@ State* Dfa::construct_dfa(Nfa *nfa) {
                         states_map[new_state] = new State();
                         ++this->states_count;
                         states_vector.push_back(states_map[new_state]);
-                        if(contains_accepted(next_set)) {
-                            states_map[new_state]->is_acceptence = true;
-                        }
-                        set_map[new_state] = next_set;
-                        bool_map[new_state] = false;
+                        new_mapping_sets_map[new_state] = next_set;
+                        bool_is_visited_map[new_state] = false;
                         added_new = true;
                         states_map[iterator->first]->AddTransition(new Transition(states_map[new_state], input));
                     }
                 }
-                bool_map[iterator->first] = true;
+                bool_is_visited_map[iterator->first] = true;
+                if(added_new) break;
             }
         }
     }

@@ -11,8 +11,8 @@ class Lexical {
 public:
     struct Output {
         vector<Token *> tokens;
-        bool error_found;
-        string error_string;
+        int errors_found;
+        vector<string> errors_strings;
     };
 
     static const vector<string> alphabet;
@@ -20,8 +20,8 @@ public:
     void AddDfa(Nfa* nfa, Token* token);
     Lexical::Output ParseInput(string input);
 
-private:
     vector<Dfa *> dfas;
+
 };
 
 

@@ -9,24 +9,24 @@ const vector<string> Lexical::alphabet = {
         "6", "7", "8", "9", ";", "<", "=", ">", "?", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
         "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_", "`", "a", "b",
         "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x",
-        "y", "z", "{", "|", "}", "~" };
+        "y", "z", "{", "|", "}", "~", ":" };
 
 void Lexical::AddDfa(Nfa* nfa, Token* token) {
     dfas.push_back(new Dfa(nfa, token));
 }
 
 Lexical::Output Lexical::ParseInput(string input) {
-    string error_string = "";
+    vector<string> error_strings;
     Token *highest_token = nullptr;
     vector<Token*> answer;
-    int last_position = 0, highest_priority = -1;
+    int last_position = 0, highest_priority = -1, errors_found = 0;
 
     bool running_bools[dfas.size()];
     fill(running_bools, running_bools + dfas.size(), true);
 
-    bool has_running = true, error_found = false;
+    bool has_running = true;
 
-    while(input.length() != 0 && !error_found) {
+    while(input.length() != 0) {
         fill(running_bools, running_bools + dfas.size(), true);
         last_position = 0;
         highest_priority = -1;
@@ -37,6 +37,7 @@ Lexical::Output Lexical::ParseInput(string input) {
         }
         for(int i = 0; i <= input.length(); ++i) {
             string curr_string = string(1, input[i]);
+
             if((!has_running || i == input.length() || curr_string == " " || curr_string == "\n" || curr_string == "\t")
                && highest_token != nullptr) {
                 highest_token->pattern = input.substr(0, last_position + 1);
@@ -49,8 +50,9 @@ Lexical::Output Lexical::ParseInput(string input) {
                 }
                 break;
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
-                error_found = true;
-                error_string = input;
+                ++errors_found;
+                error_strings.push_back(input);
+                input.erase(0, 1);
                 break;
             }
             if(curr_string == " " || curr_string == "\n" || curr_string == "\t") {
@@ -82,6 +84,6 @@ Lexical::Output Lexical::ParseInput(string input) {
 
 
 
-    Output output = { answer, error_found, error_string };
+    Output output = { answer, errors_found, error_strings };
     return output;
 }
