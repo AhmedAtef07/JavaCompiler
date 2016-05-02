@@ -86,3 +86,23 @@ TEST(ContextFreeGrammar, ParsingGrammarRule) {
     EXPECT_EQ(cfg->rules[1]->productions[0][0]->name, "+");
     EXPECT_EQ(cfg->rules[1]->productions[1][0]->name, "-");
 }
+
+TEST(ContextFreeGrammar, ParsingGrammarRuleWithEscapeChar) {
+    string grammar = "     "
+            "# STATEMENT_LIST  = '\\'' '\\|' | '\\|' '\\+' STATEMENT | STATEMENT_LIST STATEMENT '\\'ahmed\\''";
+
+    ContextFreeGrammar *cfg = new ContextFreeGrammar();
+    cfg->AddRulesFromString(grammar);
+
+    EXPECT_EQ(cfg->rules[0]->name, "STATEMENT_LIST");
+    EXPECT_EQ(cfg->rules[0]->productions[0][0]->name, "\\'");
+    EXPECT_EQ(cfg->rules[0]->productions[0][1]->name, "\\|");
+
+    EXPECT_EQ(cfg->rules[0]->productions[1][0]->name, "\\|");
+    EXPECT_EQ(cfg->rules[0]->productions[1][1]->name, "\\+");
+    EXPECT_EQ(cfg->rules[0]->productions[1][2]->name, "STATEMENT");
+
+    EXPECT_EQ(cfg->rules[0]->productions[2][0]->name, "STATEMENT_LIST");
+    EXPECT_EQ(cfg->rules[0]->productions[2][1]->name, "STATEMENT");
+    EXPECT_EQ(cfg->rules[0]->productions[2][2]->name, "\\'ahmed\\'");
+}

@@ -32,9 +32,10 @@ vector<string> GrammarRule::parse_or_tokens(string &s) {
     vector<string> or_tokens_;
 
     for(int i = 0, last = 0, len = s.length(); i != s.size(); ++i) {
-        // Escape character. So we gonna escape it.
-        if(s[i] == '\\') continue;
-        if(s[i] == '|') {
+        // Escape character. So we gonna escape the next char.
+        if(s[i] == '\\') {
+            ++i;
+        } else if(s[i] == '|') {
             string token = s.substr(last, i - 1 - last);
             trim_(token);
             or_tokens_.push_back(token);
