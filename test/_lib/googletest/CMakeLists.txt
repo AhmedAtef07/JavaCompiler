@@ -13,7 +13,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
 # Google Test also has to use one.
 option(
   gtest_force_shared_crt
-  "Use shared (DLL) run-time lib even when Google Test is built as static lib."
+  "Use shared (DLL) run-time _lib even when Google Test is built as static _lib."
   OFF)
 
 option(gtest_build_tests "Build all of gtest's own tests." OFF)
@@ -103,7 +103,7 @@ endif()
 #
 # Install rules
 install(TARGETS gtest gtest_main
-  DESTINATION lib)
+  DESTINATION _lib)
 install(DIRECTORY ${gtest_SOURCE_DIR}/include/gtest
   DESTINATION include)
 

@@ -34,3 +34,5 @@
 # Ignore .idea
 .idea
 .idea/*
+
+report/dfa.js
