@@ -2,30 +2,26 @@
 // Created by Ahmed Barakat on 122 / 1 / 16.
 //
 
-#ifndef JAVACOMPILER_CONTEXTFREEGRAMMER_H
-#define JAVACOMPILER_CONTEXTFREEGRAMMER_H
+#ifndef JAVACOMPILER_CONTEXTFREEGRAMMAR_H
+#define JAVACOMPILER_CONTEXTFREEGRAMMAR_H
 
 #include <string>
 #include <vector>
 #include "Symbol.h"
-
-using namespace std;
+#include "GrammarRule.h"
 
 class ContextFreeGrammar {
 
 public:
-    vector<string> rules_as_strings;
-    vector<Symbol*> rules;
-    ContextFreeGrammar(string cfg_file_name);
+    vector<string> string_rules;
+    vector<GrammarRule*> rules;
 
-private:
-    vector<string> &split(const string &s, char delim, vector<string> &elems);
-    vector<string> split(const string &s, char delim);
-    string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
-    string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
-    string trim(const string& s, const string& delimiters = " \f\n\r\t\v");
+    ContextFreeGrammar();
 
+    vector<string> AddRulesFromFile(string file_path);
+    vector<string> AddRulesFromString(string rules);
+    void AddRule(string rule_string);
 };
 
 
-#endif //JAVACOMPILER_CONTEXTFREEGRAMMER_H
+#endif //JAVACOMPILER_CONTEXTFREEGRAMMAR_H

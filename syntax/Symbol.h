@@ -7,20 +7,27 @@
 
 #include <iostream>
 #include <vector>
+#include "GrammarRule.h"
+
 using namespace std;
+
+class GrammarRule;
 
 class Symbol {
 
 public:
     enum Type {
-        terminal,
-        nonTerminal,
+        kTerminal,
+        kNonTerminal,
     };
-    vector<vector<Symbol*>> productions;
+
     string name;
+    GrammarRule* grammar_rule;
+    Type type;
 
-    Symbol(string name);
+    Symbol(const string &name);
 
+    Symbol(GrammarRule* grammar_rule);
 };
 
 #endif //JAVACOMPILER_SYMBOL_H

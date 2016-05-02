@@ -4,6 +4,9 @@
 
 #include <Symbol.h>
 
-Symbol::Symbol(string name) {
-    this->name = name;
-}
+
+//Symbol::Symbol(const string &name) : name(name), type(kTerminal) { }
+
+Symbol::Symbol(GrammarRule* grammar_rule) : grammar_rule(grammar_rule), name(grammar_rule->name), type(kNonTerminal) {}
+
+Symbol::Symbol(const string &name) : grammar_rule(NULL), name(name), type(kTerminal) {}
