@@ -20,7 +20,6 @@ set(SRC_FILES
         Visualiser.cpp
         Visualiser.h
         Lexical.cpp
-        Lexical.h
-        Symbol.h ContextFreeGrammar.cpp ContextFreeGrammar.h Symbol.cpp)
+        Lexical.h)
 
 add_library(lexical STATIC ${SRC_FILES})

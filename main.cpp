@@ -76,7 +76,7 @@ int main() {
 //    cout << "Error String Remaning: " << output.error_string << endl << endl;
 //    cout << "# of Tokens: " << output.tokens.size() << endl;
 
-    ContextFreeGrammar *cfg = new ContextFreeGrammar("../lexical/cfg.txt");
+    ContextFreeGrammar *cfg = new ContextFreeGrammar("../syntax/CFG.txt");
 
     return 0;
 }
