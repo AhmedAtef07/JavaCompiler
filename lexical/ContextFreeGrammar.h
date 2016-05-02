@@ -15,7 +15,7 @@ class ContextFreeGrammar {
 
 public:
     vector<string> rules_as_strings;
-    vector<Symbol> rules;
+    vector<Symbol*> rules;
     ContextFreeGrammar(string cfg_file_name);
 
 private:

@@ -16,8 +16,10 @@ public:
         terminal,
         nonTerminal,
     };
-    vector<vector<Symbol>> productions;
+    vector<vector<Symbol*>> productions;
     string name;
+
+    Symbol(string name);
 
 };
 
