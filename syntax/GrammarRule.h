@@ -7,27 +7,37 @@
 
 #include <string>
 #include "Symbol.h"
+#include "ContextFreeGrammar.h"
 
 using namespace std;
 
 class Symbol;
+class ContextFreeGrammar;
 
 class GrammarRule {
 
 public:
+    struct GrammarStringToken {
+        string name;
+        string production;
+    };
+
     string name;
+    // Outer vector is OR predication_rules x = a | b. Inner following predication_rules x = '(' 'id' ')'.
     vector<vector<Symbol*> > productions;
 
-    // TODO: Pass the Context Free Grammar object, to determine if the rule is already defined or not.
-    GrammarRule(string rule);
+    GrammarRule(string name, ContextFreeGrammar* cfg);
 
-    static GrammarRule * GetNonDefinedGrammarRule(string name);
+    void AddProductionsFromString(string rule);
+
+    static GrammarRule::GrammarStringToken ParseGrammarString(string rule);
 
 private:
-    GrammarRule();
-    vector<string> parse_or_tokens(string &s);
-    vector<Symbol*> parse_following_tokens(string &s);
 
+    ContextFreeGrammar* cfg;
+    vector<string> parse_or_tokens(string &s);
+
+    vector<Symbol*> parse_following_tokens(string &s);
 };
 
 

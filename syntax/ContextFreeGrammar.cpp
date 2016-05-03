@@ -35,7 +35,7 @@ vector<string> ContextFreeGrammar::AddRulesFromString(string rules_raw) {
     return rules_raw_tokens;
 }
 
-void ContextFreeGrammar::AddRule(string rule_string) {
+void ContextFreeGrammar::JustifyRuleString(string &rule_string) {
     // Cleaning up.
     // TODO: Make sure this will never cause an error to the actual content of the grammar rule.
     replace_all_(rule_string, "\f\n\r\t\v", ' ');
@@ -43,12 +43,30 @@ void ContextFreeGrammar::AddRule(string rule_string) {
     remove_consecutive_(rule_string, ' ');
     // Trimming right and left extra spaces.
     trim_(rule_string);
+}
 
-    if(rule_string == "") return;
+// Searches in linear time for the name in the GrammarRules in the ContextFreeGrammar.
+// Retunes NULL is not exists.
+GrammarRule * ContextFreeGrammar::FindExistingGrammarRule(const string &query_name) {
+    for (GrammarRule *gr : rules) {
+        if(gr->name == query_name) return gr;
+    }
+    return NULL;
+}
+
+void ContextFreeGrammar::AddRule(string rule_string) {
+    JustifyRuleString(rule_string);
+    if (rule_string == "") return;
 
     string_rules.push_back(rule_string);
 
-    GrammarRule* grammar_rule = new GrammarRule(rule_string);
+    GrammarRule::GrammarStringToken gst = GrammarRule::ParseGrammarString(rule_string);
 
-    rules.push_back(grammar_rule);
+
+    if (GrammarRule* matched_gr = FindExistingGrammarRule(gst.name)) { // Does Exist.
+        matched_gr->AddProductionsFromString(gst.production);
+    } else { // Undefined grammar rule.
+        GrammarRule* gr = new GrammarRule(gst.name, this);
+        gr->AddProductionsFromString(gst.production);
+    };
 }

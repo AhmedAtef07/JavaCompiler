@@ -77,14 +77,14 @@ TEST(ContextFreeGrammar, ParsingGrammarRule) {
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammar);
 
-    EXPECT_EQ(cfg->rules[0]->name, "STATEMENT_LIST");
-    EXPECT_EQ(cfg->rules[0]->productions[0][0]->name, "STATEMENT");
-    EXPECT_EQ(cfg->rules[0]->productions[1][0]->name, "STATEMENT_LIST");
-    EXPECT_EQ(cfg->rules[0]->productions[1][1]->name, "STATEMENT");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->name, "STATEMENT_LIST");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[0][0]->name, "STATEMENT");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[1][0]->name, "STATEMENT_LIST");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[1][1]->name, "STATEMENT");
 
-    EXPECT_EQ(cfg->rules[1]->name, "SIGN");
-    EXPECT_EQ(cfg->rules[1]->productions[0][0]->name, "+");
-    EXPECT_EQ(cfg->rules[1]->productions[1][0]->name, "-");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("SIGN")->name, "SIGN");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("SIGN")->productions[0][0]->name, "+");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("SIGN")->productions[1][0]->name, "-");
 }
 
 TEST(ContextFreeGrammar, ParsingGrammarRuleWithEscapeChar) {
@@ -105,4 +105,28 @@ TEST(ContextFreeGrammar, ParsingGrammarRuleWithEscapeChar) {
     EXPECT_EQ(cfg->rules[0]->productions[2][0]->name, "STATEMENT_LIST");
     EXPECT_EQ(cfg->rules[0]->productions[2][1]->name, "STATEMENT");
     EXPECT_EQ(cfg->rules[0]->productions[2][2]->name, "\\'ahmed\\'");
+}
+
+TEST(ContextFreeGrammar, CheckGrammarRulesReferencing) {
+    string grammar = ""
+            "# METHOD_BODY = STATEMENT_LIST\n"
+            "# STATEMENT_LIST = STATEMENT | STATEMENT_LIST STATEMENT\n"
+            "# STATEMENT = DECLARATION\n";
+
+    ContextFreeGrammar *cfg = new ContextFreeGrammar();
+    cfg->AddRulesFromString(grammar);
+
+    // Comparing Names.
+    EXPECT_EQ(cfg->FindExistingGrammarRule("METHOD_BODY")->productions[0][0]->name, cfg->rules[1]->name);
+    EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[0][0]->name,
+              cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[1][1]->name);
+
+    // Comparing References.
+
+    // 'STATEMENT_LIST'
+    EXPECT_EQ(cfg->FindExistingGrammarRule("METHOD_BODY")->productions[0][0]->grammar_rule, cfg->rules[1]);
+
+    // 'STATEMENT'
+    EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[0][0]->grammar_rule,
+              cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[1][1]->grammar_rule);
 }
