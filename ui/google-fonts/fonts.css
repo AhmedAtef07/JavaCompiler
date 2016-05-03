@@ -1,0 +1,13 @@
+/* fira-mono-regular - latin */
+@font-face {
+  font-family: 'Fira Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fira-mono/fira-mono-v3-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Fira Mono'), local('FiraMono'),
+       url('fira-mono/fira-mono-v3-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('fira-mono/fira-mono-v3-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('fira-mono/fira-mono-v3-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('fira-mono/fira-mono-v3-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('fira-mono/fira-mono-v3-latin-regular.svg#FiraMono') format('svg'); /* Legacy iOS */
+}

@@ -35,4 +35,10 @@
 .idea
 .idea/*
 
-report/dfa.js
+dfa.js
+
+ui/nwjs
+
+bower_components
+node_modules
+
