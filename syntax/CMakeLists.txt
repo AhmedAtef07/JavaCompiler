@@ -9,6 +9,8 @@ set(SRC_FILES
         ContextFreeGrammar.h
         GrammarRule.cpp
         GrammarRule.h
-        ParsingFunctions.h ParsingTableGenerator.cpp ParsingTableGenerator.h)
+        ParsingFunctions.h
+        ParsingTableGenerator.cpp
+        ParsingTableGenerator.h)
 
 add_library(syntax STATIC ${SRC_FILES})

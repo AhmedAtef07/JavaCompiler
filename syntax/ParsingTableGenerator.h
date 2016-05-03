@@ -16,14 +16,14 @@ using namespace std;
 class ParsingTableGenerator {
 
 public:
-    ParsingTableGenerator(vector<GrammarRule*> rules);
+    vector<vector<set<string>>> firsts;
+    vector<set<string>> follows;
 
+    ParsingTableGenerator(vector<GrammarRule*> rules);
 private:
     vector<GrammarRule*> rules;
-    vector<vector<set<string>>> firsts;
     map<string, vector<set<string>>> firsts_map;
     map<string, set<string>> follows_map;
-    vector<set<string>> follows;
 
     bool contains_lambda(GrammarRule *rule);
     bool contains_lambda(set<string> set_of_strings);
