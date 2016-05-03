@@ -27,6 +27,7 @@ public:
     vector<vector<Symbol*> > productions;
 
     GrammarRule(string name, ContextFreeGrammar* cfg);
+    GrammarRule();
 
     void AddProductionsFromString(string rule);
 

@@ -28,6 +28,25 @@ bool ParsingTableGenerator::contains_lambda(GrammarRule *rule) {
     return false;
 }
 
+bool ParsingTableGenerator::contains_lambda(set<string> set_of_strings) {
+    for(string s : set_of_strings) {
+        if(s == "") return true;
+    }
+    return false;
+}
+
+void ParsingTableGenerator::remove_lambda(set<string> &set_of_strings) {
+    set_of_strings.erase(set_of_strings.find(""));
+}
+
+set<string> ParsingTableGenerator::vector_to_set_strings(vector<set<string>> vector_of_strings) {
+    set<string> set_of_strings;
+    for(set<string> s : vector_of_strings) {
+        set_of_strings.insert(s.begin(), s.end());
+    }
+    return set_of_strings;
+}
+
 vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
     vector<set<string>> firsts;
     for(vector<Symbol*> v : rule->productions) {
@@ -60,6 +79,7 @@ vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
         }
         firsts.push_back(first);
     }
+    return firsts;
 }
 
 vector<vector<set<string>>> ParsingTableGenerator::calculate_firsts() {
@@ -67,44 +87,11 @@ vector<vector<set<string>>> ParsingTableGenerator::calculate_firsts() {
     for(GrammarRule *gr : this->rules) {
         if(this->firsts_map.find(gr->name) == this->firsts_map.end()) {
             vector<set<string>> current_rule_first_vector = calculate_first(gr);
-            ret.push_back(current_rule_first_vector);
             this->firsts_map[gr->name] = current_rule_first_vector;
         }
+        ret.push_back(this->firsts_map[gr->name]);
     }
     return ret;
-}
-
-vector<set<string>> ParsingTableGenerator::calculate_follows() {
-    vector<set<string>> ret;
-    this->follows_map[this->rules[0]->name] = calculate_follow(this->rules[0]);
-    this->follows_map[this->rules[0]->name].insert("\\$");
-    ret.push_back(this->follows_map[this->rules[0]->name]);
-    for(GrammarRule *gr : this->rules) {
-        if(this->follows_map.find(gr->name) == this->follows_map.end()) {
-            this->follows_map[gr->name] = calculate_follow(gr);
-        }
-        ret.push_back(this->follows_map[gr->name]);
-    }
-    return ret;
-}
-
-set<string> ParsingTableGenerator::vector_to_set_strings(vector<set<string>> vector_of_strings) {
-    set<string> set_of_strings;
-    for(set<string> s : vector_of_strings) {
-        set_of_strings.insert(s.begin(), s.end());
-    }
-    return set_of_strings;
-}
-
-bool ParsingTableGenerator::contains_lambda(set<string> set_of_strings) {
-    for(string s : set_of_strings) {
-        if(s == "") return true;
-    }
-    return false;
-}
-
-void ParsingTableGenerator::remove_lambda(set<string> &set_of_strings) {
-    set_of_strings.erase(set_of_strings.find(""));
 }
 
 set<string> ParsingTableGenerator::calculate_follow(GrammarRule *rule) {
@@ -154,5 +141,18 @@ set<string> ParsingTableGenerator::calculate_follow(GrammarRule *rule) {
         }
     }
     return current_rule_follow;
+}
+
+vector<set<string>> ParsingTableGenerator::calculate_follows() {
+    vector<set<string>> ret;
+    this->follows_map[this->rules[0]->name] = calculate_follow(this->rules[0]);
+    this->follows_map[this->rules[0]->name].insert("\\$");
+    for(GrammarRule *gr : this->rules) {
+        if(this->follows_map.find(gr->name) == this->follows_map.end()) {
+            this->follows_map[gr->name] = calculate_follow(gr);
+        }
+        ret.push_back(this->follows_map[gr->name]);
+    }
+    return ret;
 }
 

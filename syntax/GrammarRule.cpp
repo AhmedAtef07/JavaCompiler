@@ -83,3 +83,5 @@ vector<Symbol*> GrammarRule::parse_following_tokens(string &s) {
 
     return res;
 }
+
+GrammarRule::GrammarRule() { }
