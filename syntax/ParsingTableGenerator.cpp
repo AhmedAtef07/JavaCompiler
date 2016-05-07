@@ -8,6 +8,8 @@ ParsingTableGenerator::ParsingTableGenerator(vector<GrammarRule *> rules) {
     this->rules = rules;
     this->firsts = calculate_firsts();
     this->follows = calculate_follows();
+    generate_table();
+    print_table();
 }
 
 bool ParsingTableGenerator::contains_lambda(GrammarRule *rule) {
@@ -53,11 +55,13 @@ vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
         set<string> first;
         if(v[0]->type == Symbol::Type::kTerminal) {
             first.insert(v[0]->name);
+            this->terminals.insert(v[0]->name);
         } else {
             bool is_all_lambda = true;
             for(int i = 0; i < v.size(); ++i) {
                 if(v[i]->type == Symbol::Type::kTerminal) {
                     first.insert(v[i]->name);
+                    this->terminals.insert(v[i]->name);
                     is_all_lambda = false;
                     break;
                 }
@@ -84,6 +88,7 @@ vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
 
 vector<vector<set<string>>> ParsingTableGenerator::calculate_firsts() {
     vector<vector<set<string>>> ret;
+    this->terminals.insert("\\$");
     for(GrammarRule *gr : this->rules) {
         if(this->firsts_map.find(gr->name) == this->firsts_map.end()) {
             vector<set<string>> current_rule_first_vector = calculate_first(gr);
@@ -154,5 +159,59 @@ vector<set<string>> ParsingTableGenerator::calculate_follows() {
         ret.push_back(this->follows_map[gr->name]);
     }
     return ret;
+}
+
+void ParsingTableGenerator::generate_table() {
+    this->table = (vector<Symbol*> ***)malloc(sizeof(vector<Symbol*>) * this->rules.size());
+    for(int i = 0; i < this->rules.size(); ++i) {
+        this->table[i] = (vector<Symbol*> **)malloc(sizeof(vector<Symbol*>) * this->terminals.size());
+    }
+
+    for(int i = 0; i < this->rules.size(); ++i) {
+        for(int j = 0; j < this->terminals.size(); ++j) {
+            this->table[i][j] = new vector<Symbol*>();
+//            this->table[i][j]->push_back(new Symbol("\\$"));
+//            this->table[i][j]->push_back(new Symbol("id"));
+        }
+    }
+
+
+    for(int i = 0; i < this->firsts.size(); ++i) {
+        for(int j = 0; j < this->firsts[i].size(); ++j) {
+            for(string s : this->firsts[i][j]) {
+                if(s != "") {
+                    int current_terminal_index = terminal_as_index(s);
+                    this->table[i][current_terminal_index]->insert(this->table[i][current_terminal_index]->end(),
+                                                                 this->rules[i]->productions[j].begin(),
+                                                                 this->rules[i]->productions[j].end());
+                }
+            }
+        }
+    }
+
+}
+
+void ParsingTableGenerator::print_table() {
+    for(string s : this->terminals) {
+        cout << s << " | ";
+    }
+    cout << endl;
+
+    for(int i = 0; i < this->rules.size(); ++i) {
+        cout << this->rules[i]->name << " | ";
+        for(int j = 0; j < this->terminals.size(); ++j) {
+            for(Symbol *s : *table[i][j]) {
+                cout << s->name << " ";
+            }
+            cout << ((j + 1) == this->terminals.size()? "": " | ");
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+int ParsingTableGenerator::terminal_as_index(string terminal_name) {
+    if(this->terminals.find(terminal_name) == this->terminals.end()) return -1;
+    return distance(this->terminals.begin(), this->terminals.find(terminal_name));
 }
 

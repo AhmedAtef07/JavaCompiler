@@ -18,8 +18,10 @@ class ParsingTableGenerator {
 public:
     vector<vector<set<string>>> firsts;
     vector<set<string>> follows;
+    vector<Symbol *> ***table;
 
     ParsingTableGenerator(vector<GrammarRule*> rules);
+    set<string> terminals;
 private:
     vector<GrammarRule*> rules;
     map<string, vector<set<string>>> firsts_map;
@@ -35,6 +37,11 @@ private:
 
     void remove_lambda(set<string> &set_of_strings);
     set<string> vector_to_set_strings(vector<set<string>> vector_of_strings);
+    int terminal_as_index(string terminal_name);
+
+    void generate_table();
+
+    void print_table();
 };
 
 
