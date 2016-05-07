@@ -13,7 +13,7 @@ ParsingTableGenerator::ParsingTableGenerator(vector<GrammarRule *> rules) {
 }
 
 bool ParsingTableGenerator::contains_lambda(GrammarRule *rule) {
-    for(vector<Symbol*> v : rule->productions) {
+    for(vector<Symbol*> &v : rule->productions) {
         if(v.size() == 1 && v[0]->name == "") return true;
     }
     for(vector<Symbol*> v : rule->productions) {
@@ -51,7 +51,7 @@ set<string> ParsingTableGenerator::vector_to_set_strings(vector<set<string>> vec
 
 vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
     vector<set<string>> firsts;
-    for(vector<Symbol*> v : rule->productions) {
+    for(vector<Symbol*> &v : rule->productions) {
         set<string> first;
         if(v[0]->type == Symbol::Type::kTerminal) {
             first.insert(v[0]->name);
@@ -102,11 +102,13 @@ vector<vector<set<string>>> ParsingTableGenerator::calculate_firsts() {
 set<string> ParsingTableGenerator::calculate_follow(GrammarRule *rule) {
     set<string> current_rule_follow;
     for(GrammarRule *gr : this->rules) {
-        for(vector<Symbol*> v : gr->productions) {
+        for(vector<Symbol*> &v : gr->productions) {
             for(int i = 0; i < v.size(); ++i) {
                 if(v[i]->name == rule->name) {
                     if(i + 1 == v.size() && gr->name != rule->name) {
                         if(this->follows_map.find(gr->name) == this->follows_map.end()) {
+                            // Init the set in the map; avoiding infinite recursion.
+                            this->follows_map[gr->name];
                             this->follows_map[gr->name] = calculate_follow(v[i]->grammar_rule);
                         }
                         current_rule_follow.insert(this->follows_map[gr->name].begin(),
