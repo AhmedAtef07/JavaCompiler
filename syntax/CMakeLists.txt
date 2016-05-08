@@ -11,6 +11,8 @@ set(SRC_FILES
         GrammarRule.h
         ParsingFunctions.h
         ParsingTableGenerator.cpp
-        ParsingTableGenerator.h)
+        ParsingTableGenerator.h
+        PredictiveParser.cpp
+        PredictiveParser.h)
 
 add_library(syntax STATIC ${SRC_FILES})

@@ -9,6 +9,7 @@ ParsingTableGenerator::ParsingTableGenerator(vector<GrammarRule *> rules) {
     this->firsts = calculate_firsts();
     this->follows = calculate_follows();
     generate_table();
+    generate_rules_names();
     print_table();
 }
 
@@ -169,7 +170,7 @@ void ParsingTableGenerator::generate_table() {
         this->table[i] = (vector<Symbol*> **)malloc(sizeof(vector<Symbol*>) * this->terminals.size());
     }
 
-    for(int i = 0; i < this->rules.size(); ++i) {
+    for(int i = 0; i < this->firsts.size(); ++i) {
         for(int j = 0; j < this->terminals.size(); ++j) {
             this->table[i][j] = new vector<Symbol*>();
 //            this->table[i][j]->push_back(new Symbol("\\$"));
@@ -216,4 +217,12 @@ int ParsingTableGenerator::terminal_as_index(string terminal_name) {
     if(this->terminals.find(terminal_name) == this->terminals.end()) return -1;
     return distance(this->terminals.begin(), this->terminals.find(terminal_name));
 }
+
+void ParsingTableGenerator::generate_rules_names() {
+    for(int i = 0; i < this->rules.size(); ++i) {
+        this->rules_as_names.push_back(this->rules[i]->name);
+    }
+}
+
+
 

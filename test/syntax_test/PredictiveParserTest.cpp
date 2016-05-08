@@ -1,46 +1,14 @@
 //
-// Created by ahmedatef on 5/3/16.
+// Created by Ahmed Barakat on 129 / 8 / 16.
 //
 
 #include <ContextFreeGrammar.h>
 #include <ParsingTableGenerator.h>
-#include <Token.h>
+#include <PredictiveParser.h>
+#include <Lexical.h>
 #include "gtest/gtest.h"
 
-TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
-    string grammar = ""
-            "# A = 'id'\n"
-            "# B = A | '(' ')'";
-
-    ContextFreeGrammar *cfg = new ContextFreeGrammar();
-    cfg->AddRulesFromString(grammar);
-
-    ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
-
-    cout << endl;
-
-    cout << "firsts: " << endl;
-    for(vector<set<string>> v : ptg->firsts) {
-        for(set<string> s : v) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "follows: " << ptg->follows.size() << endl;
-    for(set<string> s : ptg->follows) {
-        for(string st : s) {
-            cout << st << "  ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
+TEST(PredectiveParserGenerater, GeneratingObject) {
     string grammar = ""
             "# A = B C\n"
             "# B = 'int' | 'float'\n"
@@ -86,7 +54,7 @@ TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
     ParsingTableGenerator* ptg = new ParsingTableGenerator(rules);
 
     cout << "firsts: " << endl;
-    for(vector<set<string>> &v : ptg->firsts) {
+    for(vector<set<string>> v : ptg->firsts) {
         for(set<string> s : v) {
             for(string st : s) {
                 cout << st << "  ";
@@ -109,4 +77,18 @@ TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
         cout << s << endl;
     }
     cout << endl;
+
+    PredictiveParser *pp = new PredictiveParser(ptg->table, ptg->terminals, ptg->rules_as_names);
+
+
+    Token *t1 = new Token("int", 1);
+    Token *t2 = new Token("id", 2);
+
+    vector<Token*> v;
+    v.push_back(t1);
+    v.push_back(t2);
+
+    if(pp->parse(v)) {
+        cout << "succedded" << endl;
+    }
 }

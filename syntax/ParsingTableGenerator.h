@@ -20,14 +20,18 @@ public:
     vector<set<string>> follows;
     vector<Symbol *> ***table;
 
-    ParsingTableGenerator(vector<GrammarRule*> rules);
     set<string> terminals;
+    vector<string> rules_as_names;
+
+    ParsingTableGenerator(vector<GrammarRule*> rules);
+
 private:
     vector<GrammarRule*> rules;
     map<string, vector<set<string>>> firsts_map;
     map<string, set<string>> follows_map;
 
     bool contains_lambda(GrammarRule *rule);
+
     bool contains_lambda(set<string> set_of_strings);
 
     vector<set<string>> calculate_first(GrammarRule* rule);
@@ -40,6 +44,7 @@ private:
     int terminal_as_index(string terminal_name);
 
     void generate_table();
+    void generate_rules_names();
 
     void print_table();
 };
