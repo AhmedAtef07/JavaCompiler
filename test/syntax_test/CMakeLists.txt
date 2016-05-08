@@ -8,3 +8,4 @@ add_executable(SYNTAX_TEST_FILE
 
 target_link_libraries(SYNTAX_TEST_FILE gtest gtest_main)
 target_link_libraries(SYNTAX_TEST_FILE syntax)
+target_link_libraries(SYNTAX_TEST_FILE lexical)
