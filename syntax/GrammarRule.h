@@ -36,7 +36,7 @@ public:
 private:
 
     ContextFreeGrammar* cfg;
-    vector<string> parse_or_tokens(string &s);
+    vector<string> parse_or_tokens(string s);
 
     vector<Symbol*> parse_following_tokens(string &s);
 };

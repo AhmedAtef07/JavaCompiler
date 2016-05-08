@@ -12,7 +12,7 @@ GrammarRule::GrammarRule(string name, ContextFreeGrammar* cfg) : name(name), cfg
     }
 }
 
-vector<string> GrammarRule::parse_or_tokens(string &s) {
+vector<string> GrammarRule::parse_or_tokens(string s) {
     s += " |"; // To avoid handling last token.
 
     vector<string> or_tokens_;
@@ -56,7 +56,7 @@ void GrammarRule::AddProductionsFromString(string rule_production) {
     }
 }
 
-// Assuming there exist no terminal symbol with spaces includes; ie: 'any thing' will never occur.
+// TODO: Assuming there exist no terminal symbol with spaces includes; ie: 'any thing' will never occur.
 vector<Symbol*> GrammarRule::parse_following_tokens(string &s) {
     vector<string> tokens = split(s, ' ', true);
 

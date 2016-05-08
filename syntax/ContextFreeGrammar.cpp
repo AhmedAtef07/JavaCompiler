@@ -46,7 +46,7 @@ void ContextFreeGrammar::JustifyRuleString(string &rule_string) {
 }
 
 // Searches in linear time for the name in the GrammarRules in the ContextFreeGrammar.
-// Retunes NULL is not exists.
+// Returns NULL is not exists.
 GrammarRule * ContextFreeGrammar::FindExistingGrammarRule(const string &query_name) {
     for (GrammarRule *gr : rules) {
         if(gr->name == query_name) return gr;
@@ -61,7 +61,6 @@ void ContextFreeGrammar::AddRule(string rule_string) {
     string_rules.push_back(rule_string);
 
     GrammarRule::GrammarStringToken gst = GrammarRule::ParseGrammarString(rule_string);
-
 
     if (GrammarRule* matched_gr = FindExistingGrammarRule(gst.name)) { // Does Exist.
         matched_gr->AddProductionsFromString(gst.production);

@@ -58,16 +58,13 @@ namespace  {
         int i = 0;
         int len = s.length();
         while(i != len && s[i] == ' ') ++i;
-        if(i >= len - 1) s = ""; // s = " " | "";
-        else if(i != len) s = s.substr(i);
+        s = s.substr(i);
     }
 
     void trim_right_(string &s) {
         int i = s.length() - 1;
         while(i != -1 && s[i] == ' ') --i;
-
-        if(i <= 0) s = ""; // s = " " | "";
-        else if(i != -1) s = s.substr(0, i + 1);
+        s = s.substr(0, i + 1);
     }
 
     // Changes the passed string.

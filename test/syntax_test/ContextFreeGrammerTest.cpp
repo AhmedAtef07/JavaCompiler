@@ -111,22 +111,64 @@ TEST(ContextFreeGrammar, CheckGrammarRulesReferencing) {
     string grammar = ""
             "# METHOD_BODY = STATEMENT_LIST\n"
             "# STATEMENT_LIST = STATEMENT | STATEMENT_LIST STATEMENT\n"
-            "# STATEMENT = DECLARATION\n";
+            "# SIGN = '*'\n"
+            "# EQUATION = SIGN"
+            "# STATEMENT = DECELERATION\n";
 
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammar);
 
     // Comparing Names.
     EXPECT_EQ(cfg->FindExistingGrammarRule("METHOD_BODY")->productions[0][0]->name, cfg->rules[1]->name);
+    EXPECT_EQ(cfg->FindExistingGrammarRule("METHOD_BODY")->productions[0][0]->name,
+              cfg->FindExistingGrammarRule("STATEMENT_LIST")->name);
+
     EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[0][0]->name,
               cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[1][1]->name);
 
     // Comparing References.
 
     // 'STATEMENT_LIST'
+    EXPECT_EQ(cfg->FindExistingGrammarRule("METHOD_BODY")->productions[0][0]->grammar_rule,
+              cfg->FindExistingGrammarRule("STATEMENT_LIST"));
+
     EXPECT_EQ(cfg->FindExistingGrammarRule("METHOD_BODY")->productions[0][0]->grammar_rule, cfg->rules[1]);
 
     // 'STATEMENT'
     EXPECT_EQ(cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[0][0]->grammar_rule,
               cfg->FindExistingGrammarRule("STATEMENT_LIST")->productions[1][1]->grammar_rule);
+
+    // 'SIGN'
+    EXPECT_EQ(cfg->FindExistingGrammarRule("EQUATION")->productions[0][0]->grammar_rule,
+              cfg->FindExistingGrammarRule("SIGN"));
 }
+
+TEST(ContextFreeGrammar, ParsingOutputTokens) {
+    string grammar = ""
+            "# A = 'id'\n"
+            "# B = A | '(' ')'";
+
+    ContextFreeGrammar *cfg = new ContextFreeGrammar();
+    cfg->AddRulesFromString(grammar);
+
+    EXPECT_EQ(cfg->FindExistingGrammarRule("A")->name, "A");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("A")->productions[0][0]->name, "id");
+
+    EXPECT_EQ(cfg->FindExistingGrammarRule("B")->name, "B");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("B")->productions[0][0]->name, "A");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("B")->productions[1][0]->name, "(");
+
+//    for(GrammarRule *gr : cfg->rules) {
+//        cout << "# " << gr->name << " Number of productions: " <<  gr->productions.size() << endl;
+//        for(vector<Symbol*> &v : gr->productions) {
+//            cout << "gr.production: " << v.size() << endl;
+//            for(Symbol * s : v) {
+//                cout << s->type << " " << s->name << " " << s->grammar_rule << endl;
+//            }
+//            cout << "|" << endl;
+//        }
+//        cout << endl;
+//    }
+}
+
+

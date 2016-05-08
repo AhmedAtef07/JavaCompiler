@@ -8,8 +8,8 @@
 
 TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
     string grammar = ""
-            "# AAA = 'id'\n"
-            "# BBB = AAA | '(' ')'";
+            "# A = 'id'\n"
+            "# B = A | '(' ')'";
 
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammar);
@@ -37,11 +37,6 @@ TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
         cout << endl;
     }
     cout << endl;
-
-//    cout << cfg->rules.size() << endl;
-//    cout << cfg->rules[0]->productions[0].size() << endl;
-//    cout << cfg->rules[1]->productions[0].size() << endl;
-//    cout << ptg->firsts.size() << endl;
 }
 
 TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
@@ -90,7 +85,7 @@ TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
     ParsingTableGenerator* ptg = new ParsingTableGenerator(rules);
 
     cout << "firsts: " << endl;
-    for(vector<set<string>> v : ptg->firsts) {
+    for(vector<set<string>> &v : ptg->firsts) {
         for(set<string> s : v) {
             for(string st : s) {
                 cout << st << "  ";
