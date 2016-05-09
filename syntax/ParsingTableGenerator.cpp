@@ -70,6 +70,8 @@ vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
                     if(!contains_lambda(v[i]->grammar_rule)) {
                         is_all_lambda = false;
                         if(this->firsts_map.find(v[i]->grammar_rule->name) == this->firsts_map.end()) {
+                            // Init the set in the map; avoiding infinite recursion.
+                            this->firsts_map[v[i]->grammar_rule->name];
                             this->firsts_map[v[i]->grammar_rule->name] = calculate_first(v[i]->grammar_rule);
                         }
                         set<string> current_nonTerminal_first = vector_to_set_strings(this->firsts_map[v[i]->grammar_rule->name]);
