@@ -26,6 +26,14 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
             }
         }
         if(the_stack.back()->type == Symbol::Type::kTerminal) {
+            if(the_stack.back()->name == "" && token->name == "\\$") {
+                the_stack.pop_back();
+                ++i;
+                continue;
+            } else if(the_stack.back()->name == "") {
+                the_stack.pop_back();
+                continue;
+            }
             if(the_stack.back()->name == token->name) {
                 cout << "matched: " << token->name << " " << the_stack.back()->name << endl;
                 the_stack.pop_back();

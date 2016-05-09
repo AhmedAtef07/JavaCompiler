@@ -132,8 +132,12 @@ void ContextFreeGrammar::remove_left_factoring() {
         int dashes_count = 3;
         vector<vector<Symbol*>> &or_vector = rules[i]->productions;
         vector<vector<Symbol*>> new_or_vector;
-        for(int j = 0; j < or_vector.size() - 1; ++j) {
+        for(int j = 0; j < (or_vector.size() - 1); ++j) {
             vector<Symbol*> &current_concat_vector = or_vector[j];
+            if(or_vector.size() == 0) {
+                cout << endl << "error empty vector" << endl;
+                break;
+            }
             Symbol * current_first_symbol = current_concat_vector[0];
             for(int k = j + 1; k < or_vector.size();) {
                 vector<Symbol*> &moving_concat_vector = or_vector[k];

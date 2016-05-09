@@ -231,5 +231,5 @@ TEST(ContextFreeGrammar, LLGrammarTest) {
         modified_grammer += "\n";
     }
 
-//    EXPECT_EQ(modified_grammer, expected_modified_grammer);
+    EXPECT_EQ(modified_grammer, expected_modified_grammer);
 }

@@ -164,6 +164,8 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
         cout << endl << "Parsing Stack:" << endl;
         if(pp->parse(output.tokens)) {
             cout << "succedded" << endl;
+        } else {
+            cout << "failed" << endl;
         }
         for(Token *k : output.tokens) {
             detailed_report << k->name << "  >  " << k->pattern << endl;

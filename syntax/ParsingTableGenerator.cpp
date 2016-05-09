@@ -110,7 +110,7 @@ set<string> ParsingTableGenerator::calculate_follow(GrammarRule *rule) {
                         if(this->follows_map.find(gr->name) == this->follows_map.end()) {
                             // Init the set in the map; avoiding infinite recursion.
                             this->follows_map[gr->name];
-                            this->follows_map[gr->name] = calculate_follow(v[i]->grammar_rule);
+                            this->follows_map[gr->name] = calculate_follow(gr);
                         }
                         current_rule_follow.insert(this->follows_map[gr->name].begin(),
                                                    this->follows_map[gr->name].end());
@@ -170,26 +170,39 @@ void ParsingTableGenerator::generate_table() {
         this->table[i] = (vector<Symbol*> **)malloc(sizeof(vector<Symbol*>) * this->terminals.size());
     }
 
-    for(int i = 0; i < this->firsts.size(); ++i) {
+    for(int i = 0; i < this->rules.size(); ++i) {
         for(int j = 0; j < this->terminals.size(); ++j) {
             this->table[i][j] = new vector<Symbol*>();
         }
     }
 
-
-    for(int i = 0; i < this->firsts.size(); ++i) {
+    for(int i = 0; i < this->rules.size(); ++i) {
         for(int j = 0; j < this->firsts[i].size(); ++j) {
             for(string s : this->firsts[i][j]) {
                 if(s != "") {
                     int current_terminal_index = this->terminals_indexes[s];
-                    this->table[i][current_terminal_index]->insert(this->table[i][current_terminal_index]->end(),
-                                                                 this->rules[i]->productions[j].begin(),
-                                                                 this->rules[i]->productions[j].end());
+                    vector<Symbol*> *v = this->table[i][current_terminal_index];
+                    v->insert(v->end(), this->rules[i]->productions[j].begin(), this->rules[i]->productions[j].end());
+                } else {
+                    Symbol *lambda = new Symbol("");
+                    for(string ss : this->follows[i]) {
+                        int current_terminal_index = this->terminals_indexes[ss];
+                        vector<Symbol *> v = *this->table[i][current_terminal_index];
+                        if(v.size() > 1 || (v.size() == 1 && (v[0]->type != Symbol::Type::kTerminal || v[0]->name != ""))) {
+                            cout << endl << "error while generating parsing table" << endl;
+                            vector<Symbol*> v = *this->table[i][current_terminal_index];
+                            for(int k = 0; k < v.size(); ++k) {
+                                cout << v[k]->name << " ";
+                            }
+                            cout << endl << "terminal: " << ss << " rule: " << this->rules[i]->name << endl;
+                        } else {
+                            this->table[i][current_terminal_index]->push_back(new Symbol(""));
+                        }
+                    }
                 }
             }
         }
     }
-
 }
 
 void ParsingTableGenerator::print_table() {
