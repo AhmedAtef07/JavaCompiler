@@ -32,7 +32,11 @@ public:
     GrammarRule * FindExistingGrammarRule(const string &query_name);
 private:
 
+    string many_dashes(int count);
+
     void generate_ll_grammar();
+    void remove_left_recursion();
+    void remove_left_factoring();
 };
 
 

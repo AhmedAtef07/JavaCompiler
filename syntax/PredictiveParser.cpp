@@ -21,8 +21,8 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
             } else {
                 for(int j = v.size() - 1; j > -1; --j) {
                     the_stack.push_back(v[j]);
-                    print_the_stack(token->name);
                 }
+                print_the_stack(token->name);
             }
         }
         if(the_stack.back()->type == Symbol::Type::kTerminal) {
@@ -49,8 +49,8 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 the_stack.pop_back();
                 for(int j = v.size() - 1; j > -1; --j) {
                     the_stack.push_back(v[j]);
-                    print_the_stack(token->name);
                 }
+                print_the_stack(token->name);
             }
         }
     }

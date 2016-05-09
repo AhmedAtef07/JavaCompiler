@@ -71,7 +71,20 @@ void ContextFreeGrammar::AddRule(string rule_string) {
     };
 }
 
+string ContextFreeGrammar::many_dashes(int count) {
+    string dashes = "";
+    for(int i = 0; i < count; ++i) {
+        dashes += "\'";
+    }
+    return dashes;
+}
+
 void ContextFreeGrammar::generate_ll_grammar() {
+    remove_left_recursion();
+    remove_left_factoring();
+}
+
+void ContextFreeGrammar::remove_left_recursion() {
     for(GrammarRule *rule : unmodified_rules) {
         GrammarRule *rule_clone = new GrammarRule();
         rule_clone->name = rule->name;
@@ -92,15 +105,15 @@ void ContextFreeGrammar::generate_ll_grammar() {
         GrammarRule *new_rule = nullptr;
         if(new_nonTerminal_or_vector.size() > 0) {
             new_rule = new GrammarRule();
-            new_rule->name = rule->name + "\'\'";
-            Symbol *current_rule_symbol = new Symbol(new_rule);
+            new_rule->name = rule->name + many_dashes(2);
+            Symbol *new_rule_symbol = new Symbol(new_rule);
             Symbol *lambda = new Symbol("");
             vector<Symbol*> lambda_vector = {lambda};
             for(vector<Symbol*> &concat_vector : new_nonTerminal_or_vector) {
-                concat_vector.push_back(current_rule_symbol);
+                concat_vector.push_back(new_rule_symbol);
             }
             for(vector<Symbol*> &concat_vector : new_or_vector) {
-                concat_vector.push_back(current_rule_symbol);
+                concat_vector.push_back(new_rule_symbol);
             }
             new_nonTerminal_or_vector.push_back(lambda_vector);
             new_rule->productions = new_nonTerminal_or_vector;
@@ -113,4 +126,54 @@ void ContextFreeGrammar::generate_ll_grammar() {
         }
     }
 }
+
+void ContextFreeGrammar::remove_left_factoring() {
+    for(int i = 0; i < rules.size(); ++i) {
+        int dashes_count = 3;
+        vector<vector<Symbol*>> &or_vector = rules[i]->productions;
+        vector<vector<Symbol*>> new_or_vector;
+        for(int j = 0; j < or_vector.size() - 1; ++j) {
+            vector<Symbol*> &current_concat_vector = or_vector[j];
+            Symbol * current_first_symbol = current_concat_vector[0];
+            for(int k = j + 1; k < or_vector.size();) {
+                vector<Symbol*> &moving_concat_vector = or_vector[k];
+                Symbol * moving_first_symbol = moving_concat_vector[0];
+                if(moving_first_symbol->type == current_first_symbol->type
+                   && moving_first_symbol->name == current_first_symbol->name) {
+                    vector<Symbol*> new_concat_vector;
+                    if(moving_concat_vector.size() > 1) {
+                        new_concat_vector.insert(new_concat_vector.end(),
+                                                 moving_concat_vector.begin() + 1, moving_concat_vector.end());
+                    } else {
+                        new_concat_vector.push_back(new Symbol(""));
+                    }
+                    new_or_vector.push_back(new_concat_vector);
+                    or_vector.erase(or_vector.begin() + k);
+                } else {
+                    ++k;
+                }
+            }
+            if(new_or_vector.size() > 0) {
+                vector<Symbol*> new_concat_vector;
+                if(current_concat_vector.size() > 1) {
+                    new_concat_vector.insert(new_concat_vector.end(),
+                                             current_concat_vector.begin() + 1, current_concat_vector.end());
+                } else {
+                    new_concat_vector.push_back(new Symbol(""));
+                }
+                current_concat_vector.erase(current_concat_vector.begin() + 1, current_concat_vector.end());
+                GrammarRule *new_rule = new GrammarRule();
+                new_rule->name = rules[i]->name + many_dashes(dashes_count++);
+                Symbol *new_rule_symbol = new Symbol(new_rule);
+                current_concat_vector.push_back(new_rule_symbol);
+                new_or_vector.push_back(new_concat_vector);
+                new_rule->productions = new_or_vector;
+                rules.push_back(new_rule);
+            }
+        }
+    }
+}
+
+
+
 
