@@ -8,8 +8,8 @@ ParsingTableGenerator::ParsingTableGenerator(vector<GrammarRule *> rules) {
     this->rules = rules;
     this->firsts = calculate_firsts();
     this->follows = calculate_follows();
+    generate_indexes();
     generate_table();
-    generate_rules_names();
     print_table();
 }
 
@@ -173,8 +173,6 @@ void ParsingTableGenerator::generate_table() {
     for(int i = 0; i < this->firsts.size(); ++i) {
         for(int j = 0; j < this->terminals.size(); ++j) {
             this->table[i][j] = new vector<Symbol*>();
-//            this->table[i][j]->push_back(new Symbol("\\$"));
-//            this->table[i][j]->push_back(new Symbol("id"));
         }
     }
 
@@ -183,7 +181,7 @@ void ParsingTableGenerator::generate_table() {
         for(int j = 0; j < this->firsts[i].size(); ++j) {
             for(string s : this->firsts[i][j]) {
                 if(s != "") {
-                    int current_terminal_index = terminal_as_index(s);
+                    int current_terminal_index = this->terminals_indexes[s];
                     this->table[i][current_terminal_index]->insert(this->table[i][current_terminal_index]->end(),
                                                                  this->rules[i]->productions[j].begin(),
                                                                  this->rules[i]->productions[j].end());
@@ -195,6 +193,8 @@ void ParsingTableGenerator::generate_table() {
 }
 
 void ParsingTableGenerator::print_table() {
+    cout << endl << "table:" << endl;
+    cout << "#" << " | ";
     for(string s : this->terminals) {
         cout << s << " | ";
     }
@@ -213,16 +213,14 @@ void ParsingTableGenerator::print_table() {
     cout << endl;
 }
 
-int ParsingTableGenerator::terminal_as_index(string terminal_name) {
-    if(this->terminals.find(terminal_name) == this->terminals.end()) return -1;
-    return distance(this->terminals.begin(), this->terminals.find(terminal_name));
-}
-
-void ParsingTableGenerator::generate_rules_names() {
+void ParsingTableGenerator::generate_indexes() {
     for(int i = 0; i < this->rules.size(); ++i) {
-        this->rules_as_names.push_back(this->rules[i]->name);
+        this->rules_indexes[this->rules[i]->name] = i;
+    }
+
+    int index = 0;
+    for(string terminal : this->terminals) {
+        this->terminals_indexes[terminal] = index++;
     }
 }
-
-
 
