@@ -24,6 +24,7 @@ public:
     PredictiveParser(vector<Symbol *> ***table, map<string, int> rules_indexes, map<string, int> terminals_indexes);
 
     bool parse(vector<Token *> tokens);
+    void initialize_the_stack();
 
 private:
 

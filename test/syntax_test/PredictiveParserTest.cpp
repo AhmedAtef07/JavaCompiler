@@ -159,10 +159,11 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
     ofstream detailed_report("input.java_lexemes_detailed");
 
     string current_line;
+    bool last_succeeded = false;
     while(getline(ifs, current_line)) {
         Lexical::Output output = lexical->ParseInput(current_line);
         cout << endl << "Parsing Stack:" << endl;
-        if(pp->parse(output.tokens)) {
+        if(last_succeeded = pp->parse(output.tokens)) {
             cout << "succedded" << endl;
         } else {
             cout << "failed" << endl;
@@ -178,5 +179,5 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
 
         detailed_report << "---------------------------------------------------------------------------" << endl << endl;
     }
-
+    EXPECT_TRUE(last_succeeded);
 }

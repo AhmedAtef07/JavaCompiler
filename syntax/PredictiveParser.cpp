@@ -8,12 +8,18 @@ PredictiveParser::PredictiveParser(vector<Symbol *> ***table, map<string, int> r
     this->table = table;
     this->rules_indexes = rules_indexes;
     this->terminals_indexes = terminals_indexes;
+    initialize_the_stack();
+}
+
+void PredictiveParser::initialize_the_stack() {
+    the_stack.clear();
+    the_stack.push_back(new Symbol("\\$"));
 }
 
 bool PredictiveParser::parse(vector<Token *> tokens) {
     for(int i = 0; i < tokens.size();) {
         Token *token = tokens[i];
-        if(the_stack.size() == 0) {
+        if(the_stack.size() == 1 && the_stack.back()->name == "\\$" && token->name != "\\$") {
             vector<Symbol *> v = *this->table[0][terminals_indexes[tokens[0]->name]];
             if(v.size() == 0) {
                 cout << "error" << endl;
@@ -26,11 +32,12 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
             }
         }
         if(the_stack.back()->type == Symbol::Type::kTerminal) {
-            if(the_stack.back()->name == "" && token->name == "\\$") {
-                the_stack.pop_back();
-                ++i;
-                continue;
-            } else if(the_stack.back()->name == "") {
+//            if(the_stack.back()->name == "" && token->name == "\\$") {
+//                the_stack.pop_back();
+//                ++i;
+//                continue;
+//            } else
+            if(the_stack.back()->name == "") {
                 the_stack.pop_back();
                 continue;
             }
@@ -63,7 +70,7 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
         }
     }
 
-    if(the_stack.size() == 0) {
+    if(the_stack.size() == 0 || (the_stack.size() == 1 && the_stack.back()->name == "\\$")) {
         return true;
     }
     else {
