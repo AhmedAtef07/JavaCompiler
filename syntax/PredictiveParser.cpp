@@ -19,9 +19,9 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 cout << "error" << endl;
                 return false;
             } else {
-                for(int i = v.size() - 1; i > -1; --i) {
-                    the_stack.push_back(v[i]);
-                    print_the_stack();
+                for(int j = v.size() - 1; j > -1; --j) {
+                    the_stack.push_back(v[j]);
+                    print_the_stack(token->name);
                 }
             }
         }
@@ -29,7 +29,11 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
             if(the_stack.back()->name == token->name) {
                 cout << "matched: " << token->name << " " << the_stack.back()->name << endl;
                 the_stack.pop_back();
-                print_the_stack();
+                if(i + 1 < tokens.size()) {
+                    print_the_stack(tokens[i + 1]->name);
+                } else {
+                    print_the_stack("");
+                }
                 ++i;
             } else {
                 cout << "error" << endl;
@@ -43,9 +47,9 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 return false;
             } else {
                 the_stack.pop_back();
-                for(int i = v.size() - 1; i > -1; --i) {
-                    the_stack.push_back(v[i]);
-                    print_the_stack();
+                for(int j = v.size() - 1; j > -1; --j) {
+                    the_stack.push_back(v[j]);
+                    print_the_stack(token->name);
                 }
             }
         }
@@ -59,10 +63,10 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
     }
 }
 
-void PredictiveParser::print_the_stack() {
+void PredictiveParser::print_the_stack(string current_token_name) {
     for(Symbol *s : the_stack) {
         cout << s->name << "  ";
     }
-    cout << endl;
+    cout << "   current token: " << current_token_name << endl;
 }
 

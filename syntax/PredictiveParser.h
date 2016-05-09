@@ -27,7 +27,7 @@ public:
 
 private:
 
-    void print_the_stack();
+    void print_the_stack(string current_token_name);
 
 };
 
