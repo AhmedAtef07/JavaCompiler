@@ -4,39 +4,27 @@
 
 #include "PredictiveParser.h"
 
-PredictiveParser::PredictiveParser(vector<Symbol *> ***table, set<string> terminals, vector<string> rules_names) {
+PredictiveParser::PredictiveParser(vector<Symbol *> ***table, map<string, int> rules_indexes, map<string, int> terminals_indexes) {
     this->table = table;
-    this->terminals = terminals;
-    this->rules_names = rules_names;
-}
-
-
-int PredictiveParser::terminal_as_index(string terminal_name) {
-    if(this->terminals.find(terminal_name) == this->terminals.end()) return -1;
-    return distance(this->terminals.begin(), this->terminals.find(terminal_name));
-}
-
-int PredictiveParser::rule_as_index(string rule_name) {
-    for(int i = 0; i < rules_names.size(); ++i) {
-        if(this->rules_names[i] == rule_name) return i;
-    }
-    return -1;
+    this->rules_indexes = rules_indexes;
+    this->terminals_indexes = terminals_indexes;
 }
 
 bool PredictiveParser::parse(vector<Token *> tokens) {
-    vector<Symbol *> v = *this->table[0][terminal_as_index(tokens[0]->name)];
-    if(v.size() == 0) {
-        cout << "error" << endl;
-        return false;
-    } else {
-        for(int i = v.size() - 1; i > -1; --i) {
-            the_stack.push_back(v[i]);
-            print_the_stack();
-        }
-    }
     for(int i = 0; i < tokens.size();) {
         Token *token = tokens[i];
-        if(the_stack.size() == 0) return false;
+        if(the_stack.size() == 0) {
+            vector<Symbol *> v = *this->table[0][terminals_indexes[tokens[0]->name]];
+            if(v.size() == 0) {
+                cout << "error" << endl;
+                return false;
+            } else {
+                for(int i = v.size() - 1; i > -1; --i) {
+                    the_stack.push_back(v[i]);
+                    print_the_stack();
+                }
+            }
+        }
         if(the_stack.back()->type == Symbol::Type::kTerminal) {
             if(the_stack.back()->name == token->name) {
                 cout << "matched: " << token->name << " " << the_stack.back()->name << endl;
@@ -45,10 +33,11 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 ++i;
             } else {
                 cout << "error" << endl;
+                cout << "waiting: " << the_stack.back()->name << " found: " << token->name << endl;
                 return false;
             }
         } else {
-            vector<Symbol *> v = *this->table[rule_as_index(the_stack.back()->name)][terminal_as_index(token->name)];
+            vector<Symbol *> v = *this->table[rules_indexes[the_stack.back()->name]][terminals_indexes[token->name]];
             if(v.size() == 0) {
                 cout << "error" << endl;
                 return false;

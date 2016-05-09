@@ -17,13 +17,11 @@ class PredictiveParser {
 public:
     vector<Symbol*> the_stack;
     vector<Symbol *> ***table;
-    set<string> terminals;
-    vector<string> rules_names;
 
-    int terminal_as_index(string terminal_name);
-    int rule_as_index(string rule_name);
+    map<string, int> rules_indexes;
+    map<string, int> terminals_indexes;
 
-    PredictiveParser(vector<Symbol *> ***table, set<string> terminals, vector<string> rules_names);
+    PredictiveParser(vector<Symbol *> ***table, map<string, int> rules_indexes, map<string, int> terminals_indexes);
 
     bool parse(vector<Token *> tokens);
 
