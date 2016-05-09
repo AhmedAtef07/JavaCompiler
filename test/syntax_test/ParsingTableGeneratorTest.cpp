@@ -25,10 +25,19 @@ TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
             for(string st : s) {
                 cout << st << "  ";
             }
+            cout << " '|' ";
         }
         cout << endl;
     }
     cout << endl;
+    set<string> s1, s2, s3;
+    s1.insert("id");
+    s2.insert("id");
+    s3.insert("(");
+    vector<set<string>> v1 = {s1};
+    vector<set<string>> v2 = {s2, s3};
+    vector<vector<set<string>>> v3 = {v1, v2};
+    EXPECT_EQ(v3, ptg->firsts);
 
     cout << "follows: " << ptg->follows.size() << endl;
     for(set<string> s : ptg->follows) {
@@ -38,6 +47,11 @@ TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
         cout << endl;
     }
     cout << endl;
+    set<string> s4;
+    s4.insert("\\$");
+    set<string> s5;
+    vector<set<string>> v4 = {s4, s5};
+    EXPECT_EQ(v4, ptg->follows);
 }
 
 TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
@@ -82,10 +96,22 @@ TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
             for(string st : s) {
                 cout << st << "  ";
             }
+            cout << " '|' ";
         }
         cout << endl;
     }
     cout << endl;
+    set<string> s1, s2, s3, s4;
+    s1.insert("float");
+    s1.insert("int");
+    s2.insert("int");
+    s3.insert("float");
+    s4.insert("id");
+    vector<set<string>> v1 = {s1};
+    vector<set<string>> v2 = {s2, s3};
+    vector<set<string>> v3 = {s4};
+    vector<vector<set<string>>> v4 = {v1, v2, v3};
+    EXPECT_EQ(v4, ptg->firsts);
 
     cout << "follows: " << endl;
     for(set<string> s : ptg->follows) {
@@ -95,4 +121,9 @@ TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
         cout << endl;
     }
     cout << endl;
+    set<string> s5, s6;
+    s5.insert("\\$");
+    s6.insert("id");
+    vector<set<string>> v5 = {s5, s6, s5};
+    EXPECT_EQ(v5, ptg->follows);
 }

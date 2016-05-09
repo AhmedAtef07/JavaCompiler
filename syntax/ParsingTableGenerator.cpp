@@ -10,7 +10,7 @@ ParsingTableGenerator::ParsingTableGenerator(vector<GrammarRule *> rules) {
     this->follows = calculate_follows();
     generate_indexes();
     generate_table();
-    print_table();
+//    print_table();
 }
 
 bool ParsingTableGenerator::contains_lambda(GrammarRule *rule) {

@@ -77,9 +77,11 @@ TEST(PredectiveParserGenerater, BasicTest) {
 
     cout << endl << "Parsing Stack:" << endl;
 
-    if(pp->parse(v)) {
-        cout << "succedded" << endl;
+    bool succeeded = pp->parse(v);
+    if(succeeded) {
+        cout << "succeeded" << endl;
     }
+    EXPECT_TRUE(succeeded);
 }
 
 TEST(ExampleParsingTest, ReturningToStartStateTest) {
@@ -102,9 +104,8 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammer);
 
+    cout << endl << endl;
     ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
-
-    cout << endl;
 
     cout << "firsts: " << endl;
     for(vector<set<string>> v : ptg->firsts) {
