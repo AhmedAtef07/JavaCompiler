@@ -149,11 +149,11 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
         lexical->AddDfa(a, new Token("Punctuation", priority--));
     }
     Nfa *space = Nfa::Solver(RegularDefinition::Tokenize(" "));
-    lexical->AddDfa(space, new Token("PP", priority--));
+    lexical->AddDfa(space, new Token("Blanks", priority--));
     Nfa *new_tab = Nfa::Solver(RegularDefinition::Tokenize("\t"));
-    lexical->AddDfa(new_tab, new Token("PP", priority--));
+    lexical->AddDfa(new_tab, new Token("Blanks", priority--));
     Nfa *new_line = Nfa::Solver(RegularDefinition::Tokenize("\n"));
-    lexical->AddDfa(new_line, new Token("PP", priority--));
+    lexical->AddDfa(new_line, new Token("Blanks", priority--));
 
     ifstream ifs("input.java");
     ofstream ofs("input.java_lexemes");

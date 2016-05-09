@@ -19,18 +19,21 @@ int main() {
     for(string keyword: regular_expression->keywords) {
         lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
     }
-
-//    for(map<string, string>::iterator iterator = regular_expression->regular_expressions.begin();
-//        iterator != regular_expression->regular_expressions.end(); iterator++) {
     for(pair<string, string> p : regular_expression->regular_expressions) {
         Nfa *n = Nfa::Solver(RegularDefinition::Tokenize(p.second));
         lexical->AddDfa(n, new Token(p.first, priority--));
     }
-//    }
     for(string symbol: regular_expression->punctuations) {
         Nfa *a = Nfa::Solver(RegularDefinition::Tokenize(symbol));
         lexical->AddDfa(a, new Token("Punctuation", priority--));
     }
+    Nfa *space = Nfa::Solver(RegularDefinition::Tokenize(" "));
+    lexical->AddDfa(space, new Token("Blanks", priority--));
+    Nfa *new_tab = Nfa::Solver(RegularDefinition::Tokenize("\t"));
+    lexical->AddDfa(new_tab, new Token("Blanks", priority--));
+    Nfa *new_line = Nfa::Solver(RegularDefinition::Tokenize("\n"));
+    lexical->AddDfa(new_line, new Token("Blanks", priority--));
+
     ifstream ifs("input.java");
     ofstream ofs("input.java_lexemes");
     ofstream detailed_report("input.java_lexemes_detailed");
@@ -71,12 +74,6 @@ int main() {
 //    system("google-chrome-stable ../report/index.html"); // more general
     // system("xdg-open ../report/index.html"); // for linux
 //     system("open ../report/index.html");  // for mac
-
-//    cout << "Error Exists: " << output.error_found << endl;
-//    cout << "Error String Remaning: " << output.error_string << endl << endl;
-//    cout << "# of Tokens: " << output.tokens.size() << endl;
-
-    ContextFreeGrammar *cfg = new ContextFreeGrammar("../syntax/CFG.txt");
 
     return 0;
 }
