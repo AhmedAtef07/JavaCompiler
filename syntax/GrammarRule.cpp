@@ -8,7 +8,7 @@
 
 GrammarRule::GrammarRule(string name, ContextFreeGrammar* cfg) : name(name), cfg(cfg) {
     if(!cfg->FindExistingGrammarRule(name)) {
-        cfg->rules.push_back(this);
+        cfg->unmodified_rules.push_back(this);
     }
 }
 

@@ -15,7 +15,7 @@ TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammar);
 
-    ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
+    ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->unmodified_rules);
 
     cout << endl;
 
@@ -88,53 +88,6 @@ TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
     cout << endl;
 
     cout << "follows: " << endl;
-    for(set<string> s : ptg->follows) {
-        for(string st : s) {
-            cout << st << "  ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-TEST(ParsingTableReadFromFile, FileTest) {
-    string grammer = "# METHOD_BODY = STATEMENT_LIST\n"
-            "# STATEMENT_LIST = STATEMENT | STATEMENT_LIST STATEMENT\n"
-            "# STATEMENT = DECLARATION\n"
-            "| IF\n"
-            "| WHILE\n"
-            "| ASSIGNMENT\n"
-            "# DECLARATION = PRIMITIVE_TYPE 'id' ';'\n"
-            "# PRIMITIVE_TYPE = 'int' | 'float'\n"
-            "# IF = 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}'\n"
-            "# WHILE = 'while' '(' EXPRESSION ')' '{' STATEMENT '}'\n"
-            "# ASSIGNMENT = 'id' '=' EXPRESSION ';'\n"
-            "# EXPRESSION = SIMPLE_EXPRESSION\n"
-            "| SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION\n"
-            "# SIMPLE_EXPRESSION = TERM | SIGN TERM | SIMPLE_EXPRESSION 'addop' TERM\n"
-            "# TERM = FACTOR | TERM 'mulop' FACTOR\n"
-            "# FACTOR = 'id' | 'num' | '(' EXPRESSION ')' # SIGN = '+' | '-'";
-    ContextFreeGrammar *cfg = new ContextFreeGrammar();
-    cfg->AddRulesFromString(grammer);
-
-    cout << endl << cfg->rules.size() << endl;
-
-    ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
-
-    cout << endl;
-
-    cout << "firsts: " << endl;
-    for(vector<set<string>> v : ptg->firsts) {
-        for(set<string> s : v) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "follows: " << ptg->follows.size() << endl;
     for(set<string> s : ptg->follows) {
         for(string st : s) {
             cout << st << "  ";

@@ -102,8 +102,6 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammer);
 
-    cout << endl << cfg->rules.size() << endl;
-
     ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
 
     cout << endl;
