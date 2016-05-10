@@ -9,6 +9,132 @@
 #include <RegularExpression.h>
 #include "gtest/gtest.h"
 
+class PredictiveParserGeneratorFromLexical : public ::testing::Test {
+
+protected:
+    Lexical* lexical;
+    PredictiveParser *pp;
+
+    PredictiveParserGeneratorFromLexical() : Test() {
+        string grammar = ""
+                "# METHOD_BODY = STATEMENT_LIST\n"
+                "# STATEMENT_LIST = STATEMENT | STATEMENT_LIST STATEMENT\n"
+                "# STATEMENT = DECLARATION\n"
+                "| IF\n"
+                "| WHILE\n"
+                "| ASSIGNMENT\n"
+                "# DECLARATION = PRIMITIVE_TYPE 'id' ';'\n"
+                "# PRIMITIVE_TYPE = 'int' | 'float'\n"
+                "# IF = 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}'\n"
+                "# WHILE = 'while' '(' EXPRESSION ')' '{' STATEMENT '}'\n"
+                "# ASSIGNMENT = 'id' '=' EXPRESSION ';'\n"
+                "# EXPRESSION = SIMPLE_EXPRESSION\n"
+                "| SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION\n"
+                "# SIMPLE_EXPRESSION = TERM | SIGN TERM | SIMPLE_EXPRESSION 'addop' TERM\n"
+                "# TERM = FACTOR | TERM 'mulop' FACTOR\n"
+                "# FACTOR = 'id' | 'num' | '(' EXPRESSION ')' "
+                "# SIGN = '+' | '-'";
+
+        ContextFreeGrammar *cfg = new ContextFreeGrammar();
+        cfg->AddRulesFromString(grammar);
+
+        cout << endl << endl;
+        ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
+
+        cout << "firsts: " << endl;
+        for(vector<set<string>> v : ptg->firsts) {
+            for(set<string> s : v) {
+                for(string st : s) {
+                    cout << st << "  ";
+                }
+            }
+            cout << endl;
+        }
+        cout << endl;
+
+        cout << "follows: " << ptg->follows.size() << endl;
+        for(set<string> s : ptg->follows) {
+            for(string st : s) {
+                cout << st << "  ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+
+        pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
+
+
+        RegularExpression* regular_expression = new RegularExpression("../lexical/lexical_input.txt");
+
+        lexical = new Lexical();
+        int priority = 1000000, i = 0;
+
+        for(string keyword: regular_expression->keywords) {
+            lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
+        }
+
+        for(pair<string, string> p : regular_expression->regular_expressions) {
+            Nfa *n = Nfa::Solver(RegularDefinition::Tokenize(p.second));
+            lexical->AddDfa(n, new Token(p.first, priority--));
+        }
+
+        for(string symbol: regular_expression->punctuations) {
+            Nfa *a = Nfa::Solver(RegularDefinition::Tokenize(symbol));
+            lexical->AddDfa(a, new Token("Punctuation", priority--));
+        }
+
+        Nfa *space = Nfa::Solver(RegularDefinition::Tokenize(" "));
+        lexical->AddDfa(space, new Token("Blanks", priority--));
+        Nfa *new_tab = Nfa::Solver(RegularDefinition::Tokenize("\t"));
+        lexical->AddDfa(new_tab, new Token("Blanks", priority--));
+        Nfa *new_line = Nfa::Solver(RegularDefinition::Tokenize("\n"));
+        lexical->AddDfa(new_line, new Token("Blanks", priority--));
+    }
+};
+
+TEST_F(PredictiveParserGeneratorFromLexical, ReturningToStartStateTest) {
+    string code_program_sample = ""
+            "int x;\n"
+            "X = 5;\n"
+            "if(x >2) {\n"
+            "\tX = 0;\n"
+            "} else {\n"
+            "\ty = 0;\n"
+            "}\n"
+            "\\$";
+
+    cout << endl << "Parsing Stack:" << endl;
+
+    Lexical::Output output = lexical->ParseInput(code_program_sample);
+
+    EXPECT_TRUE(pp->parse(output.tokens));
+}
+
+TEST_F(PredictiveParserGeneratorFromLexical, ErrorRecovery_int_x_i) {
+    string code_program_sample = ""
+            "int x i;"
+            "\\$";
+
+    cout << endl << "Parsing Stack:" << endl;
+
+    Lexical::Output output = lexical->ParseInput(code_program_sample);
+
+    EXPECT_TRUE(pp->parse(output.tokens));
+}
+
+TEST_F(PredictiveParserGeneratorFromLexical, ErrorRecovery_Assignment) {
+    string code_program_sample = ""
+            "int x"
+            "x = 5"
+            "\\$";
+
+    cout << endl << "Parsing Stack:" << endl;
+
+    Lexical::Output output = lexical->ParseInput(code_program_sample);
+
+    EXPECT_TRUE(pp->parse(output.tokens));
+}
+
 TEST(PredectiveParserGenerater, BasicTest) {
     string grammar = ""
             "# A = B C\n"
@@ -82,89 +208,4 @@ TEST(PredectiveParserGenerater, BasicTest) {
         cout << "succeeded" << endl;
     }
     EXPECT_TRUE(succeeded);
-}
-
-TEST(ExampleParsingTest, ReturningToStartStateTest) {
-    string grammar = ""
-            "# METHOD_BODY = STATEMENT_LIST\n"
-            "# STATEMENT_LIST = STATEMENT | STATEMENT_LIST STATEMENT\n"
-            "# STATEMENT = DECLARATION\n"
-            "| IF\n"
-            "| WHILE\n"
-            "| ASSIGNMENT\n"
-            "# DECLARATION = PRIMITIVE_TYPE 'id' ';'\n"
-            "# PRIMITIVE_TYPE = 'int' | 'float'\n"
-            "# IF = 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}'\n"
-            "# WHILE = 'while' '(' EXPRESSION ')' '{' STATEMENT '}'\n"
-            "# ASSIGNMENT = 'id' '=' EXPRESSION ';'\n"
-            "# EXPRESSION = SIMPLE_EXPRESSION\n"
-            "| SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION\n"
-            "# SIMPLE_EXPRESSION = TERM | SIGN TERM | SIMPLE_EXPRESSION 'addop' TERM\n"
-            "# TERM = FACTOR | TERM 'mulop' FACTOR\n"
-            "# FACTOR = 'id' | 'num' | '(' EXPRESSION ')' "
-            "# SIGN = '+' | '-'";
-    ContextFreeGrammar *cfg = new ContextFreeGrammar();
-    cfg->AddRulesFromString(grammar);
-
-    cout << endl << endl;
-    ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
-
-    cout << "firsts: " << endl;
-    for(vector<set<string>> v : ptg->firsts) {
-        for(set<string> s : v) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "follows: " << ptg->follows.size() << endl;
-    for(set<string> s : ptg->follows) {
-        for(string st : s) {
-            cout << st << "  ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    PredictiveParser *pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
-
-
-
-    RegularExpression* regular_expression = new RegularExpression("../lexical/lexical_input.txt");
-
-    Lexical* lexical = new Lexical();
-    int priority = 1000000, i = 0;
-
-    for(string keyword: regular_expression->keywords) {
-        lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
-    }
-    for(pair<string, string> p : regular_expression->regular_expressions) {
-        Nfa *n = Nfa::Solver(RegularDefinition::Tokenize(p.second));
-        lexical->AddDfa(n, new Token(p.first, priority--));
-    }
-    for(string symbol: regular_expression->punctuations) {
-        Nfa *a = Nfa::Solver(RegularDefinition::Tokenize(symbol));
-        lexical->AddDfa(a, new Token("Punctuation", priority--));
-    }
-    Nfa *space = Nfa::Solver(RegularDefinition::Tokenize(" "));
-    lexical->AddDfa(space, new Token("Blanks", priority--));
-    Nfa *new_tab = Nfa::Solver(RegularDefinition::Tokenize("\t"));
-    lexical->AddDfa(new_tab, new Token("Blanks", priority--));
-    Nfa *new_line = Nfa::Solver(RegularDefinition::Tokenize("\n"));
-    lexical->AddDfa(new_line, new Token("Blanks", priority--));
-
-    ifstream ifs("input.java");
-
-    string current_line;
-    cout << endl << "Parsing Stack:" << endl;
-    bool last_succeeded = false;
-    while(getline(ifs, current_line)) {
-        Lexical::Output output = lexical->ParseInput(current_line);
-        last_succeeded = pp->parse(output.tokens);
-    }
-
-    EXPECT_TRUE(last_succeeded);
 }

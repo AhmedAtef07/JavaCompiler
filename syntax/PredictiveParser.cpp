@@ -17,18 +17,23 @@ void PredictiveParser::initialize_the_stack() {
     the_stack.push_back(new Symbol("\\$"));
 }
 
+// Just for delivering the project.
+void PredictiveParser::ErrorHandler(string error_msg, Token* token) {
+    cout << "@@@ error @@@: " << error_msg << endl;
+    cout << "@@@ stack top @@@: " << the_stack.back()->name << endl;
+    cout << "@@@ token @@@: " << token->name << endl;
+}
+
 bool PredictiveParser::parse(vector<Token *> tokens) {
-    for(int i = 0; i < tokens.size();) {
+    for(int i = 0; i < tokens.size(); ) {
         Token *token = tokens[i];
         if(the_stack.size() == 1 && the_stack.back()->name == "\\$" && token->name != "\\$") {
             vector<Symbol *> v = *this->table[0][terminals_indexes[tokens[0]->name]];
             if(v.size() == 0) {
                 // Empty Table Cell Error.
-                // TODO: Handel Error.
-                cout << "error" << endl;
+                ErrorHandler("Empty Table Cell", token);
                 ++i;
                 continue;
-                return false;
             } else {
                 for(int j = v.size() - 1; j != -1; --j) {
                     the_stack.push_back(v[j]);
@@ -52,26 +57,21 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 ++i;
             } else {
                 // Mismatch Error.
-                // TODO: Handel Error.
+                ErrorHandler("Mismatch Terminal with input token", token);
                 the_stack.pop_back();
-                cout << "error" << endl;
-                cout << "waiting: " << the_stack.back()->name << " found: " << token->name << endl;
                 continue;
-                return false;
             }
         } else {
             // Non-terminal on the top of the stack.
             vector<Symbol *> v = *this->table[rules_indexes[the_stack.back()->name]][terminals_indexes[token->name]];
             if(v.size() == 0) {
                 // Empty Table Cell Error.
-                // TODO: Handel Error.
-                cout << "error" << endl;
+                ErrorHandler("Empty Table Cell", token);
                 ++i;
                 continue;
-                cout << "error" << endl;
-                return false;
             } else if(v[0]->type == Symbol::Type::kSynch) {
                 // Synch symbol found. Dropping from the stack.
+                ErrorHandler("Synch Cell", token);
                 the_stack.pop_back();
             } else {
                 // Vector of symbols found in the table cell.
@@ -87,15 +87,14 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
     if(the_stack.size() == 0 || (the_stack.size() == 1 && the_stack.back()->name == "\\$")) {
         return true;
     }
-    else {
-        return false;
-    }
+    return false;
 }
 
 void PredictiveParser::print_the_stack(string current_token_name) {
+    cout << "Current Token: #" << current_token_name << "#\t";
     for(Symbol *s : the_stack) {
         cout << s->name << "  ";
     }
-    cout << "   current token: " << current_token_name << endl;
+    cout << endl;
 }
 

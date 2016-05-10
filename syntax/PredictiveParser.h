@@ -30,6 +30,7 @@ private:
 
     void print_the_stack(string current_token_name);
 
+    void ErrorHandler(string error_msg, Token *token);
 };
 
 
