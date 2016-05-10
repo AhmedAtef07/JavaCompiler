@@ -44,6 +44,8 @@ Lexical::Output Lexical::ParseInput(string input) {
                 if(highest_token->name != "Blanks") {
                     if(highest_token->name == "Punctuation") {
                         highest_token->name = highest_token->pattern;
+                    } else if(highest_token->name == "id") {
+                        symbol_table[highest_token->pattern];
                     }
                     answer.push_back(highest_token);
                 }
