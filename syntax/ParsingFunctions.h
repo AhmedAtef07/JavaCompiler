@@ -72,6 +72,20 @@ namespace  {
         trim_right_(s);
         trim_left_(s);
     }
+
+//    void replace_string_(string &s, const string &to_replace, const string &replace_with) {
+//        s.replace(s.find(to_replace), to_replace.length(), replace_with);
+//    }
+
+    void replace_string_(std::string &subject, const std::string& search,
+                              const std::string& replace) {
+        size_t pos = 0;
+        while ((pos = subject.find(search, pos)) != std::string::npos) {
+            subject.replace(pos, search.length(), replace);
+            pos += replace.length();
+        }
+        subject = subject;
+    }
 }
 
 #endif //JAVACOMPILER_PARSINGFUNCTIONS_H

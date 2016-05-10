@@ -171,6 +171,22 @@ TEST(ContextFreeGrammar, ParsingOutputTokens) {
 //    }
 }
 
+TEST(ContextFreeGrammar, LambdaFormat) {
+    string grammar = ""
+            "# A = 'id' \n"
+            "# B = A | \\L '\\L' \n";
+
+    ContextFreeGrammar *cfg = new ContextFreeGrammar();
+    cfg->AddRulesFromString(grammar);
+
+    EXPECT_EQ(cfg->FindExistingGrammarRule("B")->productions[1][0]->name, "\\L");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("B")->productions[1][0]->type, Symbol::Type::kTerminal);
+
+
+    EXPECT_EQ(cfg->FindExistingGrammarRule("B")->productions[1][1]->name, "\\L");
+    EXPECT_EQ(cfg->FindExistingGrammarRule("B")->productions[1][1]->type, Symbol::Type::kTerminal);
+}
+
 TEST(ContextFreeGrammar, LLGrammarTest) {
     string grammer = "# METHOD_BODY = STATEMENT_LIST\n"
             "# STATEMENT_LIST = STATEMENT | STATEMENT_LIST STATEMENT\n"
@@ -190,11 +206,6 @@ TEST(ContextFreeGrammar, LLGrammarTest) {
             "# FACTOR = 'id' | 'num' | '(' EXPRESSION ')' # SIGN = '+' | '-'";
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammer);
-
-    cout << endl << "grammer:" << endl;
-    for(string s : cfg->string_rules) {
-        cout << s << endl;
-    }
 
     string modified_grammer = "";
     string expected_modified_grammer = "METHOD_BODY = STATEMENT_LIST\n"

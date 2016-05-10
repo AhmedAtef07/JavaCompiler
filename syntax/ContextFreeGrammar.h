@@ -28,6 +28,7 @@ public:
     void AddRule(string rule_string);
 
     void JustifyRuleString(string &rule_string);
+    void AdjustingLambdaFormat(string &rule_string);
 
     GrammarRule * FindExistingGrammarRule(const string &query_name);
 private:
