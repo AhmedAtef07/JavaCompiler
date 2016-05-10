@@ -107,6 +107,23 @@ TEST(ContextFreeGrammar, ParsingGrammarRuleWithEscapeChar) {
     EXPECT_EQ(cfg->unmodified_rules[0]->productions[2][2]->name, "\\'ahmed\\'");
 }
 
+TEST(ContextFreeGrammar, ParsingGrammarWishTailingDashes) {
+    string grammar = ""
+            "# STATEMENT_LIST'' = STATEMENT' | STATEMENT_LIST STATEMENT\n"
+            "# SIGN = '+' | '-'";
+
+    ContextFreeGrammar *cfg = new ContextFreeGrammar();
+    cfg->AddRulesFromString(grammar);
+
+    vector<string> grammar_tokenized = {
+            "STATEMENT_LIST'' = STATEMENT' | STATEMENT_LIST STATEMENT",
+            "SIGN = '+' | '-'"
+    };
+
+
+    EXPECT_EQ(cfg->string_rules, grammar_tokenized);
+}
+
 TEST(ContextFreeGrammar, CheckGrammarRulesReferencing) {
     string grammar = ""
             "# METHOD_BODY = STATEMENT_LIST\n"
@@ -209,39 +226,42 @@ TEST(ContextFreeGrammar, LLGrammarTest) {
 
     string modified_grammer = "";
     string expected_modified_grammer = ""
-            "METHOD_BODY = STATEMENT_LIST\n"
-            "STATEMENT_LIST = STATEMENT STATEMENT_LIST''\n"
-            "STATEMENT_LIST'' = STATEMENT STATEMENT_LIST'' | \\L\n"
-            "STATEMENT = DECLARATION | IF | WHILE | ASSIGNMENT\n"
-            "DECLARATION = PRIMITIVE_TYPE id ;\n"
-            "IF = if ( EXPRESSION ) { STATEMENT } else { STATEMENT }\n"
-            "WHILE = while ( EXPRESSION ) { STATEMENT }\n"
-            "ASSIGNMENT = id = EXPRESSION ;\n"
-            "PRIMITIVE_TYPE = int | float\n"
-            "EXPRESSION = SIMPLE_EXPRESSION EXPRESSION'''\n"
-            "SIMPLE_EXPRESSION = TERM SIMPLE_EXPRESSION'' | SIGN TERM SIMPLE_EXPRESSION''\n"
-            "SIMPLE_EXPRESSION'' = addop TERM SIMPLE_EXPRESSION'' | \\L\n"
-            "TERM = FACTOR TERM''\n"
-            "TERM'' = mulop FACTOR TERM'' | \\L\n"
-            "SIGN = + | -\n"
-            "FACTOR = id | num | ( EXPRESSION )\n"
-            "EXPRESSION''' = relop SIMPLE_EXPRESSION | \\L\n";
+            "# METHOD_BODY = STATEMENT_LIST\n"
+            "# STATEMENT_LIST = STATEMENT STATEMENT_LIST''\n"
+            "# STATEMENT_LIST'' = STATEMENT STATEMENT_LIST'' | '\\L'\n"
+            "# STATEMENT = DECLARATION | IF | WHILE | ASSIGNMENT\n"
+            "# DECLARATION = PRIMITIVE_TYPE 'id' ';'\n"
+            "# IF = 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}'\n"
+            "# WHILE = 'while' '(' EXPRESSION ')' '{' STATEMENT '}'\n"
+            "# ASSIGNMENT = 'id' '=' EXPRESSION ';'\n"
+            "# PRIMITIVE_TYPE = 'int' | 'float'\n"
+            "# EXPRESSION = SIMPLE_EXPRESSION EXPRESSION'''\n"
+            "# SIMPLE_EXPRESSION = TERM SIMPLE_EXPRESSION'' | SIGN TERM SIMPLE_EXPRESSION''\n"
+            "# SIMPLE_EXPRESSION'' = 'addop' TERM SIMPLE_EXPRESSION'' | '\\L'\n"
+            "# TERM = FACTOR TERM''\n"
+            "# TERM'' = 'mulop' FACTOR TERM'' | '\\L'\n"
+            "# SIGN = '+' | '-'\n"
+            "# FACTOR = 'id' | 'num' | '(' EXPRESSION ')'\n"
+            "# EXPRESSION''' = 'relop' SIMPLE_EXPRESSION | '\\L'\n";
 
-    cout << endl << "modified grammer:" << endl;
-    for(GrammarRule *r : cfg->rules) {
-        cout << r->name << " = ";
-        modified_grammer += r->name + " = ";
-        for(int i = 0; i < r->productions.size(); ++i) {
-            for(int j = 0; j < r->productions[i].size(); ++j) {
-                cout << r->productions[i][j]->name << ((j + 1) == r->productions[i].size()? "":" ");
-                modified_grammer += r->productions[i][j]->name + ((j + 1) == r->productions[i].size()? "":" ");
+    ContextFreeGrammar *expected_cfg = new ContextFreeGrammar();
+    expected_cfg->AddRulesFromString(expected_modified_grammer);
+
+    ASSERT_EQ(cfg->rules.size(), expected_cfg->unmodified_rules.size());
+
+    for(int i = 0, len = cfg->rules.size(); i < len; ++i) {
+        ASSERT_EQ(cfg->rules[i]->productions.size(),
+                 expected_cfg->FindExistingGrammarRule(cfg->rules[i]->name)->productions.size());
+        for(int k = 0; k < cfg->rules[i]->productions.size(); ++k) {
+            ASSERT_EQ(cfg->rules[i]->productions[k].size(),
+                      expected_cfg->FindExistingGrammarRule(cfg->rules[i]->name)->productions[k].size());
+            for(int j = 0; j < cfg->rules[i]->productions[k].size(); ++j) {
+                EXPECT_EQ(cfg->rules[i]->productions[k][j]->name,
+                          expected_cfg->FindExistingGrammarRule(cfg->rules[i]->name)->productions[k][j]->name);
+                EXPECT_EQ(cfg->rules[i]->productions[k][j]->type,
+                          expected_cfg->FindExistingGrammarRule(cfg->rules[i]->name)->productions[k][j]->type);
             }
-            cout << ((i + 1) == r->productions.size()? "":" | ");
-            modified_grammer += ((i + 1) == r->productions.size()? "":" | ");
         }
-        cout << endl;
-        modified_grammer += "\n";
-    }
 
-    EXPECT_EQ(modified_grammer, expected_modified_grammer);
+    }
 }

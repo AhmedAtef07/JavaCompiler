@@ -9,6 +9,10 @@
 
 using namespace std;
 
+// TODO: Symbol Table.
+// TODO: Error Recovery.
+// TODO: Report. Finish UI.
+
 int main() {
     // Opening the file through the Regular Expression class.
     RegularExpression* regular_expression = new RegularExpression("../lexical/lexical_input.txt");
