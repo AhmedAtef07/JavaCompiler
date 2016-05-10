@@ -184,8 +184,8 @@ void ParsingTableGenerator::generate_table() {
                     for(string ss : this->follows[i]) {
                         int current_terminal_index = this->terminals_indexes[ss];
                         vector<Symbol *> v = *this->table[i][current_terminal_index];
-                        if(v.size() > 1 ||
-                                (v.size() == 1 && (v[0]->type != Symbol::Type::kTerminal || v[0]->name != "\\L"))) {
+                        if(v.size() > 1 ||(v.size() == 1 && (v[0]->type != Symbol::Type::kTerminal ||
+                                                             v[0]->name != "\\L"))) {
                             cout << endl << "error while generating parsing table" << endl;
                             vector<Symbol*> v = *this->table[i][current_terminal_index];
                             for(int k = 0; k < v.size(); ++k) {
@@ -197,6 +197,15 @@ void ParsingTableGenerator::generate_table() {
                         }
                     }
                 }
+            }
+        }
+
+        // Add synch symbols in the follow set. Only in the empty cells.
+        for(string ss : this->follows[i]) {
+            int current_terminal_index = this->terminals_indexes[ss];
+            vector<Symbol *> v = *this->table[i][current_terminal_index];
+            if(v.size() == 0) {
+                this->table[i][current_terminal_index]->push_back(Symbol::GetSynchSymbol());
             }
         }
     }

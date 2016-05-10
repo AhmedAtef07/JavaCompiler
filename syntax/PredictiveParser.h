@@ -15,9 +15,9 @@ using namespace std;
 class PredictiveParser {
 
 public:
-    vector<Symbol*> the_stack;
-    vector<Symbol *> ***table;
+    vector<Symbol *> the_stack;
 
+    vector<Symbol *> ***table;
     map<string, int> rules_indexes;
     map<string, int> terminals_indexes;
 

@@ -13,6 +13,7 @@ PredictiveParser::PredictiveParser(vector<Symbol *> ***table, map<string, int> r
 
 void PredictiveParser::initialize_the_stack() {
     the_stack.clear();
+    // TODO: Check the language will never have '\\$'.
     the_stack.push_back(new Symbol("\\$"));
 }
 
@@ -22,10 +23,14 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
         if(the_stack.size() == 1 && the_stack.back()->name == "\\$" && token->name != "\\$") {
             vector<Symbol *> v = *this->table[0][terminals_indexes[tokens[0]->name]];
             if(v.size() == 0) {
+                // Empty Table Cell Error.
+                // TODO: Handel Error.
                 cout << "error" << endl;
+                ++i;
+                continue;
                 return false;
             } else {
-                for(int j = v.size() - 1; j > -1; --j) {
+                for(int j = v.size() - 1; j != -1; --j) {
                     the_stack.push_back(v[j]);
                 }
                 print_the_stack(token->name);
@@ -46,18 +51,32 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 }
                 ++i;
             } else {
+                // Mismatch Error.
+                // TODO: Handel Error.
+                the_stack.pop_back();
                 cout << "error" << endl;
                 cout << "waiting: " << the_stack.back()->name << " found: " << token->name << endl;
+                continue;
                 return false;
             }
         } else {
+            // Non-terminal on the top of the stack.
             vector<Symbol *> v = *this->table[rules_indexes[the_stack.back()->name]][terminals_indexes[token->name]];
             if(v.size() == 0) {
+                // Empty Table Cell Error.
+                // TODO: Handel Error.
+                cout << "error" << endl;
+                ++i;
+                continue;
                 cout << "error" << endl;
                 return false;
-            } else {
+            } else if(v[0]->type == Symbol::Type::kSynch) {
+                // Synch symbol found. Dropping from the stack.
                 the_stack.pop_back();
-                for(int j = v.size() - 1; j > -1; --j) {
+            } else {
+                // Vector of symbols found in the table cell.
+                the_stack.pop_back();
+                for(int j = v.size() - 1; j != -1; --j) {
                     the_stack.push_back(v[j]);
                 }
                 print_the_stack(token->name);

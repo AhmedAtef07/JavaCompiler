@@ -18,8 +18,8 @@ class ParsingTableGenerator {
 public:
     vector<vector<set<string>>> firsts;
     vector<set<string>> follows;
-    vector<Symbol *> ***table;
 
+    vector<Symbol *> ***table;
     map<string, int> terminals_indexes;
     map<string, int> rules_indexes;
 

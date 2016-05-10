@@ -85,7 +85,8 @@ TEST(PredectiveParserGenerater, BasicTest) {
 }
 
 TEST(ExampleParsingTest, ReturningToStartStateTest) {
-    string grammer = "# METHOD_BODY = STATEMENT_LIST\n"
+    string grammar = ""
+            "# METHOD_BODY = STATEMENT_LIST\n"
             "# STATEMENT_LIST = STATEMENT | STATEMENT_LIST STATEMENT\n"
             "# STATEMENT = DECLARATION\n"
             "| IF\n"
@@ -100,9 +101,10 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
             "| SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION\n"
             "# SIMPLE_EXPRESSION = TERM | SIGN TERM | SIMPLE_EXPRESSION 'addop' TERM\n"
             "# TERM = FACTOR | TERM 'mulop' FACTOR\n"
-            "# FACTOR = 'id' | 'num' | '(' EXPRESSION ')' # SIGN = '+' | '-'";
+            "# FACTOR = 'id' | 'num' | '(' EXPRESSION ')' "
+            "# SIGN = '+' | '-'";
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
-    cfg->AddRulesFromString(grammer);
+    cfg->AddRulesFromString(grammar);
 
     cout << endl << endl;
     ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
@@ -155,29 +157,14 @@ TEST(ExampleParsingTest, ReturningToStartStateTest) {
     lexical->AddDfa(new_line, new Token("Blanks", priority--));
 
     ifstream ifs("input.java");
-    ofstream ofs("input.java_lexemes");
-    ofstream detailed_report("input.java_lexemes_detailed");
 
     string current_line;
+    cout << endl << "Parsing Stack:" << endl;
     bool last_succeeded = false;
     while(getline(ifs, current_line)) {
         Lexical::Output output = lexical->ParseInput(current_line);
-        cout << endl << "Parsing Stack:" << endl;
-        if(last_succeeded = pp->parse(output.tokens)) {
-            cout << "succedded" << endl;
-        } else {
-            cout << "failed" << endl;
-        }
-        for(Token *k : output.tokens) {
-            detailed_report << k->name << "  >  " << k->pattern << endl;
-            ofs << k->name << "  " << k->pattern << endl;
-        }
-        detailed_report << endl << "Error Exists: " << output.errors_found << endl;
-        for(string error : output.errors_strings) {
-            detailed_report << "Error String Remaning: " << error << endl;
-        }
-
-        detailed_report << "---------------------------------------------------------------------------" << endl << endl;
+        last_succeeded = pp->parse(output.tokens);
     }
+
     EXPECT_TRUE(last_succeeded);
 }

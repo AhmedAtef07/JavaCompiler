@@ -7,7 +7,7 @@
 #include <Token.h>
 #include "gtest/gtest.h"
 
-TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
+TEST(ParsingTableGenerating, GeneratingFirsts) {
     string grammar = ""
             "# A = 'id'\n"
             "# B = A | '(' ')'";
@@ -54,7 +54,7 @@ TEST(ParsingTableCalculatingFirsts, SimpleFirst) {
     EXPECT_EQ(v4, ptg->follows);
 }
 
-TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
+TEST(ParsingTableGenerating, FirstsAndTable) {
     string grammar = ""
             "# A = B C\n"
             "# B = 'int' | 'float'\n"
@@ -126,4 +126,40 @@ TEST(ParsingTableCalculatingFirstsAndTable, SimpleFirst) {
     s6.insert("id");
     vector<set<string>> v5 = {s5, s6, s5};
     EXPECT_EQ(v5, ptg->follows);
+}
+
+TEST(ParsingTableGenerating, SyncSymbol) {
+    string grammar = ""
+            "# A = B C\n"
+            "# B = 'int' | 'float'\n"
+            "# C = 'id'\n";
+    ContextFreeGrammar *cfg = new ContextFreeGrammar();
+    cfg->AddRulesFromString(grammar);
+
+    cout << endl << endl;
+    ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
+
+    EXPECT_EQ(Symbol::Type::kSynch, (*ptg->table[0][0])[0]->type);
+    EXPECT_EQ(Symbol::Type::kSynch, (*ptg->table[1][2])[0]->type);
+    EXPECT_EQ(Symbol::Type::kSynch, (*ptg->table[2][0])[0]->type);
+
+    cout << "firsts: " << endl;
+    for(vector<set<string>> v : ptg->firsts) {
+        for(set<string> s : v) {
+            for(string st : s) {
+                cout << st << "  ";
+            }
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << "follows: " << ptg->follows.size() << endl;
+    for(set<string> s : ptg->follows) {
+        for(string st : s) {
+            cout << st << "  ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 }

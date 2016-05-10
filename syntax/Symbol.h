@@ -19,6 +19,7 @@ public:
     enum Type {
         kTerminal,
         kNonTerminal,
+        kSynch
     };
 
     string name;
@@ -26,8 +27,12 @@ public:
     Type type;
 
     Symbol(const string &name);
-
     Symbol(GrammarRule* grammar_rule);
+
+    static Symbol* GetSynchSymbol();
+
+private:
+    Symbol();
 };
 
 #endif //JAVACOMPILER_SYMBOL_H
