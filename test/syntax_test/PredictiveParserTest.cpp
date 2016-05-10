@@ -67,7 +67,7 @@ protected:
         RegularExpression* regular_expression = new RegularExpression("../lexical/lexical_input.txt");
 
         lexical = new Lexical();
-        int priority = 1000000, i = 0;
+        int priority = 900000, i = 0;
 
         for(string keyword: regular_expression->keywords) {
             lexical->AddDfa(Nfa::Solver(RegularDefinition::Tokenize(keyword)), new Token(keyword, priority--));
@@ -124,8 +124,8 @@ TEST_F(PredictiveParserGeneratorFromLexical, ErrorRecovery_int_x_i) {
 
 TEST_F(PredictiveParserGeneratorFromLexical, ErrorRecovery_Assignment) {
     string code_program_sample = ""
-            "int x"
-            "x = 5"
+            "int x;"
+            "x = ;"
             "\\$";
 
     cout << endl << "Parsing Stack:" << endl;

@@ -51,13 +51,11 @@ vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
         set<string> first;
         if(v[0]->type == Symbol::Type::kTerminal) {
             first.insert(v[0]->name);
-            this->terminals.insert(v[0]->name);
         } else {
             bool is_all_lambda = true;
             for(int i = 0; i < v.size(); ++i) {
                 if(v[i]->type == Symbol::Type::kTerminal) {
                     first.insert(v[i]->name);
-                    this->terminals.insert(v[i]->name);
                     is_all_lambda = false;
                     break;
                 }
@@ -233,6 +231,16 @@ void ParsingTableGenerator::print_table() {
 }
 
 void ParsingTableGenerator::generate_indexes() {
+    for(int i = 0; i < rules.size(); ++i) {
+        for(vector<Symbol *> v : rules[i]->productions) {
+            for(Symbol *s : v) {
+                if(s->type == Symbol::Type::kTerminal) {
+                    terminals.insert(s->name);
+                }
+            }
+        }
+    }
+
     for(int i = 0; i < this->rules.size(); ++i) {
         this->rules_indexes[this->rules[i]->name] = i;
     }
