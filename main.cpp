@@ -6,16 +6,30 @@
 #include <Lexical.h>
 #include <Visualiser.h>
 #include <ContextFreeGrammar.h>
+#include <cstring>
 
 using namespace std;
 
-// TODO: Symbol Table.
-// TODO: Error Recovery.
-// TODO: Report. Finish UI.
+int main(int argc, char * argv[]) {
+    string path = "";
+    // get the path from: ../bin/main => bin/
+    int len = (int) (strlen(argv[0]) - 4);
+    for(int i = 0; i < len; i++) {
+        path += argv[0][i];
+    }
+    if(argc < 2) {
+        cerr << "Invalid Format, you should run it: main lexical-input-file" << endl;
+        return -1;
+    }
 
-int main() {
+    ifstream lexical_file(argv[1]);
+    if(! lexical_file) {
+        cerr << "Lexical File doesn't exist." << endl;
+        return -1;
+    }
+
     // Opening the file through the Regular Expression class.
-    RegularExpression* regular_expression = new RegularExpression("../lexical/lexical_input.txt");
+    RegularExpression* regular_expression = new RegularExpression(argv[1]);
 
     Lexical* lexical = new Lexical();
     int priority = 1000000, i = 0;
@@ -38,11 +52,12 @@ int main() {
     Nfa *new_line = Nfa::Solver(RegularDefinition::Tokenize("\n"));
     lexical->AddDfa(new_line, new Token("Blanks", priority--));
 
-    ifstream ifs("input.java");
-    ofstream ofs("input.java_lexemes");
-    ofstream detailed_report("input.java_lexemes_detailed");
+    ifstream ifs(path + "input.java");
+    ofstream ofs(path + "input.java_lexemes");
+    ofstream detailed_report(path + "input.java_lexemes_detailed");
+    ofstream outjson(path + "dfa.js");
 
-    ofstream outjson("../report/dfa.js");
+
     outjson << "var dfas = {";
     int k = 0;
     for (vector<Dfa *>::iterator it = lexical->dfas.begin(); it != lexical->dfas.end(); ++it) {
@@ -73,11 +88,22 @@ int main() {
 //        ofs << endl;
     }
 
+    cout << "lexemes: " << path + "input.java_lexemes" << endl;
+    cout << "lexemes_detailed: " << path + "input.java_lexemes_detailed" << endl;
+    cout << "dfa: " << path + "dfa.js" << endl;
 
     //system("google-chrome-stable ../report/index.html"); // more general
 //    system("google-chrome-stable ../report/index.html"); // more general
     // system("xdg-open ../report/index.html"); // for linux
 //     system("open ../report/index.html");  // for mac
+
+
+//    cout << "Error Exists: " << output.error_found << endl;
+//    cout << "Error String Remaning: " << output.error_string << endl << endl;
+//    cout << "# of Tokens: " << output.tokens.size() << endl;
+
+//    ContextFreeGrammar *cfg = new ContextFreeGrammar("../syntax/CFG.txt");
+
 
     return 0;
 }

@@ -1,0 +1,20 @@
+{
+  "name": "JavaCompiler",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.html",
+  "chromium-args": "--disable-setuid-sandbox",
+  "window": {
+    "min_width": 720,
+    "min_height": 480,
+    "width": 1280,
+    "height": 720,
+    "title": "JavaCompiler",
+    "toolbar": true
+  },
+  "scripts": {
+    "start": "nwjs/nw ."
+  },
+  "author": "Ramy Tamer",
+  "license": "ISC"
+}
