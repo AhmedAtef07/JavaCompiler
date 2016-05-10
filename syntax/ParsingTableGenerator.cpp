@@ -10,36 +10,31 @@ ParsingTableGenerator::ParsingTableGenerator(vector<GrammarRule *> rules) {
     this->follows = calculate_follows();
     generate_indexes();
     generate_table();
-//    print_table();
+    print_table();
 }
 
 bool ParsingTableGenerator::contains_lambda(GrammarRule *rule) {
     for(vector<Symbol*> &v : rule->productions) {
-        if(v.size() == 1 && v[0]->name == "") return true;
-    }
-    for(vector<Symbol*> v : rule->productions) {
-        if(v.size() > 1) {
-            bool is_all_lambda = true;
-            for(Symbol *symbol : v) {
-                if(symbol->name != "") {
-                    is_all_lambda = false;
-                }
+        bool is_all_lambda = true;
+        for(Symbol *symbol : v) {
+            if(symbol->name != "\\L") {
+                is_all_lambda = false;
             }
-            if(is_all_lambda) return true;
         }
+        if(is_all_lambda) return true;
     }
     return false;
 }
 
 bool ParsingTableGenerator::contains_lambda(set<string> set_of_strings) {
     for(string s : set_of_strings) {
-        if(s == "") return true;
+        if(s == "\\L") return true;
     }
     return false;
 }
 
 void ParsingTableGenerator::remove_lambda(set<string> &set_of_strings) {
-    set_of_strings.erase(set_of_strings.find(""));
+    set_of_strings.erase(set_of_strings.find("\\L"));
 }
 
 set<string> ParsingTableGenerator::vector_to_set_strings(vector<set<string>> vector_of_strings) {
@@ -81,7 +76,7 @@ vector<set<string>> ParsingTableGenerator::calculate_first(GrammarRule *rule) {
                 }
             }
             if(is_all_lambda) {
-                first.insert("");
+                first.insert("\\L");
             }
         }
         firsts.push_back(first);
@@ -181,16 +176,16 @@ void ParsingTableGenerator::generate_table() {
     for(int i = 0; i < this->rules.size(); ++i) {
         for(int j = 0; j < this->firsts[i].size(); ++j) {
             for(string s : this->firsts[i][j]) {
-                if(s != "") {
+                if(s != "\\L") {
                     int current_terminal_index = this->terminals_indexes[s];
                     vector<Symbol*> *v = this->table[i][current_terminal_index];
                     v->insert(v->end(), this->rules[i]->productions[j].begin(), this->rules[i]->productions[j].end());
                 } else {
-                    Symbol *lambda = new Symbol("");
                     for(string ss : this->follows[i]) {
                         int current_terminal_index = this->terminals_indexes[ss];
                         vector<Symbol *> v = *this->table[i][current_terminal_index];
-                        if(v.size() > 1 || (v.size() == 1 && (v[0]->type != Symbol::Type::kTerminal || v[0]->name != ""))) {
+                        if(v.size() > 1 ||
+                                (v.size() == 1 && (v[0]->type != Symbol::Type::kTerminal || v[0]->name != "\\L"))) {
                             cout << endl << "error while generating parsing table" << endl;
                             vector<Symbol*> v = *this->table[i][current_terminal_index];
                             for(int k = 0; k < v.size(); ++k) {
@@ -198,7 +193,7 @@ void ParsingTableGenerator::generate_table() {
                             }
                             cout << endl << "terminal: " << ss << " rule: " << this->rules[i]->name << endl;
                         } else {
-                            this->table[i][current_terminal_index]->push_back(new Symbol(""));
+                            this->table[i][current_terminal_index]->push_back(new Symbol("\\L"));
                         }
                     }
                 }

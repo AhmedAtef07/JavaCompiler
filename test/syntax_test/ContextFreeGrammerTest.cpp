@@ -208,9 +208,10 @@ TEST(ContextFreeGrammar, LLGrammarTest) {
     cfg->AddRulesFromString(grammer);
 
     string modified_grammer = "";
-    string expected_modified_grammer = "METHOD_BODY = STATEMENT_LIST\n"
+    string expected_modified_grammer = ""
+            "METHOD_BODY = STATEMENT_LIST\n"
             "STATEMENT_LIST = STATEMENT STATEMENT_LIST''\n"
-            "STATEMENT_LIST'' = STATEMENT STATEMENT_LIST'' | \n"
+            "STATEMENT_LIST'' = STATEMENT STATEMENT_LIST'' | \\L\n"
             "STATEMENT = DECLARATION | IF | WHILE | ASSIGNMENT\n"
             "DECLARATION = PRIMITIVE_TYPE id ;\n"
             "IF = if ( EXPRESSION ) { STATEMENT } else { STATEMENT }\n"
@@ -219,12 +220,12 @@ TEST(ContextFreeGrammar, LLGrammarTest) {
             "PRIMITIVE_TYPE = int | float\n"
             "EXPRESSION = SIMPLE_EXPRESSION EXPRESSION'''\n"
             "SIMPLE_EXPRESSION = TERM SIMPLE_EXPRESSION'' | SIGN TERM SIMPLE_EXPRESSION''\n"
-            "SIMPLE_EXPRESSION'' = addop TERM SIMPLE_EXPRESSION'' | \n"
+            "SIMPLE_EXPRESSION'' = addop TERM SIMPLE_EXPRESSION'' | \\L\n"
             "TERM = FACTOR TERM''\n"
-            "TERM'' = mulop FACTOR TERM'' | \n"
+            "TERM'' = mulop FACTOR TERM'' | \\L\n"
             "SIGN = + | -\n"
             "FACTOR = id | num | ( EXPRESSION )\n"
-            "EXPRESSION''' = relop SIMPLE_EXPRESSION | \n";
+            "EXPRESSION''' = relop SIMPLE_EXPRESSION | \\L\n";
 
     cout << endl << "modified grammer:" << endl;
     for(GrammarRule *r : cfg->rules) {
