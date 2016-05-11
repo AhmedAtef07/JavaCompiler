@@ -34,6 +34,8 @@ private:
     void print_the_stack(string current_token_name, bool new_token_passed, int index);
 
     void ErrorHandler(string error_msg, Token *token);
+
+    void open_current_token_tag(const string &current_token_name, int index);
 };
 
 

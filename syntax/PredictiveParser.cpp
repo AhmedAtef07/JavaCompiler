@@ -42,17 +42,8 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
       </div>
     </div>
      */
-    outputInHtmlFormat += "<div class=\"panel-group\" id=\"accordion\" role=\"tablist\" aria-multiselectable=\"true\">\n";
-    outputInHtmlFormat += "  <div class=\"panel panel-default\">\n";
-    outputInHtmlFormat += "    <div class=\"panel-heading\" role=\"tab\" id=\"headingOne\">\n";
-    outputInHtmlFormat += "      <h4 class=\"panel-title\">\n";
-    outputInHtmlFormat += "        <a role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#token-"+ to_string(0) +"\" aria-expanded=\"false\" aria-controls=\"token-"+to_string(0)+"\">\n";
-    outputInHtmlFormat += "          " + tokens[0]->name + "\n";
-    outputInHtmlFormat += "        </a>\n";
-    outputInHtmlFormat += "      </h4>\n";
-    outputInHtmlFormat += "    </div>\n";
-    outputInHtmlFormat += "    <div id=\"token-"+to_string(0)+"\" class=\"panel-collapse collapse in\" role=\"tabpanel\" aria-labelledby=\"headingOne\">\n";
-    outputInHtmlFormat += "      <div class=\"panel-body\">\n<ul>\n";
+    open_current_token_tag(tokens[0]->name, 0);
+
     for(int i = 0; i < tokens.size(); ) {
         Token *token = tokens[i];
 
@@ -78,7 +69,7 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 continue;
             }
             if(the_stack.back()->name == token->name) {
-                outputInHtmlFormat += "    <li class=\"list-group-item\">matched: " + token->name + " " + the_stack.back()->name + "</li>\n";
+                outputInHtmlFormat += "    <li class=\"list-group-item\">matched: " + token->name + "&nbsp;&nbsp;&nbsp;&nbsp;" + the_stack.back()->name + "</li>\n";
 
                 outputInHtmlFormat += "        </ul>\n";
                 outputInHtmlFormat += "      </div>\n";
@@ -87,12 +78,12 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
                 outputInHtmlFormat += "</div>\n";
 //              cout << "matched: " << token->name << " " << the_stack.back()->name << endl;
                 the_stack.pop_back();
-                if(i + 1 < tokens.size()) {
-                    print_the_stack(tokens[i + 1]->name, true, i);
+                ++i;
+                if(i < tokens.size()) {
+                    print_the_stack(tokens[i]->name, true, i);
                 } else {
                     print_the_stack("", false, i);
                 }
-                ++i;
             } else {
                 // Mismatch Error.
                 ErrorHandler("Mismatch Terminal with input token", token);
@@ -139,19 +130,7 @@ bool PredictiveParser::parse(vector<Token *> tokens) {
 
 void PredictiveParser::print_the_stack(string current_token_name, bool new_token_passed, int index) {
     if(new_token_passed) {
-        double t = time(0);
-        outputInHtmlFormat += "<div class=\"panel-group\" id=\"accordion\" role=\"tablist\" aria-multiselectable=\"true\">\n";
-        outputInHtmlFormat += "  <div class=\"panel panel-default\">\n";
-        outputInHtmlFormat += "    <div class=\"panel-heading\" role=\"tab\" id=\"headingOne\">\n";
-        outputInHtmlFormat += "      <h4 class=\"panel-title\">\n";
-        outputInHtmlFormat += "        <a role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#token-"+ to_string(index) +"\" aria-expanded=\"false\" aria-controls=\"token-"+to_string(index)+"\">\n";
-        outputInHtmlFormat += "          " + current_token_name + "\n";
-        outputInHtmlFormat += "        </a>\n";
-        outputInHtmlFormat += "      </h4>\n";
-        outputInHtmlFormat += "    </div>\n";
-        outputInHtmlFormat += "    <div id=\"token-"+to_string(index)+"\" class=\"panel-collapse collapse in\" role=\"tabpanel\" aria-labelledby=\"headingOne\">\n";
-        outputInHtmlFormat += "      <div class=\"panel-body\">\n";
-        outputInHtmlFormat += "        <ul class=\"list-group\">\n";
+        open_current_token_tag(current_token_name, index);
     }
 
     string stackline = "";
@@ -164,6 +143,21 @@ void PredictiveParser::print_the_stack(string current_token_name, bool new_token
     }
 
 //    cout << endl;
+}
+
+void PredictiveParser::open_current_token_tag(const string &current_token_name, int index) {
+    outputInHtmlFormat += "<div class=\"panel-group\" id=\"accordion\" role=\"tablist\" aria-multiselectable=\"true\">\n";
+    outputInHtmlFormat += "  <div class=\"panel panel-default\">\n";
+    outputInHtmlFormat += "    <div class=\"panel-heading\" role=\"tab\" id=\"headingOne\">\n";
+    outputInHtmlFormat += "      <h4 class=\"panel-title\">\n";
+    outputInHtmlFormat += "        <a role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#token-" + to_string(index) + "\" aria-expanded=\"false\" aria-controls=\"token-" + to_string(index) + "\">\n";
+    outputInHtmlFormat += "          current token:&nbsp;&nbsp;&nbsp;<b>" + current_token_name + "</b>\n";
+    outputInHtmlFormat += "        </a>\n";
+    outputInHtmlFormat += "      </h4>\n";
+    outputInHtmlFormat += "    </div>\n";
+    outputInHtmlFormat += "    <div id=\"token-" + to_string(index) + "\" class=\"panel-collapse collapse in\" role=\"tabpanel\" aria-labelledby=\"headingOne\">\n";
+    outputInHtmlFormat += "      <div class=\"panel-body\">\n";
+    outputInHtmlFormat += "        <ul class=\"list-group\">\n";
 }
 
 string PredictiveParser::StringifyStack() {

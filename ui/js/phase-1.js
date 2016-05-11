@@ -92,7 +92,7 @@ $(function() {
 
             $('#output .nav').append('<li role="presentation"><a href="#stack" aria-controls="stack" role="tab" data-toggle="tab">Stack</a></li>');
             $('#output .tab-content').append('<div role="tabpanel" class="tab-pane" id="stack"> ' + fs.readFileSync(stack) + ' </div>');
-            $('.collapse').collapse();
+            // $('.collapse').collapse();
 
             $('#stack').html( $('#stack').html().replace(new RegExp('\\\\L', 'g'), '') );
             $('#output').html( $('#output').html().replace(new RegExp('\\\\L', 'g'), '&epsilon;') );
