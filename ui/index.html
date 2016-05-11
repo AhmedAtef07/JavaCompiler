@@ -1,77 +1,89 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>JavaCompiler</title>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JavaCompiler</title>
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-        <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"> -->
-        <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="google-fonts/fonts.css">
-        <style>
-        .editor {
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"> -->
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="google-fonts/fonts.css">
+    <style>
+        .editor, h3 {
             font-family: 'Fira Mono' !important;
         }
-        </style>
+    </style>
 
-    </head>
-    <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div>
+                  <br>
+                  <h3 class="text-center">JavaCompiler</h3>  
+                  <br>
+                  <!-- Nav tabs -->
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#lexical" aria-controls="lexical" role="tab" data-toggle="tab">Lexical Rules</a></li>
+                    <li role="presentation"><a href="#grammer" aria-controls="grammer" role="tab" data-toggle="tab">Grammer</a></li>
+                    <li role="presentation"><a href="#input-code" aria-controls="input-code" role="tab" data-toggle="tab">Input Code</a></li>
+                </ul>
+                <br>
 
-                      <!-- Nav tabs -->
-                      <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#lexical" aria-controls="lexical" role="tab" data-toggle="tab">Lexical Rules</a></li>
-                        <li role="presentation"><a href="#grammer" aria-controls="grammer" role="tab" data-toggle="tab">Grammer</a></li>
-                        <li role="presentation"><a href="#input-code" aria-controls="input-code" role="tab" data-toggle="tab">Input Code</a></li>
-                      </ul>
-                        <br>
-                      <!-- Tab panes -->
-                      <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="lexical">
-                            <div id="lexical-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="grammer">
-                            <div id="grammer-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="input-code">
-                            <div id="input-code-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
-                        </div>
-                      </div>
-
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="lexical">
+                        <div id="lexical-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
                     </div>
-                    <button class="btn btn-primary btn-block" id="run-phase-1"><i class="fa fa-play"></i> Run Phase 1</button>
-                </div>
-            </div>
-            <br><br>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div id="output">
-                      <!-- Nav tabs -->
-                      <ul class="nav nav-tabs" role="tablist">
-                        
-                      </ul>
-                        <br>
-                      <!-- Tab panes -->
-                      <div class="tab-content">
-                        
-                        
-                      </div>
-
+                    <div role="tabpanel" class="tab-pane" id="grammer">
+                        <div id="grammer-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="input-code">
+                        <div id="input-code-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
                     </div>
                 </div>
+
+
+
             </div>
+            <button class="btn btn-primary btn-block" id="run-phase-1"><i class="fa fa-play"></i> Run Phase 1</button>
         </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 class="text-center">Output</h3>
+            <br>
+            <div id="output">
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
 
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
-        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="bower_components/ace-build/src-min/ace.js"></script>
-        <script src="js/init.js"></script>
-        <script src="js/phase-1.js"></script>
-    </body>
+              </ul>
+              <br>
+              <!-- Tab panes -->
+              <div class="tab-content">
+
+
+              </div>
+
+          </div>
+      </div>
+  </div>
+</div>
+
+<br>
+<br>
+<br>
+<br><br>
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/ace-build/src-min/ace.js"></script>
+<script src="js/init.js"></script>
+<script src="js/phase-1.js"></script>
+</body>
 </html>

@@ -96,23 +96,31 @@ int main(int argc, char * argv[]) {
 
 
     // Syntax Phase.
-    string context_free_grammar_file_path = "path";
-
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
-    cfg->AddRulesFromFile(context_free_grammar_file_path);
+    cfg->AddRulesFromFile(argv[2]);
 
     ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
+    ofstream firstOutput(path + "first.html");
+    firstOutput << ptg->GetFirstsInHtmlFormat();
+    firstOutput.close();
 
-    PredictiveParser* pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
+    ofstream followOutput(path + "follow.html");
+    followOutput << ptg->GetFollowsInHtmlFormat();
+    followOutput.close();
 
+    ofstream parsingTableOutput(path + "parsingTable.html");
+    parsingTableOutput << ptg->GetParsingTableInHtmlFormat();
+    parsingTableOutput.close();
 
-
-
+//    PredictiveParser* pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
 
 
     cout << "lexemes: " << path + "input.java_lexemes" << endl;
     cout << "lexemes_detailed: " << path + "input.java_lexemes_detailed" << endl;
     cout << "dfa: " << path + "dfa.js" << endl;
+    cout << "first: " << path + "first.html" << endl;
+    cout << "follow: " << path + "follow.html" << endl;
+    cout << "parsingTable: " << path + "parsingTable.html" << endl;
 
     //system("google-chrome-stable ../report/index.html"); // more general
 //    system("google-chrome-stable ../report/index.html"); // more general
