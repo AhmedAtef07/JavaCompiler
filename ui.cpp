@@ -18,13 +18,13 @@ using namespace std;
 
 int main(int argc, char * argv[]) {
     string path = "";
-    // get the path from: ../bin/main => bin/
-    int len = (int) (strlen(argv[0]) - 4);
+    // get the path from: ../bin/ui => bin/
+    int len = (int) (strlen(argv[0]) - 2);
     for(int i = 0; i < len; i++) {
         path += argv[0][i];
     }
-    if(argc < 2) {
-        cerr << "Invalid Format, you should run it: main lexical-input-file" << endl;
+    if(argc < 3) {
+        cerr << "Invalid Format, you should run it: main lexical-input-file CFG-input-file" << endl;
         return -1;
     }
 
