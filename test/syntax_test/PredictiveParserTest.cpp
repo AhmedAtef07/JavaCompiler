@@ -41,25 +41,9 @@ protected:
         cout << endl << endl;
         ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
 
-        cout << "firsts: " << endl;
-        for(vector<set<string>> v : ptg->firsts) {
-            for(set<string> s : v) {
-                for(string st : s) {
-                    cout << st << "  ";
-                }
-            }
-            cout << endl;
-        }
-        cout << endl;
-
-        cout << "follows: " << ptg->follows.size() << endl;
-        for(set<string> s : ptg->follows) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-            cout << endl;
-        }
-        cout << endl;
+        ptg->print_firsts();
+        ptg->print_follows();
+        ptg->print_table();
 
         pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
 
@@ -171,25 +155,9 @@ TEST(PredectiveParserGenerater, BasicTest) {
 
     ParsingTableGenerator* ptg = new ParsingTableGenerator(rules);
 
-    cout << "firsts: " << endl;
-    for(vector<set<string>> v : ptg->firsts) {
-        for(set<string> s : v) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "follows: " << endl;
-    for(set<string> s : ptg->follows) {
-        for(string st : s) {
-            cout << st << "  ";
-        }
-        cout << endl;
-    }
-    cout << endl;
+    ptg->print_firsts();
+    ptg->print_follows();
+    ptg->print_table();
 
     PredictiveParser *pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
 

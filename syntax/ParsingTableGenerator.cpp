@@ -10,7 +10,6 @@ ParsingTableGenerator::ParsingTableGenerator(vector<GrammarRule *> rules) {
     this->follows = calculate_follows();
     generate_indexes();
     generate_table();
-    print_table();
 }
 
 bool ParsingTableGenerator::contains_lambda(GrammarRule *rule) {
@@ -209,6 +208,30 @@ void ParsingTableGenerator::generate_table() {
     }
 }
 
+void ParsingTableGenerator::print_firsts() {
+    cout << endl << "firsts: " << endl;
+    for(vector<set<string>> v : firsts) {
+        for(set<string> s : v) {
+            for(string st : s) {
+                cout << st << "  ";
+            }
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void ParsingTableGenerator::print_follows() {
+    cout << endl << "follows: " << follows.size() << endl;
+    for(set<string> s : follows) {
+        for(string st : s) {
+            cout << st << "  ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 void ParsingTableGenerator::print_table() {
     cout << endl << "table:" << endl;
     cout << "#" << " | ";
@@ -262,3 +285,4 @@ string ParsingTableGenerator::GetFirstsTableInHtmlFormat() {
 string ParsingTableGenerator::GetFollowsTableInHtmlFormat() {
 
 }
+

@@ -29,6 +29,10 @@ public:
     string GetFirstsTableInHtmlFormat();
     string GetFollowsTableInHtmlFormat();
 
+    void print_firsts();
+    void print_follows();
+    void print_table();
+
 private:
 
     vector<GrammarRule*> rules;
@@ -51,8 +55,6 @@ private:
 
     void generate_table();
     void generate_indexes();
-    void print_table();
-
 };
 
 
