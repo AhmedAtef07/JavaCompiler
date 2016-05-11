@@ -25,6 +25,10 @@ public:
 
     ParsingTableGenerator(vector<GrammarRule*> rules);
 
+    string GetParsingTableInHtmlFormat();
+    string GetFirstsTableInHtmlFormat();
+    string GetFollowsTableInHtmlFormat();
+
 private:
 
     vector<GrammarRule*> rules;

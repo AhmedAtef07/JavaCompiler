@@ -251,3 +251,14 @@ void ParsingTableGenerator::generate_indexes() {
     }
 }
 
+string ParsingTableGenerator::GetParsingTableInHtmlFormat() {
+
+}
+
+string ParsingTableGenerator::GetFirstsTableInHtmlFormat() {
+
+}
+
+string ParsingTableGenerator::GetFollowsTableInHtmlFormat() {
+
+}

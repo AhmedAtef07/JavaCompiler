@@ -26,6 +26,8 @@ public:
     bool parse(vector<Token *> tokens);
     void initialize_the_stack();
 
+    string StringifyStack();
+
 private:
 
     void print_the_stack(string current_token_name);

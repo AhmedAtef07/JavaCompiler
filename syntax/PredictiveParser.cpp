@@ -98,3 +98,11 @@ void PredictiveParser::print_the_stack(string current_token_name) {
     cout << endl;
 }
 
+string PredictiveParser::StringifyStack() {
+    string ret = "";
+    for(Symbol *s : the_stack) {
+        ret += s->name + " ";
+    }
+    return ret;
+}
+
