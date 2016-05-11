@@ -107,6 +107,20 @@ int main(int argc, char * argv[]) {
     firstOutput << ptg->GetFirstsInHtmlFormat();
     firstOutput.close();
 
+    ofstream ll_ofs(path + "ll.txt");
+
+    for(GrammarRule *r : cfg->rules) {
+        ll_ofs << r->name << " = ";
+        for(int i = 0; i < r->productions.size(); ++i) {
+            for(int j = 0; j < r->productions[i].size(); ++j) {
+                ll_ofs << r->productions[i][j]->name << ((j + 1) == r->productions[i].size() ? "" : " ");
+                ll_ofs << ((i + 1) == r->productions.size() ? "" : " | ");
+            }
+        }
+        ll_ofs << endl;
+    }
+
+
     ofstream followOutput(path + "follow.html");
     followOutput << ptg->GetFollowsInHtmlFormat();
     followOutput.close();
@@ -124,7 +138,8 @@ int main(int argc, char * argv[]) {
     cout << "parsingTable: " << path + "parsingTable.html" << endl;
     cout << "stack: " << path + "stack.html" << endl;
 
-    PredictiveParser* pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
+    PredictiveParser* pp = new PredictiveParser(ptg->table, ptg->rules_indexes,
+                                                ptg->terminals_indexes, new Symbol(ptg->rules[0]));
     pp->parse(lexical->ParseInput(allCode).tokens);
 
     ofstream stackOutput(path + "stack.html");
