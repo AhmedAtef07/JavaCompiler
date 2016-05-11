@@ -16,26 +16,27 @@ using namespace std;
 class ParsingTableGenerator {
 
 public:
+    vector<GrammarRule*> rules;
+
     vector<vector<set<string>>> firsts;
     vector<set<string>> follows;
 
     vector<Symbol *> ***table;
     map<string, int> terminals_indexes;
+
     map<string, int> rules_indexes;
 
     ParsingTableGenerator(vector<GrammarRule*> rules);
-
     string GetParsingTableInHtmlFormat();
     string GetFirstsInHtmlFormat();
-    string GetFollowsInHtmlFormat();
 
+    string GetFollowsInHtmlFormat();
     void print_firsts();
     void print_follows();
+
     void print_table();
 
 private:
-
-    vector<GrammarRule*> rules;
     set<string> terminals;
     map<string, vector<set<string>>> firsts_map;
 

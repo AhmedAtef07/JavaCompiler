@@ -46,7 +46,7 @@ protected:
         ptg->print_follows();
         ptg->print_table();
 
-        pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
+        pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes, new Symbol(ptg->rules[0]));
 
 
         RegularExpression* regular_expression = new RegularExpression("../lexical/lexical_input.txt");
@@ -164,7 +164,8 @@ TEST(PredectiveParserGenerater, BasicTest) {
     ptg->print_follows();
     ptg->print_table();
 
-    PredictiveParser *pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
+    PredictiveParser *pp = new PredictiveParser(ptg->table, ptg->rules_indexes,
+                                                ptg->terminals_indexes, new Symbol(ptg->rules[0]));
 
 
     Token *t1 = new Token("int", 1);
