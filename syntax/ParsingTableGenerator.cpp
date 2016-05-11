@@ -183,12 +183,12 @@ void ParsingTableGenerator::generate_table() {
                         vector<Symbol *> v = *this->table[i][current_terminal_index];
                         if(v.size() > 1 ||(v.size() == 1 && (v[0]->type != Symbol::Type::kTerminal ||
                                                              v[0]->name != "\\L"))) {
-                            cout << endl << "error while generating parsing table" << endl;
-                            vector<Symbol*> v = *this->table[i][current_terminal_index];
-                            for(int k = 0; k < v.size(); ++k) {
-                                cout << v[k]->name << " ";
-                            }
-                            cout << endl << "terminal: " << ss << " rule: " << this->rules[i]->name << endl;
+//                            cout << endl << "error while generating parsing table" << endl;
+//                            vector<Symbol*> v = *this->table[i][current_terminal_index];
+//                            for(int k = 0; k < v.size(); ++k) {
+//                                cout << v[k]->name << " ";
+//                            }
+//                            cout << endl << "terminal: " << ss << " rule: " << this->rules[i]->name << endl;
                         } else {
                             this->table[i][current_terminal_index]->push_back(new Symbol("\\L"));
                         }

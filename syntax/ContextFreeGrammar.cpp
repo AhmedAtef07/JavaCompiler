@@ -105,10 +105,11 @@ void ContextFreeGrammar::remove_left_recursion() {
             }
         }
         GrammarRule *new_rule = nullptr;
+        Symbol *new_rule_symbol = nullptr;
         if(new_nonTerminal_or_vector.size() > 0) {
             new_rule = new GrammarRule();
             new_rule->name = rule->name + many_dashes(2);
-            Symbol *new_rule_symbol = new Symbol(new_rule);
+            new_rule_symbol = new Symbol(new_rule);
             Symbol *lambda = new Symbol("\\L");
             vector<Symbol*> lambda_vector = {lambda};
             for(vector<Symbol*> &concat_vector : new_nonTerminal_or_vector) {
@@ -121,7 +122,15 @@ void ContextFreeGrammar::remove_left_recursion() {
             new_rule->productions = new_nonTerminal_or_vector;
 //            rules.push_back(new_rule);
         }
-        rule_clone->productions = new_or_vector;
+        if(new_or_vector.size() > 0) {
+            rule_clone->productions = new_or_vector;
+        } else {
+            vector<vector<Symbol *>> v;
+            vector<Symbol *> vv;
+            vv.push_back(new_rule_symbol);
+            v.push_back(vv);
+            rule_clone->productions = v;
+        }
         rules.push_back(rule_clone);
         if(new_rule != nullptr) {
             rules.push_back(new_rule);

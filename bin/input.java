@@ -1,4 +1,5 @@
-int x = 5;
+int x;
+x = 5;
 if(x >2) {
     x = 0;
 } else {

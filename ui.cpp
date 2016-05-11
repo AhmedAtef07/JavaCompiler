@@ -114,8 +114,8 @@ int main(int argc, char * argv[]) {
         for(int i = 0; i < r->productions.size(); ++i) {
             for(int j = 0; j < r->productions[i].size(); ++j) {
                 ll_ofs << r->productions[i][j]->name << ((j + 1) == r->productions[i].size() ? "" : " ");
-                ll_ofs << ((i + 1) == r->productions.size() ? "" : " | ");
             }
+            ll_ofs << ((i + 1) == r->productions.size() ? "" : " | ");
         }
         ll_ofs << endl;
     }

@@ -29,6 +29,7 @@ $(function() {
     ];
 
     fs.writeFileSync(JavaCompilerPath + "lexical/lexical_input.txt", ace.edit('lexical-editor').getValue());
+    fs.writeFileSync(JavaCompilerPath + "syntax/CFG.txt", ace.edit('grammer-editor').getValue());
     fs.writeFileSync(JavaCompilerPath + "bin/input.java", ace.edit('input-code-editor').getValue() + "\n\\$");
 
     child = exec(command, args, function(err, stdout, stderr) {
@@ -113,6 +114,7 @@ $(function() {
       var lexemesDetailedEditorSession = lexemesDetailedEditor.getSession();
       lexemesDetailedEditorSession.setUseWrapMode(true);
       lexemesDetailedEditorSession.setWrapLimit(100);
+      lexemesDetailedEditor.setReadOnly(true);
 
       $('#lexemes-editor').text(fs.readFileSync(lexemes));
       var lexemesEditor = ace.edit("lexemes-editor");
@@ -120,6 +122,7 @@ $(function() {
       var lexemesEditorSession = lexemesEditor.getSession();
       lexemesEditorSession.setUseWrapMode(true);
       lexemesEditorSession.setWrapLimit(100);
+      lexemesEditor.setReadOnly(true);
 
       $('#ll-editor').text(fs.readFileSync(ll));
       var llEditor = ace.edit("ll-editor");
