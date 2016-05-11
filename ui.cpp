@@ -79,8 +79,11 @@ int main(int argc, char * argv[]) {
 
 
     string current_line;
+    Lexical::Output output;
+    string allCode = "";
     while(getline(ifs, current_line)) {
-        Lexical::Output output = lexical->ParseInput(current_line);
+        output = lexical->ParseInput(current_line);
+        allCode += current_line;
         for(Token *k : output.tokens) {
             detailed_report << k->name << "  >  " << k->pattern << endl;
             ofs << k->name << "  " << k->pattern << endl;
@@ -112,8 +115,6 @@ int main(int argc, char * argv[]) {
     parsingTableOutput << ptg->GetParsingTableInHtmlFormat();
     parsingTableOutput.close();
 
-//    PredictiveParser* pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
-
 
     cout << "lexemes: " << path + "input.java_lexemes" << endl;
     cout << "lexemes_detailed: " << path + "input.java_lexemes_detailed" << endl;
@@ -121,6 +122,14 @@ int main(int argc, char * argv[]) {
     cout << "first: " << path + "first.html" << endl;
     cout << "follow: " << path + "follow.html" << endl;
     cout << "parsingTable: " << path + "parsingTable.html" << endl;
+    cout << "stack: " << path + "stack.html" << endl;
+
+    PredictiveParser* pp = new PredictiveParser(ptg->table, ptg->rules_indexes, ptg->terminals_indexes);
+    pp->parse(lexical->ParseInput(allCode).tokens);
+
+    ofstream stackOutput(path + "stack.html");
+    stackOutput << pp->GetStackInHtmlForm();
+    stackOutput.close();
 
     //system("google-chrome-stable ../report/index.html"); // more general
 //    system("google-chrome-stable ../report/index.html"); // more general

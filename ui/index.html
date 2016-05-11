@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"> -->
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/sweetalert/dist/sweetalert.css">
     <link rel="stylesheet" href="google-fonts/fonts.css">
     <style>
         .editor, h3 {
@@ -43,20 +44,28 @@
                         <div id="grammer-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="input-code">
-                        <div id="input-code-editor" class="editor" style="height:600px;margin-bottom:5px"></div>
+                        <div id="input-code-editor" class="editor" style="height:600px;margin-bottom:5px">int x;
+x = 5;
+if(x >2) {
+    x = 0;
+} else {
+    y = 0;
+}</div>
                     </div>
                 </div>
 
 
 
             </div>
-            <button class="btn btn-primary btn-block" id="run-phase-1"><i class="fa fa-play"></i> Run Phase 1</button>
+            <button class="btn btn-primary btn-block" id="run-phase-1"><i class="fa fa-play"></i> Sammi Allah; W Run </button>
         </div>
     </div>
     <br><br>
     <div class="row">
         <div class="col-xs-12">
             <h3 class="text-center">Output</h3>
+            <br>
+            <div id="alerts-area"></div>
             <br>
             <div id="output">
               <!-- Nav tabs -->
@@ -83,6 +92,7 @@
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/ace-build/src-min/ace.js"></script>
+<script src="bower_components/sweetalert/dist/sweetalert.min.js"></script>
 <script src="js/init.js"></script>
 <script src="js/phase-1.js"></script>
 </body>

@@ -3,7 +3,7 @@ $(function() {
     
     $('#lexical-editor').text(fs.readFileSync("../lexical/lexical_input.txt"));
     $('#grammer-editor').text(fs.readFileSync("../syntax/CFG.txt"));
-    $('#input-code-editor').text(fs.readFileSync("../bin/input.java"));
+    // $('#input-code-editor').text(fs.readFileSync("../bin/input.java"));
 
     var lexicalEditor = ace.edit("lexical-editor");
     lexicalEditor.setTheme("ace/theme/monokai");

@@ -20,7 +20,7 @@
     "moment": "~2.12.0",
     "vue-resource": "~0.7.0",
     "vue": "~1.0.16",
-    "sweetalert": "~1.1.3",
+    "sweetalert": "^1.1.3",
     "fontawesome": "~4.5.0",
     "bootstrap": "~3.3.6",
     "ace-build": "^1.2.3"

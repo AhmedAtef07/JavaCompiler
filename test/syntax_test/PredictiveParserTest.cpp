@@ -94,9 +94,9 @@ TEST_F(PredictiveParserGeneratorFromLexical, ReturningToStartStateTest) {
 
     EXPECT_TRUE(pp->parse(output.tokens));
 
-    cout << ptg->GetFirstsInHtmlFormat() << endl;
-    cout << ptg->GetFollowsInHtmlFormat() << endl;
-    cout << ptg->GetParsingTableInHtmlFormat() << endl;
+//    cout << ptg->GetFirstsInHtmlFormat() << endl;
+//    cout << ptg->GetFollowsInHtmlFormat() << endl;
+//    cout << ptg->GetParsingTableInHtmlFormat() << endl;
 }
 
 TEST_F(PredictiveParserGeneratorFromLexical, ErrorRecovery_int_x_i) {

@@ -20,6 +20,7 @@ public:
     vector<Symbol *> ***table;
     map<string, int> rules_indexes;
     map<string, int> terminals_indexes;
+    string outputInHtmlFormat;
 
     PredictiveParser(vector<Symbol *> ***table, map<string, int> rules_indexes, map<string, int> terminals_indexes);
 
@@ -27,10 +28,10 @@ public:
     void initialize_the_stack();
 
     string StringifyStack();
-
+    string GetStackInHtmlForm();
 private:
 
-    void print_the_stack(string current_token_name);
+    void print_the_stack(string current_token_name, bool new_token_passed, int index);
 
     void ErrorHandler(string error_msg, Token *token);
 };
