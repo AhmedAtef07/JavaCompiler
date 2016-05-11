@@ -13,6 +13,7 @@ class PredictiveParserGeneratorFromLexical : public ::testing::Test {
 
 protected:
     Lexical* lexical;
+    ParsingTableGenerator* ptg;
     PredictiveParser *pp;
 
     PredictiveParserGeneratorFromLexical() : Test() {
@@ -39,7 +40,7 @@ protected:
         cfg->AddRulesFromString(grammar);
 
         cout << endl << endl;
-        ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
+        ptg = new ParsingTableGenerator(cfg->rules);
 
         ptg->print_firsts();
         ptg->print_follows();
@@ -92,6 +93,10 @@ TEST_F(PredictiveParserGeneratorFromLexical, ReturningToStartStateTest) {
     Lexical::Output output = lexical->ParseInput(code_program_sample);
 
     EXPECT_TRUE(pp->parse(output.tokens));
+
+    cout << ptg->GetFirstsInHtmlFormat() << endl;
+    cout << ptg->GetFollowsInHtmlFormat() << endl;
+    cout << ptg->GetParsingTableInHtmlFormat() << endl;
 }
 
 TEST_F(PredictiveParserGeneratorFromLexical, ErrorRecovery_int_x_i) {

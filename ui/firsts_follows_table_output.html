@@ -1,0 +1,568 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/assets/css/bootstrap.min.css">
+
+<body class="container">
+  <div class="row">
+
+      
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th width="200px">Non-Terminals</th>
+          <th>Firsts</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>METHOD_BODY</td>
+          <td><span class="badge first-badge">float</span><span class="badge first-badge">id</span><span class="badge first-badge">if</span><span class="badge first-badge">int</span><span class="badge first-badge">while</span></td>
+        </tr>
+        <tr>
+          <td>STATEMENT_LIST</td>
+          <td><span class="badge first-badge">float</span><span class="badge first-badge">id</span><span class="badge first-badge">if</span><span class="badge first-badge">int</span><span class="badge first-badge">while</span></td>
+        </tr>
+        <tr>
+          <td>STATEMENT_LIST''</td>
+          <td><span class="badge first-badge">float</span><span class="badge first-badge">id</span><span class="badge first-badge">if</span><span class="badge first-badge">int</span><span class="badge first-badge">while</span><span class="badge first-badge">\L</span></td>
+        </tr>
+        <tr>
+          <td>STATEMENT</td>
+          <td><span class="badge first-badge">float</span><span class="badge first-badge">int</span><span class="badge first-badge">if</span><span class="badge first-badge">while</span><span class="badge first-badge">id</span></td>
+        </tr>
+        <tr>
+          <td>DECLARATION</td>
+          <td><span class="badge first-badge">float</span><span class="badge first-badge">int</span></td>
+        </tr>
+        <tr>
+          <td>IF</td>
+          <td><span class="badge first-badge">if</span></td>
+        </tr>
+        <tr>
+          <td>WHILE</td>
+          <td><span class="badge first-badge">while</span></td>
+        </tr>
+        <tr>
+          <td>ASSIGNMENT</td>
+          <td><span class="badge first-badge">id</span></td>
+        </tr>
+        <tr>
+          <td>PRIMITIVE_TYPE</td>
+          <td><span class="badge first-badge">int</span><span class="badge first-badge">float</span></td>
+        </tr>
+        <tr>
+          <td>EXPRESSION</td>
+          <td><span class="badge first-badge">(</span><span class="badge first-badge">+</span><span class="badge first-badge">-</span><span class="badge first-badge">id</span><span class="badge first-badge">num</span></td>
+        </tr>
+        <tr>
+          <td>SIMPLE_EXPRESSION</td>
+          <td><span class="badge first-badge">(</span><span class="badge first-badge">id</span><span class="badge first-badge">num</span><span class="badge first-badge">+</span><span class="badge first-badge">-</span></td>
+        </tr>
+        <tr>
+          <td>SIMPLE_EXPRESSION''</td>
+          <td><span class="badge first-badge">addop</span><span class="badge first-badge">\L</span></td>
+        </tr>
+        <tr>
+          <td>TERM</td>
+          <td><span class="badge first-badge">(</span><span class="badge first-badge">id</span><span class="badge first-badge">num</span></td>
+        </tr>
+        <tr>
+          <td>TERM''</td>
+          <td><span class="badge first-badge">mulop</span><span class="badge first-badge">\L</span></td>
+        </tr>
+        <tr>
+          <td>SIGN</td>
+          <td><span class="badge first-badge">+</span><span class="badge first-badge">-</span></td>
+        </tr>
+        <tr>
+          <td>FACTOR</td>
+          <td><span class="badge first-badge">id</span><span class="badge first-badge">num</span><span class="badge first-badge">(</span></td>
+        </tr>
+        <tr>
+          <td>EXPRESSION'''</td>
+          <td><span class="badge first-badge">relop</span><span class="badge first-badge">\L</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th width="200px">Non-Terminals</th>
+          <th>Follows</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>METHOD_BODY</td>
+          <td><span class="badge follow-badge">\$</span></td>
+        </tr>
+        <tr>
+          <td>STATEMENT_LIST</td>
+          <td><span class="badge follow-badge">\$</span></td>
+        </tr>
+        <tr>
+          <td>STATEMENT_LIST''</td>
+          <td><span class="badge follow-badge">\$</span></td>
+        </tr>
+        <tr>
+          <td>STATEMENT</td>
+          <td><span class="badge follow-badge">\$</span><span class="badge follow-badge">float</span><span class="badge follow-badge">id</span><span class="badge follow-badge">if</span><span class="badge follow-badge">int</span><span class="badge follow-badge">while</span><span class="badge follow-badge">}</span></td>
+        </tr>
+        <tr>
+          <td>DECLARATION</td>
+          <td><span class="badge follow-badge">\$</span><span class="badge follow-badge">float</span><span class="badge follow-badge">id</span><span class="badge follow-badge">if</span><span class="badge follow-badge">int</span><span class="badge follow-badge">while</span><span class="badge follow-badge">}</span></td>
+        </tr>
+        <tr>
+          <td>IF</td>
+          <td><span class="badge follow-badge">\$</span><span class="badge follow-badge">float</span><span class="badge follow-badge">id</span><span class="badge follow-badge">if</span><span class="badge follow-badge">int</span><span class="badge follow-badge">while</span><span class="badge follow-badge">}</span></td>
+        </tr>
+        <tr>
+          <td>WHILE</td>
+          <td><span class="badge follow-badge">\$</span><span class="badge follow-badge">float</span><span class="badge follow-badge">id</span><span class="badge follow-badge">if</span><span class="badge follow-badge">int</span><span class="badge follow-badge">while</span><span class="badge follow-badge">}</span></td>
+        </tr>
+        <tr>
+          <td>ASSIGNMENT</td>
+          <td><span class="badge follow-badge">\$</span><span class="badge follow-badge">float</span><span class="badge follow-badge">id</span><span class="badge follow-badge">if</span><span class="badge follow-badge">int</span><span class="badge follow-badge">while</span><span class="badge follow-badge">}</span></td>
+        </tr>
+        <tr>
+          <td>PRIMITIVE_TYPE</td>
+          <td><span class="badge follow-badge">id</span></td>
+        </tr>
+        <tr>
+          <td>EXPRESSION</td>
+          <td><span class="badge follow-badge">)</span><span class="badge follow-badge">;</span></td>
+        </tr>
+        <tr>
+          <td>SIMPLE_EXPRESSION</td>
+          <td><span class="badge follow-badge">)</span><span class="badge follow-badge">;</span><span class="badge follow-badge">relop</span></td>
+        </tr>
+        <tr>
+          <td>SIMPLE_EXPRESSION''</td>
+          <td><span class="badge follow-badge">)</span><span class="badge follow-badge">;</span><span class="badge follow-badge">relop</span></td>
+        </tr>
+        <tr>
+          <td>TERM</td>
+          <td><span class="badge follow-badge">)</span><span class="badge follow-badge">;</span><span class="badge follow-badge">addop</span><span class="badge follow-badge">relop</span></td>
+        </tr>
+        <tr>
+          <td>TERM''</td>
+          <td><span class="badge follow-badge">)</span><span class="badge follow-badge">;</span><span class="badge follow-badge">addop</span><span class="badge follow-badge">relop</span></td>
+        </tr>
+        <tr>
+          <td>SIGN</td>
+          <td><span class="badge follow-badge">(</span><span class="badge follow-badge">id</span><span class="badge follow-badge">num</span></td>
+        </tr>
+        <tr>
+          <td>FACTOR</td>
+          <td><span class="badge follow-badge">)</span><span class="badge follow-badge">;</span><span class="badge follow-badge">addop</span><span class="badge follow-badge">mulop</span><span class="badge follow-badge">relop</span></td>
+        </tr>
+        <tr>
+          <td>EXPRESSION'''</td>
+          <td><span class="badge follow-badge">)</span><span class="badge follow-badge">;</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>(</th>
+          <th>)</th>
+          <th>+</th>
+          <th>-</th>
+          <th>;</th>
+          <th>=</th>
+          <th>\$</th>
+          <th>\L</th>
+          <th>addop</th>
+          <th>else</th>
+          <th>float</th>
+          <th>id</th>
+          <th>if</th>
+          <th>int</th>
+          <th>mulop</th>
+          <th>num</th>
+          <th>relop</th>
+          <th>while</th>
+          <th>{</th>
+          <th>}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>METHOD_BODY</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">STATEMENT_LIST</span></td>
+          <td><span class="badge">STATEMENT_LIST</span></td>
+          <td><span class="badge">STATEMENT_LIST</span></td>
+          <td><span class="badge">STATEMENT_LIST</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">STATEMENT_LIST</span></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>STATEMENT_LIST</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>STATEMENT_LIST''</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">STATEMENT</span><span class="badge">STATEMENT_LIST''</span></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>STATEMENT</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">DECLARATION</span></td>
+          <td><span class="badge">ASSIGNMENT</span></td>
+          <td><span class="badge">IF</span></td>
+          <td><span class="badge">DECLARATION</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">WHILE</span></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+        <tr>
+          <td>DECLARATION</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">PRIMITIVE_TYPE</span><span class="badge">id</span><span class="badge">;</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">PRIMITIVE_TYPE</span><span class="badge">id</span><span class="badge">;</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+        <tr>
+          <td>IF</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">if</span><span class="badge">(</span><span class="badge">EXPRESSION</span><span class="badge">)</span><span class="badge">{</span><span class="badge">STATEMENT</span><span class="badge">}</span><span class="badge">else</span><span class="badge">{</span><span class="badge">STATEMENT</span><span class="badge">}</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+        <tr>
+          <td>WHILE</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">while</span><span class="badge">(</span><span class="badge">EXPRESSION</span><span class="badge">)</span><span class="badge">{</span><span class="badge">STATEMENT</span><span class="badge">}</span></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+        <tr>
+          <td>ASSIGNMENT</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">id</span><span class="badge">=</span><span class="badge">EXPRESSION</span><span class="badge">;</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+        <tr>
+          <td>PRIMITIVE_TYPE</td>
+          <td>      <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">float</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td><span class="badge">int</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>EXPRESSION</td>
+          <td>      <td><span class="badge">SIMPLE_EXPRESSION</span><span class="badge">EXPRESSION'''</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">SIMPLE_EXPRESSION</span><span class="badge">EXPRESSION'''</span></td>
+          <td><span class="badge">SIMPLE_EXPRESSION</span><span class="badge">EXPRESSION'''</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">SIMPLE_EXPRESSION</span><span class="badge">EXPRESSION'''</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">SIMPLE_EXPRESSION</span><span class="badge">EXPRESSION'''</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>SIMPLE_EXPRESSION</td>
+          <td>      <td><span class="badge">TERM</span><span class="badge">SIMPLE_EXPRESSION''</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">SIGN</span><span class="badge">TERM</span><span class="badge">SIMPLE_EXPRESSION''</span></td>
+          <td><span class="badge">SIGN</span><span class="badge">TERM</span><span class="badge">SIMPLE_EXPRESSION''</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">TERM</span><span class="badge">SIMPLE_EXPRESSION''</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">TERM</span><span class="badge">SIMPLE_EXPRESSION''</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>SIMPLE_EXPRESSION''</td>
+          <td>      <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">addop</span><span class="badge">TERM</span><span class="badge">SIMPLE_EXPRESSION''</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>TERM</td>
+          <td>      <td><span class="badge">FACTOR</span><span class="badge">TERM''</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">FACTOR</span><span class="badge">TERM''</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">FACTOR</span><span class="badge">TERM''</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>TERM''</td>
+          <td>      <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">mulop</span><span class="badge">FACTOR</span><span class="badge">TERM''</span></td>
+          <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>SIGN</td>
+          <td>      <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td><span class="badge">+</span></td>
+          <td><span class="badge">-</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>FACTOR</td>
+          <td>      <td><span class="badge">(</span><span class="badge">EXPRESSION</span><span class="badge">)</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">id</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td><span class="badge">num</span></td>
+          <td><span class="badge">/Synch/</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>EXPRESSION'''</td>
+          <td>      <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">\L</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span class="badge">relop</span><span class="badge">SIMPLE_EXPRESSION</span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tbody>
+    </table>
+
+  </div>
+</body>

@@ -275,14 +275,113 @@ void ParsingTableGenerator::generate_indexes() {
 }
 
 string ParsingTableGenerator::GetParsingTableInHtmlFormat() {
+    string html = ""
+            "<table class=\"table table-bordered table-hover\">\n"
+            "  <thead>\n"
+            "    <tr>\n"
+            "      <th>#</th>\n";
 
+    for(string s : this->terminals) {
+        html += "      <th>";
+        html += s;
+        html += "</th>\n";
+    }
+
+    html += ""
+            "    </tr>\n"
+            "  </thead>\n"
+            "  <tbody>\n";
+
+    for(int i = 0; i < rules.size(); ++i) {
+        html += "    <tr>\n";
+        html += "      <td>";
+        html += rules[i]->name;
+        html += "</td>\n";
+        html += "      <td>";
+        for(int j = 0; j < terminals.size(); ++j) {
+            html += "      <td>";
+            for(Symbol *s : *table[i][j]) {
+
+                html += "<span class=\"badge\">";
+                html += s->name;
+                html += "</span>";
+
+            }
+            html += "</td>\n";
+        }
+    }
+
+    html += ""
+            "  </tbody>\n"
+            "</table>";
+
+    return html;
 }
 
-string ParsingTableGenerator::GetFirstsTableInHtmlFormat() {
+string ParsingTableGenerator::GetFirstsInHtmlFormat() {
+    string html = ""
+            "<table class=\"table table-bordered table-hover\">\n"
+            "  <thead>\n"
+            "    <tr>\n"
+            "      <th width=\"200px\">Non-Terminals</th>\n"
+            "      <th>Firsts</th>\n"
+            "    </tr>\n"
+            "  </thead>\n"
+            "  <tbody>\n";
 
+    for(int i = 0; i < rules.size(); ++i) {
+        html += "    <tr>\n";
+        html += "      <td>";
+        html += rules[i]->name;
+        html += "</td>\n";
+        html += "      <td>";
+        for(set<string> &ss : firsts[i]) {
+            for (string s : ss) {
+                html += "<span class=\"badge first-badge\">";
+                html += s;
+                html += "</span>";
+            }
+        }
+        html += "</td>\n";
+        html += "    </tr>\n";
+    }
+
+    html += ""
+            "  </tbody>\n"
+            "</table>";
+
+    return html;
 }
 
-string ParsingTableGenerator::GetFollowsTableInHtmlFormat() {
+string ParsingTableGenerator::GetFollowsInHtmlFormat() {
+    string html = ""
+            "<table class=\"table table-bordered table-hover\">\n"
+            "  <thead>\n"
+            "    <tr>\n"
+            "      <th width=\"200px\">Non-Terminals</th>\n"
+            "      <th>Follows</th>\n"
+            "    </tr>\n"
+            "  </thead>\n"
+            "  <tbody>\n";
 
+    for(int i = 0; i < rules.size(); ++i) {
+        html += "    <tr>\n";
+        html += "      <td>";
+        html += rules[i]->name;
+        html += "</td>\n";
+        html += "      <td>";
+        for (string s : follows[i]) {
+            html += "<span class=\"badge follow-badge\">";
+            html += s;
+            html += "</span>";
+        }
+        html += "</td>\n";
+        html += "    </tr>\n";
+    }
+
+    html += ""
+            "  </tbody>\n"
+            "</table>";
+
+    return html;
 }
-

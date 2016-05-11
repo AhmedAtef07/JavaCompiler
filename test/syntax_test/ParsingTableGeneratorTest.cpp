@@ -17,19 +17,10 @@ TEST(ParsingTableGenerating, GeneratingFirsts) {
 
     ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->unmodified_rules);
 
-    cout << endl;
+    ptg->print_firsts();
+    ptg->print_follows();
+    ptg->print_table();
 
-    cout << "firsts: " << endl;
-    for(vector<set<string>> v : ptg->firsts) {
-        for(set<string> s : v) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-            cout << " '|' ";
-        }
-        cout << endl;
-    }
-    cout << endl;
     set<string> s1, s2, s3;
     s1.insert("id");
     s2.insert("id");
@@ -39,14 +30,6 @@ TEST(ParsingTableGenerating, GeneratingFirsts) {
     vector<vector<set<string>>> v3 = {v1, v2};
     EXPECT_EQ(v3, ptg->firsts);
 
-    cout << "follows: " << ptg->follows.size() << endl;
-    for(set<string> s : ptg->follows) {
-        for(string st : s) {
-            cout << st << "  ";
-        }
-        cout << endl;
-    }
-    cout << endl;
     set<string> s4;
     s4.insert("\\$");
     set<string> s5;
@@ -90,17 +73,6 @@ TEST(ParsingTableGenerating, FirstsAndTable) {
 
     ParsingTableGenerator* ptg = new ParsingTableGenerator(rules);
 
-    cout << "firsts: " << endl;
-    for(vector<set<string>> &v : ptg->firsts) {
-        for(set<string> s : v) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-            cout << " '|' ";
-        }
-        cout << endl;
-    }
-    cout << endl;
     set<string> s1, s2, s3, s4;
     s1.insert("float");
     s1.insert("int");
@@ -113,14 +85,10 @@ TEST(ParsingTableGenerating, FirstsAndTable) {
     vector<vector<set<string>>> v4 = {v1, v2, v3};
     EXPECT_EQ(v4, ptg->firsts);
 
-    cout << "follows: " << endl;
-    for(set<string> s : ptg->follows) {
-        for(string st : s) {
-            cout << st << "  ";
-        }
-        cout << endl;
-    }
-    cout << endl;
+    ptg->print_firsts();
+    ptg->print_follows();
+    ptg->print_table();
+
     set<string> s5, s6;
     s5.insert("\\$");
     s6.insert("id");
@@ -136,30 +104,13 @@ TEST(ParsingTableGenerating, SyncSymbol) {
     ContextFreeGrammar *cfg = new ContextFreeGrammar();
     cfg->AddRulesFromString(grammar);
 
-    cout << endl << endl;
     ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
 
     EXPECT_EQ(Symbol::Type::kSynch, (*ptg->table[0][0])[0]->type);
     EXPECT_EQ(Symbol::Type::kSynch, (*ptg->table[1][2])[0]->type);
     EXPECT_EQ(Symbol::Type::kSynch, (*ptg->table[2][0])[0]->type);
 
-    cout << "firsts: " << endl;
-    for(vector<set<string>> v : ptg->firsts) {
-        for(set<string> s : v) {
-            for(string st : s) {
-                cout << st << "  ";
-            }
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "follows: " << ptg->follows.size() << endl;
-    for(set<string> s : ptg->follows) {
-        for(string st : s) {
-            cout << st << "  ";
-        }
-        cout << endl;
-    }
-    cout << endl;
+    ptg->print_firsts();
+    ptg->print_follows();
+    ptg->print_table();
 }

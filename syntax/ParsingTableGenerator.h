@@ -26,8 +26,8 @@ public:
     ParsingTableGenerator(vector<GrammarRule*> rules);
 
     string GetParsingTableInHtmlFormat();
-    string GetFirstsTableInHtmlFormat();
-    string GetFollowsTableInHtmlFormat();
+    string GetFirstsInHtmlFormat();
+    string GetFollowsInHtmlFormat();
 
     void print_firsts();
     void print_follows();
