@@ -9,7 +9,7 @@ const vector<string> Lexical::alphabet = {
         "6", "7", "8", "9", ";", "<", "=", ">", "?", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
         "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_", "`", "a", "b",
         "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x",
-        "y", "z", "{", "|", "}", "~", ":" };
+        "y", "z", "{", "|", "}", "~", ":", " ", "\t", "\n" };
 
 void Lexical::AddDfa(Nfa* nfa, Token* token) {
     dfas.push_back(new Dfa(nfa, token));
@@ -38,10 +38,17 @@ Lexical::Output Lexical::ParseInput(string input) {
         for(int i = 0; i <= input.length(); ++i) {
             string curr_string = string(1, input[i]);
 
-            if((!has_running || i == input.length() || curr_string == " " || curr_string == "\n" || curr_string == "\t")
+            if((!has_running || i == input.length())
                && highest_token != nullptr) {
                 highest_token->pattern = input.substr(0, last_position + 1);
-                answer.push_back(highest_token);
+                if(highest_token->name != "Blanks") {
+                    if(highest_token->name == "Punctuation") {
+                        highest_token->name = highest_token->pattern;
+                    } else if(highest_token->name == "id") {
+                        symbol_table[highest_token->pattern];
+                    }
+                    answer.push_back(highest_token);
+                }
                 highest_priority = -1;
                 highest_token = nullptr;
                 input.erase(0, last_position + 1);
@@ -52,10 +59,6 @@ Lexical::Output Lexical::ParseInput(string input) {
             } else if ((!has_running || i == input.length()) && highest_token == nullptr) {
                 ++errors_found;
                 error_strings.push_back(input);
-                input.erase(0, 1);
-                break;
-            }
-            if(curr_string == " " || curr_string == "\n" || curr_string == "\t") {
                 input.erase(0, 1);
                 break;
             }

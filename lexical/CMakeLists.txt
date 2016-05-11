@@ -13,6 +13,13 @@ set(SRC_FILES
         Transition.h
         RegularExpression.cpp
         RegularExpression.h
-        Dfa.cpp Dfa.h Token.cpp Token.h Visualiser.cpp Visualiser.h Lexical.cpp Lexical.h)
+        Dfa.cpp
+        Dfa.h
+        Token.cpp
+        Token.h
+        Visualiser.cpp
+        Visualiser.h
+        Lexical.cpp
+        Lexical.h)
 
 add_library(lexical STATIC ${SRC_FILES})

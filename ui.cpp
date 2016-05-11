@@ -1,3 +1,7 @@
+//
+// Created by ahmedatef on 5/11/16.
+//
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -7,18 +11,20 @@
 #include <Visualiser.h>
 #include <ContextFreeGrammar.h>
 #include <cstring>
+#include <ParsingTableGenerator.h>
+#include <PredictiveParser.h>
 
 using namespace std;
 
 int main(int argc, char * argv[]) {
     string path = "";
-    // get the path from: ../bin/main => bin/
-    int len = (int) (strlen(argv[0]) - 4);
+    // get the path from: ../bin/ui => bin/
+    int len = (int) (strlen(argv[0]) - 2);
     for(int i = 0; i < len; i++) {
         path += argv[0][i];
     }
-    if(argc < 2) {
-        cerr << "Invalid Format, you should run it: main lexical-input-file" << endl;
+    if(argc < 3) {
+        cerr << "Invalid Format, you should run it: main lexical-input-file CFG-input-file" << endl;
         return -1;
     }
 
@@ -73,8 +79,11 @@ int main(int argc, char * argv[]) {
 
 
     string current_line;
+    Lexical::Output output;
+    string allCode = "";
     while(getline(ifs, current_line)) {
-        Lexical::Output output = lexical->ParseInput(current_line);
+        output = lexical->ParseInput(current_line);
+        allCode += current_line;
         for(Token *k : output.tokens) {
             detailed_report << k->name << "  >  " << k->pattern << endl;
             ofs << k->name << "  " << k->pattern << endl;
@@ -88,9 +97,54 @@ int main(int argc, char * argv[]) {
 //        ofs << endl;
     }
 
+
+    // Syntax Phase.
+    ContextFreeGrammar *cfg = new ContextFreeGrammar();
+    cfg->AddRulesFromFile(argv[2]);
+
+    ParsingTableGenerator* ptg = new ParsingTableGenerator(cfg->rules);
+    ofstream firstOutput(path + "first.html");
+    firstOutput << ptg->GetFirstsInHtmlFormat();
+    firstOutput.close();
+
+    ofstream ll_ofs(path + "ll.txt");
+
+    for(GrammarRule *r : cfg->rules) {
+        ll_ofs << r->name << " = ";
+        for(int i = 0; i < r->productions.size(); ++i) {
+            for(int j = 0; j < r->productions[i].size(); ++j) {
+                ll_ofs << r->productions[i][j]->name << ((j + 1) == r->productions[i].size() ? "" : " ");
+            }
+            ll_ofs << ((i + 1) == r->productions.size() ? "" : " | ");
+        }
+        ll_ofs << endl;
+    }
+
+
+    ofstream followOutput(path + "follow.html");
+    followOutput << ptg->GetFollowsInHtmlFormat();
+    followOutput.close();
+
+    ofstream parsingTableOutput(path + "parsingTable.html");
+    parsingTableOutput << ptg->GetParsingTableInHtmlFormat();
+    parsingTableOutput.close();
+
+
     cout << "lexemes: " << path + "input.java_lexemes" << endl;
     cout << "lexemes_detailed: " << path + "input.java_lexemes_detailed" << endl;
     cout << "dfa: " << path + "dfa.js" << endl;
+    cout << "first: " << path + "first.html" << endl;
+    cout << "follow: " << path + "follow.html" << endl;
+    cout << "parsingTable: " << path + "parsingTable.html" << endl;
+    cout << "stack: " << path + "stack.html" << endl;
+
+    PredictiveParser* pp = new PredictiveParser(ptg->table, ptg->rules_indexes,
+                                                ptg->terminals_indexes, new Symbol(ptg->rules[0]));
+    pp->parse(lexical->ParseInput(allCode).tokens);
+
+    ofstream stackOutput(path + "stack.html");
+    stackOutput << pp->GetStackInHtmlForm();
+    stackOutput.close();
 
     //system("google-chrome-stable ../report/index.html"); // more general
 //    system("google-chrome-stable ../report/index.html"); // more general
@@ -103,6 +157,9 @@ int main(int argc, char * argv[]) {
 //    cout << "# of Tokens: " << output.tokens.size() << endl;
 
 //    ContextFreeGrammar *cfg = new ContextFreeGrammar("../syntax/CFG.txt");
+
+
+
 
 
     return 0;

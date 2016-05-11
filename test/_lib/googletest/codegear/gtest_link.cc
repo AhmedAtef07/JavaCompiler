@@ -31,10 +31,10 @@
 //
 // Google C++ Testing Framework (Google Test)
 //
-// Links gtest.lib and gtest_main.lib into the current project in C++Builder.
+// Links gtest._lib and gtest_main._lib into the current project in C++Builder.
 // This means that these libraries can't be renamed, but it's the only way to
 // ensure that Debug versus Release test builds are linked against the
 // appropriate Debug or Release build of the libraries.
 
-#pragma link "gtest.lib"
-#pragma link "gtest_main.lib"
+#pragma link "gtest._lib"
+#pragma link "gtest_main._lib"

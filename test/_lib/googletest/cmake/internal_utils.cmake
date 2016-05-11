@@ -186,12 +186,12 @@ function(cxx_executable_with_flags name cxx_flags libs)
   endif()
   # To support mixing linking in static and dynamic libraries, link each
   # library in with an extra call to target_link_libraries.
-  foreach (lib "${libs}")
-    target_link_libraries(${name} ${lib})
+  foreach (_lib "${libs}")
+    target_link_libraries(${name} ${_lib})
   endforeach()
 endfunction()
 
-# cxx_executable(name dir lib srcs...)
+# cxx_executable(name dir _lib srcs...)
 #
 # creates a named target that depends on the given libs and is built
 # from the given source files.  dir/name.cc is implicitly included in

@@ -34,3 +34,11 @@
 # Ignore .idea
 .idea
 .idea/*
+
+dfa.js
+
+ui/nwjs
+
+bower_components
+node_modules
+
